@@ -18,7 +18,7 @@
                 alt="looginpage" /></a>
           </div>
           <div class="login-main">
-            <?= form_open('auth/login', ['class' => 'theme-form']); ?>
+            <?= form_open('login', ['class' => 'theme-form']); ?>
             <center>
               <h3>SELAMAT DATANG</h3>
             </center>
@@ -28,6 +28,7 @@
                 class="form-control"
                 type="text"
                 required="true"
+                name="username"
                 </div>
               <div class="form-group">
                 <label class="col-form-label">Kata Sandi</label>
@@ -35,7 +36,7 @@
                   <input
                     class="form-control"
                     type="password"
-                    name="login[password]"
+                    name="password"
                     required="true" />
                   <div class="show-hide"><span class="show"></span></div>
                 </div>
@@ -46,6 +47,10 @@
               <?php if (session()->getFlashdata('msg')) : ?>
                 <div class="form-group mb-1">
                   <div class="alert alert-danger"> <i class="fa fa-times-circle mr-2"></i><?= session()->getFlashdata('msg') ?></div>
+                </div>
+              <?php elseif (session()->getFlashdata('error')) : ?>
+                <div class="alert alert-danger">
+                  <i class="fa fa-times-circle mr-2"></i><?= session()->getFlashdata('error') ?>
                 </div>
               <?php elseif (session()->getFlashdata('logout')) : ?>
                 <div class="form-group mb-1">
@@ -61,7 +66,7 @@
                   </button>
                 </div>
               </div>
-              <?= form_close() ?>
+              <?= form_close(); ?>
             </div>
           </div>
         </div>

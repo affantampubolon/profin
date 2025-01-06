@@ -13,6 +13,6 @@ class ParamEmpModel extends Model
 
   public function getParamEmpByIdRef($idRef)
   {
-    return $this->where('id', $idRef)->where('flg_used', 'T')->first();
+    return $this->where('id', $idRef)->where('flg_used', TRUE)->first();
   }
 }

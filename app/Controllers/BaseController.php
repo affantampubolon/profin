@@ -67,8 +67,7 @@ abstract class BaseController extends Controller
         helper(['form']);
         // Deklarasi models
         $this->userModel        = new \App\Models\UserModel\UserModel;
-        $this->empModel         = new \App\Models\UserModel\ParamEmpModel;
-        $this->paramEmpModel    = new \App\Models\UserModel\EmpModel;
-
+        $this->empModel         = new \App\Models\UserModel\EmpModel;
+        $this->paramEmpModel    = new \App\Models\UserModel\ParamEmpModel;
     }
 }
