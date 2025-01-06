@@ -87,6 +87,8 @@
     media="screen" />
   <!-- Responsive css-->
   <link rel="stylesheet" type="text/css" href="<?= base_url(''); ?>riho/assets/css/responsive.css" />
+  <!-- Tabulator table -->
+  <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet">
 </head>
 
 <!-- End Head -->
