@@ -89,8 +89,8 @@ class Filters extends BaseFilters
             // 'secureheaders',
             'filteradmin'   => [
                 'except' => [
-                    // ADMIN datatop, insertcus
                     'admin',
+                    'dashboard'
                 ],
             ],
         ],

@@ -27,7 +27,7 @@ class Auth extends BaseController
     public function dashboard()
     {
         // jika sudah login dan ingin masuk ke laman login maka akan diarahkan ke default page
-        if ($this->Session->logged_in == true) {
+        if ($this->session->logged_in == true) {
             $this->goToDefaultPage();
         }
         $data = [
@@ -39,77 +39,70 @@ class Auth extends BaseController
 
     public function login()
     {
-        // Pastikan hanya diproses saat method POST
-        if ($this->request->getMethod() === 'post') {
-            $rules = [
-                'username' => 'required',
-                'password' => 'required'
-            ];
+        $rules = [
+            'username' => 'required',
+            'password' => 'required'
+        ];
 
-            if (!$this->validate($rules)) {
-                // Validasi gagal
-                return redirect()->to('/')->withInput()->with('validation', $this->validation); // Gunakan $this->validator
-            }
+        if (!$this->validate($rules)) {
+            // Validasi gagal
+            return redirect()->to('/')->withInput()->with('validation', $this->validation); // Gunakan $this->validator
+        }
 
-            // Memproses data login
-            $username = trim($this->request->getPost('username'));
-            $password = $this->request->getPost('password');
+        // Memproses data login
+        $username = trim($this->request->getPost('username'));
+        $password = $this->request->getPost('password');
 
-            $data = $this->userModel->getUserByUsername($username);
+        $data = $this->userModel->getUserByUsername($username);
 
-            // cek ada data atau tidak
-            if ($data) {
-                // jika ada data maka cek aktif atau tidak
-                if ($data['flg_used'] == 1) {
-                    // jika user data aktif maka cek password
-                    if (password_verify($password, $data->password_web)) {
-                        // jika password cocok maka cek role nya 
-                        $paramEmp = $this->paramEmpModel->getParamEmpByIdRef($data->id_ref); // Mendapatkan data mst_param_emp
-                        // Jika paramEmp ada maka ambil datanya
-                        if ($paramEmp) {
-                            $empData = $this->empModel->getEmployeeByNik($paramEmp->nik);
-                            // Set Sessionnya berdasarkan role
-                            if ($empData == 1) {
-                                // Jika Role id nya == 1 maka dia admin , maka -> Create session loginnya :
-                                // Data session login
-                                $ses_data = [
-                                    'username'   => $data['username'],
-                                    'role_id'    => $data['role_id'],
-                                    'branch_id'  => $data['branch_id'],
-                                    'foto'       => $data['image'],
-                                    'logged_in'  => TRUE
-                                ];
-                                // Set session
-                                $this->Session->set($ses_data);
-                                // Redirect ke halaman admin
-                                return redirect()->to('/admin');
-                            }
-                        } else {
-                            $this->session->setFlashdata('msg', 'Data User Belum Lengkap!');
-                            return redirect()->to('/');
+        // cek ada data atau tidak
+        if ($data) {
+            // jika ada data maka cek aktif atau tidak
+            if ($data['flg_used'] == TRUE) {
+                // jika user data aktif maka cek password
+                if (password_verify($password, $data['password_web'])) {
+                    // jika password cocok maka cek role nya 
+                    // Mendapatkan data mst_param_emp
+                    $paramEmp = $this->paramEmpModel->getParamEmpByIdRef($data['id_ref']);
+                    // Jika paramEmp ada maka ambil datanya
+                    if ($paramEmp) {
+                        $empData = $this->empModel->getEmployeeByNik($paramEmp['nik']);
+                        // Set sessionnya berdasarkan role
+                        if ($empData == TRUE) {
+                            // Jika Role id nya == 1 maka dia admin , maka -> Create session loginnya :
+                            // Data session login
+                            $ses_data = [
+                                'username'   => $data['username'],
+                                'role_id'   => 1,
+                                'logged_in'  => TRUE
+                            ];
+                            // Set session
+                            $this->session->set($ses_data);
+                            // Redirect ke halaman admin
+                            return redirect()->to('/dashboard');
                         }
                     } else {
-                        $this->Session->setFlashdata('msg', 'Password yang anda masukkan salah!');
+                        $this->session->setFlashdata('msg', 'Data User Belum Lengkap!');
                         return redirect()->to('/');
                     }
                 } else {
-                    $this->Session->setFlashdata('msg', 'User tidak Aktif Hubungi Administrator!');
+                    $this->session->setFlashdata('msg', 'Password yang anda masukkan salah!');
                     return redirect()->to('/');
                 }
             } else {
-                $this->Session->setFlashdata('msg', 'Username atau Email tidak terdaftar!');
+                $this->session->setFlashdata('msg', 'User tidak Aktif Hubungi Administrator!');
                 return redirect()->to('/');
             }
         } else {
-            return redirect()->to('/login');
+            $this->session->setFlashdata('msg', 'Username atau Email tidak terdaftar!');
+            return redirect()->to('/');
         }
     }
 
     public function logout()
     {
-        $session = session();
-        $session->destroy();
-        return redirect()->to('/');
+        $this->session->destroy();
+        return redirect()->to('/')->withInput()->with('msg', 'Anda Berhasil Keluar!');
     }
     // public function login()
     // {
@@ -147,7 +140,7 @@ class Auth extends BaseController
     //                         'logged_in'  => TRUE
     //                     ];
     //                     // Set session
-    //                     $this->Session->set($ses_data);
+    //                     $this->session->set($ses_data);
     //                     // Redirect ke halaman admin
     //                     return redirect()->to('/admin');
     //                 } elseif ($data['role_id'] == 2) {
@@ -161,7 +154,7 @@ class Auth extends BaseController
     //                         'logged_in'  => TRUE
     //                     ];
     //                     // Set session
-    //                     $this->Session->set($ses_data);
+    //                     $this->session->set($ses_data);
     //                     // Redirect ke halaman marketing
     //                     return redirect()->to('/marketing');
     //                 } elseif ($data['role_id'] == 3) {
@@ -175,7 +168,7 @@ class Auth extends BaseController
     //                         'logged_in'  => TRUE
     //                     ];
     //                     // Set session
-    //                     $this->Session->set($ses_data);
+    //                     $this->session->set($ses_data);
     //                     // Redirect ke halaman finance
     //                     return redirect()->to('/finance');
     //                 } elseif ($data['role_id'] == 4) {
@@ -189,26 +182,26 @@ class Auth extends BaseController
     //                         'logged_in'  => TRUE
     //                     ];
     //                     // Set session
-    //                     $this->Session->set($ses_data);
+    //                     $this->session->set($ses_data);
     //                     // Redirect ke halaman finance
     //                     return redirect()->to('/marketing');
     //                 }
     //             }
     //             // Jika password Salah maka -> Kembali kehalaman login dan berikan pesan salah password 
     //             else {
-    //                 $this->Session->setFlashdata('msg', 'Password yang anda masukkan salah!');
+    //                 $this->session->setFlashdata('msg', 'Password yang anda masukkan salah!');
     //                 return redirect()->to('/');
     //             }
     //         }
     //         // Jika user tidak active maka tidak bisa login : 
     //         else {
-    //             $this->Session->setFlashdata('msg', 'User tidak Active silahkan kontak Administrator!');
+    //             $this->session->setFlashdata('msg', 'User tidak Active silahkan kontak Administrator!');
     //             return redirect()->to('/');
     //         }
     //     }
     //     // Jika data tidak ada berdasarkan inputan maka -> Kembali ke halaman login dan berikan pesan user tidak terdaftar 
     //     else {
-    //         $this->Session->setFlashdata('msg', 'Username atau Email tidak terdaftar!');
+    //         $this->session->setFlashdata('msg', 'Username atau Email tidak terdaftar!');
     //         return redirect()->to('/');
     //     }
     // }
@@ -216,29 +209,29 @@ class Auth extends BaseController
     // public function logout()
     // {
     //     $ses_data = ['username', 'role_id', 'branch_id', 'logged_in'];
-    //     $this->Session->remove($ses_data);
-    //     $this->Session->setFlashdata('logout', 'Anda Berhasil Logout!');
+    //     $this->session->remove($ses_data);
+    //     $this->session->setFlashdata('logout', 'Anda Berhasil Logout!');
     //     return redirect()->to('/');
     // }
 
     // DefaultPage after login
-    // public function goToDefaultPage()
-    // {
-    //     // Jika Sudah login maka tidak bisa ke menu login sebelum logout
-    //     // Admin
-    //     if ($this->Session->role_id == 1) {
-    //         return redirect()->to('/admin');
-    //     }
-    //     // Jika Bukan Admin maka dia Operasional
-    //     else if ($this->Session->role_id  == 2) {
-    //         return redirect()->to('/marketing');
-    //     }
-    //     // Jika Bukan operasional maka dia non operasional 
-    //     else if ($this->Session->role_id  == 3) {
-    //         return redirect()->to('/finance');
-    //     }
-    //     // End
-    // }
+    public function goToDefaultPage()
+    {
+        // Jika Sudah login maka tidak bisa ke menu login sebelum logout
+        // Admin
+        if ($this->session->role_id == 1) {
+            return redirect()->to('/dashboard');
+        }
+        // Jika Bukan Admin maka dia Operasional
+        else if ($this->session->role_id  == 2) {
+            return redirect()->to('/marketing');
+        }
+        // Jika Bukan operasional maka dia non operasional 
+        else if ($this->session->role_id  == 3) {
+            return redirect()->to('/finance');
+        }
+        // End
+    }
 
     // Blocked because required user access
     // public function blocked()
@@ -260,9 +253,9 @@ class Auth extends BaseController
 
     //     $data = [
     //         'title'   => "Change Password",
-    //         'Session' => $this->Session,
+    //         'session' => $this->session,
     //     ];
-    //     $data['userdata'] = $this->userModel->where('username', $this->Session->username)->first();
+    //     $data['userdata'] = $this->userModel->where('username', $this->session->username)->first();
 
     //     if ($this->request->getMethod() == 'post') {
     //         $rules = [
@@ -276,7 +269,7 @@ class Auth extends BaseController
     //             $newpassword = password_hash($this->request->getPost('new_password'), PASSWORD_DEFAULT);
 
     //             if (password_verify($current, $data['userdata']['password'])) {
-    //                 if ($this->userModel->updatePassword($newpassword, $this->Session->username)) {
+    //                 if ($this->userModel->updatePassword($newpassword, $this->session->username)) {
     //                     session()->setTempdata('success', 'Password berhasil diganti', 3);
     //                     return redirect()->to(current_url());
     //                 } else {
