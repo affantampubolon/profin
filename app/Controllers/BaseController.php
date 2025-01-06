@@ -46,13 +46,27 @@ abstract class BaseController extends Controller
     /**
      * @return void
      */
+    protected $session;
+    protected $validation;
+
+    // Deklarasi model di BaseController
+    protected $userModel;
+    protected $empModel;
+    protected $paramEmpModel;
+
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
         // Preload any models, libraries, etc, here.
-
-        // E.g.: $this->session = \Config\Services::session();
+        $this->session = \Config\Services::session();
+        $this->validation = \Config\Services::validation();
+        // Deklarasi helper form
+        helper(['form']);
+        // Deklarasi models
+        $this->userModel        = new \App\Models\EmpModel\EmpModel;
+        $this->empModel         = new \App\Models\ParamEmpModel\ParamEmpModel;
+        $this->paramEmpModel    = new \App\Models\UserModel\UserModel;
     }
 }

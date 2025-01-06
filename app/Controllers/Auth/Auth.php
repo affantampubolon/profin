@@ -3,37 +3,114 @@
 namespace App\Controllers\Auth;
 
 use App\Controllers\BaseController;
-use App\Models\AuthModel\AuthModel;
 
 class Auth extends BaseController
 {
-    protected $authModel;
     // Parent Construct
-    public function __construct()
-    {
-        $this->authModel = new AuthModel();
-        $this->Session = \Config\Services::session();
-    }
+    public function __construct() {}
 
     // Function Index -> halaman LOGIN
     public function index()
     {
         // jika sudah login dan ingin masuk ke laman login maka akan diarahkan ke default page
-        if ($this->Session->logged_in == true) {
+        if ($this->session->logged_in == true) {
             $this->goToDefaultPage();
         }
-
-        // Helper Form
-        helper(['form']);
-        // Ambil Session dari function login 
-        $this->Session;
         $data = [
-            'title' => "MONAS - LOGIN",
-            'validation' => \Config\Services::validation(),
+            'title' => "RAJA AMPAT - LOGIN",
+            'validation' => $this->validation,
         ];
         return view('auth/login', $data);
     }
 
+    // Function Index -> halaman LOGIN
+    public function dashboard()
+    {
+        // jika sudah login dan ingin masuk ke laman login maka akan diarahkan ke default page
+        if ($this->Session->logged_in == true) {
+            $this->goToDefaultPage();
+        }
+        $data = [
+            'title' => "MONAS - LOGIN",
+            'validation' => $this->validation,
+        ];
+        return view('auth/dashboard', $data);
+    }
+
+    public function login()
+    {
+        // Pastikan hanya diproses saat method POST
+        if ($this->request->getMethod() === 'post') {
+            $rules = [
+                'username' => 'required',
+                'password' => 'required'
+            ];
+
+            if (!$this->validate($rules)) {
+                // Validasi gagal
+                return redirect()->to('/')->withInput()->with('validation', $this->validation); // Gunakan $this->validator
+            }
+
+            // Memproses data login
+            $username = trim($this->request->getPost('username'));
+            $password = $this->request->getPost('password');
+
+            $data = $this->userModel->getUserByUsername($username);
+
+            // cek ada data atau tidak
+            if ($data) {
+                // jika ada data maka cek aktif atau tidak
+                if ($data['flg_used'] == 1) {
+                    // jika user data aktif maka cek password
+                    if (password_verify($password, $data->password_web)) {
+                        // jika password cocok maka cek role nya 
+                        $paramEmp = $this->paramEmpModel->getParamEmpByIdRef($data->id_ref); // Mendapatkan data mst_param_emp
+                        // Jika paramEmp ada maka ambil datanya
+                        if ($paramEmp) {
+                            $empData = $this->empModel->getEmployeeByNik($paramEmp->nik);
+                            // Set Sessionnya berdasarkan role
+                            if ($empData == 1) {
+                                // Jika Role id nya == 1 maka dia admin , maka -> Create session loginnya :
+                                // Data session login
+                                $ses_data = [
+                                    'username'   => $data['username'],
+                                    'role_id'    => $data['role_id'],
+                                    'branch_id'  => $data['branch_id'],
+                                    'foto'       => $data['image'],
+                                    'logged_in'  => TRUE
+                                ];
+                                // Set session
+                                $this->Session->set($ses_data);
+                                // Redirect ke halaman admin
+                                return redirect()->to('/admin');
+                            }
+                        } else {
+                            $this->session->setFlashdata('msg', 'Data User Belum Lengkap!');
+                            return redirect()->to('/');
+                        }
+                    } else {
+                        $this->Session->setFlashdata('msg', 'Password yang anda masukkan salah!');
+                        return redirect()->to('/');
+                    }
+                } else {
+                    $this->Session->setFlashdata('msg', 'User tidak Aktif Hubungi Administrator!');
+                    return redirect()->to('/');
+                }
+            } else {
+                $this->Session->setFlashdata('msg', 'Username atau Email tidak terdaftar!');
+                return redirect()->to('/');
+            }
+        } else {
+            return redirect()->to('/login');
+        }
+    }
+
+    public function logout()
+    {
+        $session = session();
+        $session->destroy();
+        return redirect()->to('/');
+    }
     // public function login()
     // {
     //     // Helper Form
@@ -51,7 +128,7 @@ class Auth extends BaseController
     //     $username = trim($this->request->getVar('username'));
     //     $password = $this->request->getVar('password');
     //     // Cek Data inputan dengan database apakah ada user / email dari inputan 
-    //     $data = $this->authModel->where('username', $username)->orWhere('email', $username)->first();
+    //     $data = $this->userModel->where('username', $username)->orWhere('email', $username)->first();
     //     // Jika data ada maka -> cek password
     //     if ($data) {
     //         // Cek Apakah user Aktif atau tidak :
@@ -185,7 +262,7 @@ class Auth extends BaseController
     //         'title'   => "Change Password",
     //         'Session' => $this->Session,
     //     ];
-    //     $data['userdata'] = $this->authModel->where('username', $this->Session->username)->first();
+    //     $data['userdata'] = $this->userModel->where('username', $this->Session->username)->first();
 
     //     if ($this->request->getMethod() == 'post') {
     //         $rules = [
@@ -199,7 +276,7 @@ class Auth extends BaseController
     //             $newpassword = password_hash($this->request->getPost('new_password'), PASSWORD_DEFAULT);
 
     //             if (password_verify($current, $data['userdata']['password'])) {
-    //                 if ($this->authModel->updatePassword($newpassword, $this->Session->username)) {
+    //                 if ($this->userModel->updatePassword($newpassword, $this->Session->username)) {
     //                     session()->setTempdata('success', 'Password berhasil diganti', 3);
     //                     return redirect()->to(current_url());
     //                 } else {

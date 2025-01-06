@@ -60,3 +60,4 @@
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
 <!-- End Footer -->
+<script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>

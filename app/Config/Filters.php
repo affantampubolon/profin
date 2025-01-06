@@ -34,6 +34,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
+        'filteradmin'   => \App\Filters\filterAdmin::class,
     ];
 
     /**
@@ -72,10 +73,26 @@ class Filters extends BaseFilters
             // 'honeypot',
             // 'csrf',
             // 'invalidchars',
+            'filteradmin'   => [
+                'except' => [
+                    'auth',
+                    'auth/*',
+                    '/login',
+                    'setting',
+                    'setting/*',
+                    '/'
+                ]
+            ],
         ],
         'after' => [
             // 'honeypot',
             // 'secureheaders',
+            'filteradmin'   => [
+                'except' => [
+                    // ADMIN datatop, insertcus
+                    'admin',
+                ],
+            ],
         ],
     ];
 
