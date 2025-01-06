@@ -29,3 +29,4 @@ $routes->setAutoRoute(true);
 
 // Auth
 $routes->get('/', 'Auth\Auth::index');
+$routes->get('/pipeline/pembuatan', 'Pipeline\Pipeline::index');

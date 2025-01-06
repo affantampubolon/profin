@@ -11,6 +11,8 @@
 <!-- close div -->
 </div>
 </div>
+<!-- Tabulator table -->
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 <!-- latest jquery-->
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>
 <!-- Bootstrap js-->
@@ -43,8 +45,18 @@
 <script src="<?= base_url(''); ?>riho/assets/js/datepicker/date-picker/datepicker.en.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/datepicker/date-picker/datepicker.custom.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/dashboard/dashboard_3.js"></script>
+<!-- select2 js-->
+<script src="<?= base_url(''); ?>riho/assets/js/select2/tagify.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/select2/tagify.polyfills.min.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/select2/intltelinput.min.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/select2/telephone-input.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/select2/custom-inputsearch.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/select2/select3-custom.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/height-equal.js"></script>
 <!-- Plugins JS Ends-->
 <!-- Theme js-->
 <script src="<?= base_url(''); ?>riho/assets/js/script.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script>
+<!-- BEGIN: Custom Js-->
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
 <!-- End Footer -->
