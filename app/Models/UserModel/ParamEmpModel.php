@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\ParamEmpModel;
+namespace App\Models\UserModel;
 
 use CodeIgniter\Model;
 

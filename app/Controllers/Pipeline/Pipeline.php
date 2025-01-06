@@ -18,7 +18,8 @@ class Pipeline extends BaseController
     // Function Index -> halaman LOGIN
     public function index()
     {
-       
+       $test = $this->userModel();
+       dd($test);
         $data = [
             'title' => "Pembuatan Pipeline",
         ];

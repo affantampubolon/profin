@@ -9,6 +9,7 @@ use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+
 /**
  * Class BaseController
  *
@@ -65,8 +66,9 @@ abstract class BaseController extends Controller
         // Deklarasi helper form
         helper(['form']);
         // Deklarasi models
-        $this->userModel        = new \App\Models\EmpModel\EmpModel;
-        $this->empModel         = new \App\Models\ParamEmpModel\ParamEmpModel;
-        $this->paramEmpModel    = new \App\Models\UserModel\UserModel;
+        $this->userModel        = new \App\Models\UserModel\UserModel;
+        $this->empModel         = new \App\Models\UserModel\ParamEmpModel;
+        $this->paramEmpModel    = new \App\Models\UserModel\EmpModel;
+
     }
 }
