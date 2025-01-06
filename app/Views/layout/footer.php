@@ -48,3 +48,4 @@
 <script src="<?= base_url(''); ?>riho/assets/js/script.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script>
 <!-- End Footer -->
+<script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
