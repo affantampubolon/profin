@@ -29,3 +29,5 @@ $routes->setAutoRoute(true);
 
 // Auth
 $routes->get('/', 'Auth\Auth::index');
+$routes->add('/login', 'Auth\Auth::login');
+$routes->get('/dashboard', 'Auth\Auth::dashboard');
