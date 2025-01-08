@@ -20,7 +20,7 @@ class filterAdmin implements FilterInterface
     {
         // Do something here
         if (session()->get('role_id') == 1) {
-            return redirect()->to('/dashboard');
+            return redirect()->to('/beranda');
         }
     }
 }
