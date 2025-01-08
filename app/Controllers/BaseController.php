@@ -54,6 +54,9 @@ abstract class BaseController extends Controller
     protected $userModel;
     protected $empModel;
     protected $paramEmpModel;
+    //Models Pipeline
+    protected $pipelineModel;
+    protected $pipelineDetModel;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -69,5 +72,8 @@ abstract class BaseController extends Controller
         $this->userModel        = new \App\Models\UserModel\UserModel;
         $this->empModel         = new \App\Models\UserModel\EmpModel;
         $this->paramEmpModel    = new \App\Models\UserModel\ParamEmpModel;
+        //Models Pipeline
+        $this->pipelineModel = new \App\Models\PipelineModel\PipelineModel();
+        $this->pipelineDetModel = new \App\Models\PipelineModel\PipelineDetModel();
     }
 }

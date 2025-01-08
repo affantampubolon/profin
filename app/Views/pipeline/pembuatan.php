@@ -57,22 +57,26 @@
                                         <span class="f-12 f-w-500 text-uppercase"
                                         >Unggah Dokumen:
                                         </span>
+                                        <form id="uploadForm" enctype="multipart/form-data">
                                         <div class="input-group mb-2">
                                             <input
                                                 class="form-control"
-                                                id="inputGroupFile04"
+                                                name="file"
                                                 type="file"
                                                 aria-describedby="inputGroupFileAddon04"
                                                 aria-label="Upload"
+                                                required
                                             />
                                             <button
                                                 class="btn btn-outline-success"
                                                 id="inputGroupFileAddon04"
-                                                type="button"
+                                                type="submit"
                                             >
                                                 Unggah
                                             </button>
                                         </div>
+                                        <div id="uploadStatus" class="mt-2"></div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
