@@ -27,7 +27,7 @@
 <script src="<?= base_url(''); ?>riho/assets/js/config.js"></script>
 <!-- Plugins JS start-->
 <script src="<?= base_url(''); ?>riho/assets/js/sidebar-menu.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/sidebar-pin.js"></script>
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/sidebar-pin.js"></script> -->
 <script src="<?= base_url(''); ?>riho/assets/js/slick/slick.min.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/slick/slick.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/header-slick.js"></script>
@@ -56,7 +56,7 @@
 <!-- Plugins JS Ends-->
 <!-- Theme js-->
 <script src="<?= base_url(''); ?>riho/assets/js/script.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script>
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
 <!-- End Footer -->

@@ -8,7 +8,12 @@ use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
-
+use App\Models\UserModel\UserModel;
+use App\Models\UserModel\EmpModel;
+use App\Models\UserModel\ParamEmpModel;
+use App\Models\MenuModel\MenuModel;
+use App\Models\PipelineModel\PipelineModel;
+use App\Models\PipelineModel\PipelineDetModel;
 
 /**
  * Class BaseController
@@ -49,6 +54,8 @@ abstract class BaseController extends Controller
      */
     protected $session;
     protected $validation;
+    protected $db;
+    protected $menuTree;
 
     // Deklarasi model di BaseController
     protected $userModel;
@@ -57,6 +64,9 @@ abstract class BaseController extends Controller
     //Models Pipeline
     protected $pipelineModel;
     protected $pipelineDetModel;
+    protected $menuModel;
+
+
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -68,12 +78,32 @@ abstract class BaseController extends Controller
         $this->validation = \Config\Services::validation();
         // Deklarasi helper form
         helper(['form']);
+        // Inisialisasi db
+        $this->db = \Config\Database::connect();
+        // Inisialisasi $this->view
+        $this->view = \Config\Services::renderer();
         // Deklarasi models
-        $this->userModel        = new \App\Models\UserModel\UserModel;
-        $this->empModel         = new \App\Models\UserModel\EmpModel;
-        $this->paramEmpModel    = new \App\Models\UserModel\ParamEmpModel;
-        //Models Pipeline
-        $this->pipelineModel = new \App\Models\PipelineModel\PipelineModel();
-        $this->pipelineDetModel = new \App\Models\PipelineModel\PipelineDetModel();
+        $this->userModel        = new UserModel();
+        $this->empModel         = new EmpModel();
+        $this->paramEmpModel    = new ParamEmpModel();
+        $this->menuModel        = new MenuModel();
+        $this->pipelineModel    = new PipelineModel();
+        $this->pipelineDetModel = new PipelineDetModel();
+        // Ambil dan buat tree menu di BaseController
+        $this->loadMenu();
+    }
+
+    private function loadMenu()
+    {
+        $username = $this->session->get('username');
+
+        // Hanya load menu jika user sudah login
+        if ($username) {
+            $menuData = $this->menuModel->getMenuUserData($username);
+            $menuTree = $this->menuModel->buildMenuTree($menuData);
+            $this->view->setVar('menuTree', $menuTree);
+        } else {
+            $this->view->setVar('menuTree', []);
+        }
     }
 }
