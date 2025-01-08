@@ -24,14 +24,14 @@ class Auth extends BaseController
     }
 
     // Function Index -> halaman LOGIN
-    public function dashboard()
+    public function beranda()
     {
         // jika sudah login dan ingin masuk ke laman login maka akan diarahkan ke default page
         if ($this->session->logged_in == true) {
             $this->goToDefaultPage();
         }
         $data = [
-            'title' => "MONAS - LOGIN",
+            'title' => "Beranda",
             'validation' => $this->validation,
         ];
         return view('auth/dashboard', $data);
@@ -39,63 +39,67 @@ class Auth extends BaseController
 
     public function login()
     {
-        $rules = [
-            'username' => 'required',
-            'password' => 'required'
-        ];
+        if ($this->request->is('post')) {
+            $rules = [
+                'username' => 'required',
+                'password' => 'required'
+            ];
 
-        if (!$this->validate($rules)) {
-            // Validasi gagal
-            return redirect()->to('/')->withInput()->with('validation', $this->validation); // Gunakan $this->validator
-        }
+            if (!$this->validate($rules)) {
+                // Validasi gagal
+                return redirect()->to('/')->withInput()->with('validation', $this->validation); // Gunakan $this->validator
+            }
 
-        // Memproses data login
-        $username = trim($this->request->getPost('username'));
-        $password = $this->request->getPost('password');
+            // Memproses data login
+            $username = trim($this->request->getPost('username'));
+            $password = $this->request->getPost('password');
 
-        $data = $this->userModel->getUserByUsername($username);
+            $data = $this->userModel->getUserByUsername($username);
 
-        // cek ada data atau tidak
-        if ($data) {
-            // jika ada data maka cek aktif atau tidak
-            if ($data['flg_used'] == TRUE) {
-                // jika user data aktif maka cek password
-                if (password_verify($password, $data['password_web'])) {
-                    // jika password cocok maka cek role nya 
-                    // Mendapatkan data mst_param_emp
-                    $paramEmp = $this->paramEmpModel->getParamEmpByIdRef($data['id_ref']);
-                    // Jika paramEmp ada maka ambil datanya
-                    if ($paramEmp) {
-                        $empData = $this->empModel->getEmployeeByNik($paramEmp['nik']);
-                        // Set sessionnya berdasarkan role
-                        if ($empData == TRUE) {
-                            // Jika Role id nya == 1 maka dia admin , maka -> Create session loginnya :
-                            // Data session login
-                            $ses_data = [
-                                'username'   => $data['username'],
-                                'role_id'   => 1,
-                                'logged_in'  => TRUE
-                            ];
-                            // Set session
-                            $this->session->set($ses_data);
-                            // Redirect ke halaman admin
-                            return redirect()->to('/dashboard');
+            // cek ada data atau tidak
+            if ($data) {
+                // jika ada data maka cek aktif atau tidak
+                if ($data['flg_used'] == TRUE) {
+                    // jika user data aktif maka cek password
+                    if (password_verify($password, $data['password_web'])) {
+                        // jika password cocok maka cek role nya 
+                        // Mendapatkan data mst_param_emp
+                        $paramEmp = $this->paramEmpModel->getParamEmpByIdRef($data['id_ref']);
+                        // Jika paramEmp ada maka ambil datanya
+                        if ($paramEmp) {
+                            $empData = $this->empModel->getEmployeeByNik($paramEmp['nik']);
+                            // Set sessionnya berdasarkan role
+                            if ($empData == TRUE) {
+                                // Jika Role id nya == 1 maka dia admin , maka -> Create session loginnya :
+                                // Data session login
+                                $ses_data = [
+                                    'username'   => $data['username'],
+                                    'role_id'   => 1,
+                                    'logged_in'  => TRUE
+                                ];
+                                // Set session
+                                $this->session->set($ses_data);
+                                // Redirect ke halaman admin
+                                return redirect()->to('/dashboard');
+                            }
+                        } else {
+                            $this->session->setFlashdata('msg', 'Hubungi Administrator Untuk Melengkapi Data!');
+                            return redirect()->to('/');
                         }
                     } else {
-                        $this->session->setFlashdata('msg', 'Data User Belum Lengkap!');
+                        $this->session->setFlashdata('msg', 'Pengguna atau kata sandi salah!');
                         return redirect()->to('/');
                     }
                 } else {
-                    $this->session->setFlashdata('msg', 'Password yang anda masukkan salah!');
+                    $this->session->setFlashdata('msg', 'Pengguna tidak Aktif Hubungi Administrator!');
                     return redirect()->to('/');
                 }
             } else {
-                $this->session->setFlashdata('msg', 'User tidak Aktif Hubungi Administrator!');
+                $this->session->setFlashdata('msg', 'Pengguna tidak terdaftar!');
                 return redirect()->to('/');
             }
         } else {
-            $this->session->setFlashdata('msg', 'Username atau Email tidak terdaftar!');
-            return redirect()->to('/');
+            redirect()->to('/')->withInput()->with('msg', 'Error!');
         }
     }
 

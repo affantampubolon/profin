@@ -90,7 +90,8 @@ class Filters extends BaseFilters
             'filteradmin'   => [
                 'except' => [
                     'admin',
-                    'dashboard'
+                    'beranda',
+                    'pipeline/*'
                 ],
             ],
         ],

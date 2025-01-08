@@ -115,7 +115,7 @@
 
  */
 :root {
-  --theme-deafult: #006666;
+  --theme-deafult: #0081C9;
   --theme-secondary: #FE6A49;
   --light-background: rgba(242, 243, 247, 0.7);
   --body-font-color: #86909C;
@@ -23405,7 +23405,7 @@ footer.blockquote-footer {
 .email-main-wrapper .email-app-sidebar .nav-pills .nav-link {
   color: var(--chart-text-color);
   gap: 13px;
-  text-transform: capitalize;
+  text-transform: none;
   font-size: 16px;
   font-weight: 500;
   position: relative;
@@ -25054,7 +25054,7 @@ footer.blockquote-footer {
   width: fit-content;
   margin-bottom: 20px;
   font-weight: 600;
-  text-transform: capitalize;
+  text-transform: none;
 }
 
 @media screen and (max-width: 1440px) {
@@ -26620,7 +26620,7 @@ html:hover .cursor {
   text-align: center;
 }
 .landing-page .demo-section .demo-box .demo-title .btn {
-  text-transform: capitalize;
+  text-transform: none;
   border: 1px solid #006666;
   padding: 8px 15px;
   transition: all 0.5s ease;
@@ -27875,7 +27875,7 @@ html:hover .cursor {
 .landing-page .navbar-nav .nav-item .nav-link {
   letter-spacing: 1.5px;
   color: #051A1A;
-  text-transform: capitalize;
+  text-transform: none;
 }
 .landing-page .navbar-nav .nav-item .nav-link a:active {
   color: #006666;
@@ -34526,7 +34526,8 @@ body.dark-only .page-wrapper {
   /* Main Header ends */
 }
 body.dark-only .page-wrapper .sidebar-main-title h6 {
-  color: rgba(255, 255, 255, 0.6);
+  color: #FBEFB1;
+  /* color: rgba(255, 255, 255, 0.6); */
 }
 body.dark-only .page-wrapper .page-header .translate_wrapper.active .more_lang {
   background-color: #1A1C23;
@@ -39057,7 +39058,7 @@ table.table-bordered thead tr th p {
 }
 .search-page .nav-link {
   font-weight: 500;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .search-page .border-tab.nav-tabs .material-border {
   border-bottom-width: 1px;
@@ -40313,7 +40314,7 @@ table.table-bordered thead tr th p {
   font-weight: 500;
 }
 .page-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li a svg.stroke-icon {
-  stroke: #fff;
+  stroke: #F4D160;
 }
 .page-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li a svg.fill-icon {
   fill: #051A1A;
@@ -40329,7 +40330,8 @@ table.table-bordered thead tr th p {
   fill: #fff;
 }
 .page-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content li a {
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
+  text-transform: none;
 }
 .page-wrapper .sidebar-wrapper[data-layout=stroke-svg] .stroke-icon {
   display: inline-block;
@@ -40698,7 +40700,7 @@ table.table-bordered thead tr th p {
 .page-wrapper .sidebar-main-title h6 {
   font-size: 14px;
   font-weight: 600;
-  color: #FFFFFF;
+  color: #F4D160;
   text-transform: uppercase;
   margin-bottom: 0;
   letter-spacing: 0.4px;
@@ -40932,8 +40934,10 @@ table.table-bordered thead tr th p {
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a span {
   letter-spacing: 0.7px;
-  text-transform: capitalize;
-  color: rgba(255, 255, 255, 0.8);
+  text-transform: none;
+  color: #FBEFB1;
+  /* color: rgba(244, 209, 96); */
+  /* color: rgba(255, 255, 255, 0.8); */
 }
 .page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a.link-nav .according-menu {
   display: none;
@@ -40953,7 +40957,7 @@ table.table-bordered thead tr th p {
   padding: 20px;
   color: #242934;
   font-weight: 700;
-  text-transform: uppercase;
+  text-transform: none;
   border-bottom: 1px solid #efefef;
   cursor: pointer;
   display: flex;
@@ -41224,7 +41228,7 @@ table.table-bordered thead tr th p {
 }
 .page-wrapper.compact-wrapper .page-body-wrapper .according-menu {
   position: absolute;
-  right: 20px;
+  right: 0px;
   top: 11px;
   display: block;
 }
@@ -41245,7 +41249,7 @@ table.table-bordered thead tr th p {
 .page-wrapper.compact-wrapper .page-body-wrapper .main-menu .menu-left .main-menu-right .toggle-nav .sidebar-name {
   font-size: 18px;
   padding-left: 5px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 .page-wrapper.compact-wrapper .page-body-wrapper .page-body {
   min-height: calc(100vh - 80px);
@@ -41460,7 +41464,7 @@ table.table-bordered thead tr th p {
   color: #2c323f;
 }
 .page-wrapper.compact-sidebar .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links li a span {
-  text-transform: capitalize;
+  text-transform: none;
   color: #2c323f;
   font-weight: 500;
   letter-spacing: 1px;
@@ -42052,7 +42056,7 @@ table.table-bordered thead tr th p {
 .md-sidebar .md-sidebar-toggle {
   display: none;
   width: fit-content;
-  text-transform: capitalize;
+  text-transform: none;
   margin-bottom: 20px;
 }
 

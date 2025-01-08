@@ -20,7 +20,7 @@
     );
     $(".sidebar-title").click(function () {
       $(".sidebar-title")
-        .removeClass("active")
+        // .removeClass("active")
         .find("div")
         .replaceWith(
           '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
@@ -28,7 +28,7 @@
       $(".sidebar-submenu, .menu-content").slideUp("normal");
       $(".menu-content").slideUp("normal");
       if ($(this).next().is(":hidden") == true) {
-        $(this).addClass("active");
+        // $(this).addClass("active");
         $(this)
           .find("div")
           .replaceWith(
@@ -49,14 +49,14 @@
     );
     $(".submenu-title").click(function () {
       $(".submenu-title")
-        .removeClass("active")
+        // .removeClass("active")
         .find("div")
         .replaceWith(
           '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
         );
       $(".submenu-content").slideUp("normal");
       if ($(this).next().is(":hidden") == true) {
-        $(this).addClass("active");
+        // $(this).addClass("active");
         $(this)
           .find("div")
           .replaceWith(
@@ -89,7 +89,7 @@
           '<div class="according-menu"><i class="fa fa-angle-right"></i></div>'
         );
         $(".submenu-title").click(function () {
-          $(".submenu-title").removeClass("active");
+          // $(".submenu-title").removeClass("active");
           $(".submenu-title")
             .find("div")
             .replaceWith(
@@ -97,7 +97,7 @@
             );
           $(".submenu-content").slideUp("normal");
           if ($(this).next().is(":hidden") == true) {
-            $(this).addClass("active");
+            // $(this).addClass("active");
             $(this)
               .find("div")
               .replaceWith(
@@ -289,9 +289,9 @@
   var menuWrapperSize = getMenuWrapperSize();
 
   if (menuWrapperSize >= "1660") {
-    var sliderLimit = -3500; 
+    var sliderLimit = -3500;
   } else if (menuWrapperSize >= "1440") {
-    var sliderLimit = -3600; 
+    var sliderLimit = -3600;
   } else {
     var sliderLimit = -4200;
   }
@@ -336,43 +336,43 @@
   });
 
   // page active
-  if ($("#pageWrapper").hasClass("compact-wrapper")) {
-    $(".sidebar-wrapper nav").find("a").removeClass("active");
-    $(".sidebar-wrapper nav").find("li").removeClass("active");
+  // if ($("#pageWrapper").hasClass("compact-wrapper")) {
+  //   $(".sidebar-wrapper nav").find("a").removeClass("active");
+  //   $(".sidebar-wrapper nav").find("li").removeClass("active");
 
-    var current = window.location.pathname;
-    $(".sidebar-wrapper nav ul li a").filter(function () {
-      var link = $(this).attr("href");
-      if (link) {
-        if (current.indexOf(link) != -1) {
-          $(this).parents().children("a").addClass("active");
-          $(this).parents().parents().children("ul").css("display", "block");
-          $(this).addClass("active");
-          $(this)
-            .parent()
-            .parent()
-            .parent()
-            .children("a")
-            .find("div")
-            .replaceWith(
-              '<div class="according-menu"><i class="fa fa-angle-down"></i></div>'
-            );
-          $(this)
-            .parent()
-            .parent()
-            .parent()
-            .parent()
-            .parent()
-            .children("a")
-            .find("div")
-            .replaceWith(
-              '<div class="according-menu"><i class="fa fa-angle-down"></i></div>'
-            );
-          return false;
-        }
-      }
-    });
-  }
+  //   var current = window.location.pathname;
+  //   $(".sidebar-wrapper nav ul li a").filter(function () {
+  //     var link = $(this).attr("href");
+  //     if (link) {
+  //       if (current.indexOf(link) != -1) {
+  //         $(this).parents().children("a").addClass("active");
+  //         $(this).parents().parents().children("ul").css("display", "block");
+  //         $(this).addClass("active");
+  //         $(this)
+  //           .parent()
+  //           .parent()
+  //           .parent()
+  //           .children("a")
+  //           .find("div")
+  //           .replaceWith(
+  //             '<div class="according-menu"><i class="fa fa-angle-down"></i></div>'
+  //           );
+  //         $(this)
+  //           .parent()
+  //           .parent()
+  //           .parent()
+  //           .parent()
+  //           .parent()
+  //           .children("a")
+  //           .find("div")
+  //           .replaceWith(
+  //             '<div class="according-menu"><i class="fa fa-angle-down"></i></div>'
+  //           );
+  //         return false;
+  //       }
+  //     }
+  //   });
+  // }
 
   $(".left-header .mega-menu .nav-link").on("click", function (event) {
     event.stopPropagation();
