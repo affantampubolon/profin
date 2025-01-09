@@ -6,36 +6,39 @@ use CodeIgniter\Model;
 
 class PipelineModel extends Model
 {
-    protected $table      = 'trn_pipeline';
-    protected $allowedFields = ['nik', 'group_id', 'subgroup_id', 'class_id', 'month', 'year'];    
-
-    // ... (method-method lainnya jika diperlukan)
+    protected $table = 'trn_pipeline';
+    protected $allowedFields = ['nik', 'group_id', 'subgroup_id', 'class_id', 'month', 'year'];
 
     public function insertBatchReturning(array $dataBatch)
     {
         $builder = $this->db->table($this->table);
 
-        // Gunakan INSERT ... RETURNING untuk mendapatkan ID dan data yang disisipkan
-        $builder->insertBatch($dataBatch);
+        $ids = [];
+        foreach ($dataBatch as $data) {
+            $builder->insert($data);
+            $ids[] = $this->db->insertID(); // Ambil ID terakhir setelah setiap insert
+        }
 
-        $query = $this->db->query('SELECT id, nik, group_id, subgroup_id, class_id, month, year FROM ' . $this->table . ' WHERE id >= LASTVAL()');
-        return $query->getResultArray(); // Mengembalikan ID yang disisipkan bersama data
+        $query = $this->db->table($this->table)
+            ->whereIn('id', $ids)
+            ->get();
+
+        return $query->getResultArray(); // Mengembalikan data yang baru disisipkan
     }
 
     public function getExistingPipelines(array $pipelineData)
     {
         $builder = $this->db->table($this->table);
 
-        // Bangun query untuk mencocokkan semua kombinasi unik
         foreach ($pipelineData as $data) {
             $builder->orGroupStart()
-                    ->where('nik', $data['nik'])
-                    ->where('group_id', $data['group_id'])
-                    ->where('subgroup_id', $data['subgroup_id'])
-                    ->where('class_id', $data['class_id'])
-                    ->where('month', $data['month'])
-                    ->where('year', $data['year'])
-                    ->groupEnd();
+                ->where('nik', $data['nik'])
+                ->where('group_id', $data['group_id'])
+                ->where('subgroup_id', $data['subgroup_id'])
+                ->where('class_id', $data['class_id'])
+                ->where('month', $data['month'])
+                ->where('year', $data['year'])
+                ->groupEnd();
         }
 
         return $builder->get()->getResultArray();

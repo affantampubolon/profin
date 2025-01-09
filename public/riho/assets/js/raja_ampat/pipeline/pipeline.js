@@ -76,16 +76,46 @@ $(document).ready(function () {
 
     // Form Upload
     const uploadForm = document.getElementById("uploadForm");
-    const statusDiv = document.getElementById("uploadStatus");
+    const fileInput = document.getElementById("fileInput");
+    const progressBarModal = document.getElementById("progressBarModal");
+    const uploadStatusModal = document.getElementById("uploadStatusModal");
+    const finishButtonModal = document.getElementById("finishButtonModal");
+    const uploadModal = new bootstrap.Modal(
+      document.getElementById("uploadModal")
+    );
 
-    if (uploadForm && statusDiv) {
+    if (
+      uploadForm &&
+      fileInput &&
+      progressBarModal &&
+      uploadStatusModal &&
+      finishButtonModal
+    ) {
       uploadForm.addEventListener("submit", async function (e) {
-        e.preventDefault(); // Mencegah reload halaman
-        const formData = new FormData(this); // Ambil data form
+        e.preventDefault(); // Prevent page reload
+        const formData = new FormData(this); // Gather form data
 
         try {
-          // Tampilkan status awal
-          statusDiv.innerText = "Uploading...";
+          // Reset modal content
+          uploadStatusModal.innerHTML = "<span>Memulai proses unggah...</span>";
+          progressBarModal.style.width = "0%";
+          progressBarModal.setAttribute("aria-valuenow", 0);
+          finishButtonModal.style.display = "none";
+
+          // Show modal
+          uploadModal.show();
+
+          // Simulate progress bar (for demo purposes)
+          let progress = 0;
+          const progressInterval = setInterval(() => {
+            progress += 10;
+            if (progress <= 90) {
+              progressBarModal.style.width = `${progress}%`;
+              progressBarModal.setAttribute("aria-valuenow", progress);
+            }
+          }, 300);
+
+          // Send file with Fetch API
           const response = await fetch("/pipeline/upload", {
             method: "POST",
             body: formData,
@@ -94,16 +124,36 @@ $(document).ready(function () {
           // Parse response JSON
           const result = await response.json();
 
-          // Update status berdasarkan hasil upload
+          // Stop progress bar simulation
+          clearInterval(progressInterval);
+          progressBarModal.style.width = "100%";
+          progressBarModal.setAttribute("aria-valuenow", 100);
+
+          // Display result
           if (result.status === "success") {
-            statusDiv.innerText = `Success: ${result.message}`;
+            uploadStatusModal.innerHTML = `<span class="text-success">${result.message}</span>`;
+            finishButtonModal.style.display = "block";
           } else {
-            statusDiv.innerText = `Error: ${result.message}`;
+            uploadStatusModal.innerHTML = `<span class="text-danger">${result.message}</span>`;
           }
         } catch (error) {
-          statusDiv.innerText = "Error: Failed to upload file.";
+          // Handle errors
+          uploadStatusModal.innerHTML = `<span class="text-danger">Terjadi kesalahan saat unggah.</span>`;
         }
+
+        // Add event listener to "Selesai" button
+        finishButtonModal.addEventListener("click", () => {
+          uploadModal.hide(); // Hide modal
+          fileInput.value = ""; // Clear input file
+        });
       });
+
+      // Reset input file when modal is closed
+      document
+        .getElementById("uploadModal")
+        .addEventListener("hidden.bs.modal", () => {
+          fileInput.value = ""; // Clear input file
+        });
     }
   }
 });

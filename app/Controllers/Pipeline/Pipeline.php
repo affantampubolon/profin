@@ -19,10 +19,9 @@ class Pipeline extends BaseController
         return view('pipeline/pembuatan', $data);
     }
 
-   public function uploadpipeline()
+   public function uploadPipeline()
 {
     try {
-        // Ambil data dari session
         $username = $this->session->get('username');
         if (!$username) {
             return $this->response->setJSON([
@@ -31,54 +30,41 @@ class Pipeline extends BaseController
             ]);
         }
 
-        // Validasi file yang diunggah
         if (!$this->validate([
             'file' => 'uploaded[file]|mime_in[file,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel]|max_size[file,1024]'
         ])) {
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'File tidak valid. Pastikan format dan ukuran sesuai.',
+                'message' => 'File tidak valid.',
                 'errors' => $this->validator->getErrors(),
             ]);
         }
 
+        // Proses unggahan file
         $file = $this->request->getFile('file');
         $newName = $file->getRandomName();
         $file->move('uploads', $newName);
 
-        // Baca file Excel
+        // Parsing data file menggunakan PhpSpreadsheet
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
         $spreadsheet = $reader->load('uploads/' . $newName);
         $worksheet = $spreadsheet->getActiveSheet();
 
-        // Inisialisasi array untuk menyimpan data
+        $rows = $worksheet->toArray(null, true, true, true);
+        array_shift($rows);
+
         $uniquePipeline = [];
         $dataTabelPipelineDet = [];
 
-        // Ambil semua data dari worksheet dan abaikan header
-        $rows = $worksheet->toArray(null, true, true, true); // Tetap baca nilai kosong
-        array_shift($rows); // Hapus baris pertama (header)
-
-        foreach ($rows as $rowIndex => $rowArray) {
-            // Validasi jumlah kolom
-            if (count($rowArray) < 10) {
+        foreach ($rows as $rowArray) {
+            if (empty($rowArray['A']) || empty($rowArray['B']) || empty($rowArray['C']) || empty($rowArray['D']) || empty($rowArray['E'])) {
                 return $this->response->setJSON([
                     'status' => 'error',
-                    'message' => "Baris ke-" . ($rowIndex + 2) . " tidak memiliki jumlah kolom yang cukup. Pastikan file Excel sesuai format.",
+                    'message' => 'Data tidak lengkap. Pastikan semua kolom terisi.',
                 ]);
             }
 
-            // Validasi kolom wajib
-            if (empty($rowArray['A']) || empty($rowArray['B']) || empty($rowArray['C']) || empty($rowArray['D']) || empty($rowArray['E']) || empty($rowArray['F'])) {
-                return $this->response->setJSON([
-                    'status' => 'error',
-                    'message' => "Baris ke-" . ($rowIndex + 2) . " memiliki data yang tidak lengkap. Pastikan semua kolom wajib terisi.",
-                ]);
-            }
-
-            // Buat key unik untuk data pipeline
             $key = $username . '|' . $rowArray['A'] . '|' . $rowArray['B'] . '|' . $rowArray['C'] . '|' . $rowArray['D'] . '|' . $rowArray['E'];
-
             if (!isset($uniquePipeline[$key])) {
                 $uniquePipeline[$key] = [
                     'nik' => $username,
@@ -91,7 +77,6 @@ class Pipeline extends BaseController
                 ];
             }
 
-            // Data detail untuk setiap baris
             $dataTabelPipelineDet[] = [
                 'cust_id' => $rowArray['F'],
                 'target_call' => $rowArray['G'] ?? 0,
@@ -103,16 +88,13 @@ class Pipeline extends BaseController
             ];
         }
 
-        // Cek data pipeline yang sudah ada di database
         $existingPipelines = $this->pipelineModel->getExistingPipelines(array_values($uniquePipeline));
-
         $idMapping = [];
         foreach ($existingPipelines as $pipeline) {
             $key = $pipeline['nik'] . '|' . $pipeline['group_id'] . '|' . $pipeline['subgroup_id'] . '|' . $pipeline['class_id'] . '|' . $pipeline['month'] . '|' . $pipeline['year'];
             $idMapping[$key] = $pipeline['id'];
         }
 
-        // Sisipkan data pipeline baru
         $newPipelines = array_filter($uniquePipeline, function ($key) use ($idMapping) {
             return !isset($idMapping[$key]);
         }, ARRAY_FILTER_USE_KEY);
@@ -125,7 +107,6 @@ class Pipeline extends BaseController
             }
         }
 
-        // Mapping id_ref untuk data detail
         foreach ($dataTabelPipelineDet as &$row) {
             if (!isset($idMapping[$row['pipeline_key']])) {
                 return $this->response->setJSON([
@@ -137,11 +118,10 @@ class Pipeline extends BaseController
             unset($row['pipeline_key']);
         }
 
-        // Sisipkan data detail
         $this->pipelineDetModel->insertBatch($dataTabelPipelineDet);
 
+         // Jika berhasil
         unlink('uploads/' . $newName);
-
         return $this->response->setJSON([
             'status' => 'success',
             'message' => 'Data berhasil diunggah dan diproses.',
@@ -159,7 +139,5 @@ class Pipeline extends BaseController
         ]);
     }
 }
-
-
 
 }

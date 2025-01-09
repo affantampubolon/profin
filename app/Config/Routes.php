@@ -32,3 +32,4 @@ $routes->get('/', 'Auth\Auth::index');
 $routes->post('/login', 'Auth\Auth::login');
 $routes->get('/beranda', 'Auth\Auth::beranda');
 $routes->get('/pipeline/pembuatan', 'Pipeline\Pipeline::index');
+$routes->post('/pipeline/upload', 'Pipeline\Pipeline::uploadpipeline');
