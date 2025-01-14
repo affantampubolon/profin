@@ -11,10 +11,15 @@
 <!-- close div -->
 </div>
 </div>
+<script type="text/javascript">
+  var url = "<?= site_url(); ?>";
+</script>
 <!-- Tabulator table -->
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 <!-- latest jquery-->
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>
+<!-- select2 -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <!-- Bootstrap js-->
 <script src="<?= base_url(''); ?>riho/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
 <!-- feather icon js-->
@@ -59,5 +64,10 @@
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
-<!-- End Footer -->
 <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $(".select2").select2();
+  });
+</script>
+<!-- End Footer -->
