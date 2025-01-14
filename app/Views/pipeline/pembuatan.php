@@ -54,25 +54,30 @@
                                         </div>
                                     </div>
                                     <div class="growth-details">
-                                        <span class="f-12 f-w-500 text-uppercase"
-                                        >Unggah Dokumen:
-                                        </span>
-                                        <div class="input-group mb-2">
+                                        <span class="f-12 f-w-500 text-uppercase">Unggah Dokumen:</span>
+                                        <form id="uploadForm" enctype="multipart/form-data">
+                                            <div class="input-group mb-2">
                                             <input
+                                                id="fileInput"
                                                 class="form-control"
-                                                id="inputGroupFile04"
+                                                name="file"
                                                 type="file"
                                                 aria-describedby="inputGroupFileAddon04"
                                                 aria-label="Upload"
+                                                required
                                             />
                                             <button
                                                 class="btn btn-outline-success"
                                                 id="inputGroupFileAddon04"
-                                                type="button"
+                                                type="submit"
                                             >
                                                 Unggah
                                             </button>
-                                        </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="growth-details">
+                                        <a href="product.html"><i class="fa fa-plus-square-o"></i> <b>Tambah data Pipeline</b></a>
                                     </div>
                                 </div>
                             </div>
@@ -133,5 +138,51 @@
         </div>
     </div>
     <!-- Container-fluid Ends-->
+
+<!-- Modal Progress Upload -->
+<div
+  class="modal fade"
+  id="uploadModal"
+  tabindex="-1"
+  aria-labelledby="uploadModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadModalLabel">Proses Unggah</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div id="uploadStatusModal" class="text-center mb-3"></div>
+        <!-- Progress Bar -->
+        <div class="progress mb-3">
+          <div
+            class="progress-bar progress-bar-animated progress-bar-striped bg-success"
+            role="progressbar"
+            style="width: 0%;"
+            aria-valuenow="0"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            id="progressBarModal"
+          ></div>
+        </div>
+        <!-- Button Selesai -->
+        <button
+          class="btn btn-success w-100"
+          id="finishButtonModal"
+          style="display: none;"
+        >
+          Selesai
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->
