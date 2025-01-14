@@ -72,7 +72,7 @@ abstract class BaseController extends Controller
     protected $pipelineModel;
     protected $pipelineDetModel;
 
-
+    protected $breadcrumb;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
@@ -101,6 +101,9 @@ abstract class BaseController extends Controller
         $this->pipelineDetModel = new PipelineDetModel();
         // Ambil dan buat tree menu di BaseController
         $this->loadMenu();
+
+        // Fungsi Lain - lain
+        $this->breadcrumb = $this->getBreadcrumb();
     }
 
     private function loadMenu()
@@ -115,5 +118,13 @@ abstract class BaseController extends Controller
         } else {
             $this->view->setVar('menuTree', []);
         }
+    }
+
+    private function getBreadcrumb()
+    {
+        $username = $this->session->get('username');
+        $link_menu = uri_string();
+
+        return $this->menuModel->getBreadcrumb($username, $link_menu);
     }
 }

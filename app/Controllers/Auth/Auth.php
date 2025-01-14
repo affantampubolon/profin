@@ -33,6 +33,7 @@ class Auth extends BaseController
         $data = [
             'title' => "Beranda",
             'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb
         ];
         return view('auth/dashboard', $data);
     }
@@ -106,7 +107,8 @@ class Auth extends BaseController
     public function logout()
     {
         $this->session->destroy();
-        return redirect()->to('/')->withInput()->with('msg', 'Anda Berhasil Keluar!');
+        $this->session->setFlashdata('logout', 'Pengguna atau kata sandi salah!');
+        return redirect()->to('/');
     }
     // public function login()
     // {

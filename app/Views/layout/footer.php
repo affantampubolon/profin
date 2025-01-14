@@ -32,11 +32,11 @@
 <script src="<?= base_url(''); ?>riho/assets/js/config.js"></script>
 <!-- Plugins JS start-->
 <script src="<?= base_url(''); ?>riho/assets/js/sidebar-menu.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/4.3.0/apexcharts.min.js" integrity="sha512-QgLS4OmTNBq9TujITTSh0jrZxZ55CFjs4wjK8NXsBoZb04UYl8wWQJNaS8jRiLq6/c60bEfOj3cPsxadHICNfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/sidebar-pin.js"></script> -->
 <script src="<?= base_url(''); ?>riho/assets/js/slick/slick.min.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/slick/slick.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/header-slick.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/chart/apex-chart/apex-chart.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/chart/apex-chart/stock-prices.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/chart/apex-chart/moment.min.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/chart/echart/esl.js"></script>
@@ -53,10 +53,10 @@
 <!-- select2 js-->
 <script src="<?= base_url(''); ?>riho/assets/js/select2/tagify.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/select2/tagify.polyfills.min.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/select2/intltelinput.min.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/select2/telephone-input.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/select2/custom-inputsearch.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/select2/select3-custom.js"></script>
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/select2/intltelinput.min.js"></script> -->
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/select2/telephone-input.js"></script> -->
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/select2/custom-inputsearch.js"></script> -->
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/select2/select3-custom.js"></script> -->
 <script src="<?= base_url(''); ?>riho/assets/js/height-equal.js"></script>
 <!-- Plugins JS Ends-->
 <!-- Theme js-->

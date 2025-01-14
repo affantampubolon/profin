@@ -9,17 +9,17 @@ class Pipeline extends BaseController
 {
     // Parent Construct
     public function __construct() {}
-
     // Function Index -> halaman PIPELINE
     public function index()
     {
         $data = [
             'title' => "Pembuatan Pipeline",
+            'breadcrumb' => $this->breadcrumb
         ];
         return view('pipeline/pembuatan', $data);
     }
 
-   public function uploadPipeline()
+    public function uploadPipeline()
     {
         try {
             $username = $this->session->get('username');
@@ -157,7 +157,8 @@ class Pipeline extends BaseController
     {
         $data = [
             'title' => "Formulir Pipeline",
-            'group_barang' => $this->kelasProdModel->getGrupBarang()
+            'group_barang' => $this->kelasProdModel->getGrupBarang(),
+            'breadcrumb' => $this->breadcrumb
         ];
         return view('pipeline/form_input', $data);
     }
@@ -186,9 +187,9 @@ class Pipeline extends BaseController
         // Buat opsi untuk dropdown
         $options = '<option selected value="">Pilih Sub Grup Barang</option>';
         foreach ($data as $row) {
-            $options .= '<option value="' . $row['subgroup_id'] . '">' 
-                    . $row['subgroup_id'] . ' - ' . $row['subgroup_name'] 
-                    . '</option>';
+            $options .= '<option value="' . $row['subgroup_id'] . '">'
+                . $row['subgroup_id'] . ' - ' . $row['subgroup_name']
+                . '</option>';
         }
 
         return $this->response->setBody($options);
@@ -205,9 +206,9 @@ class Pipeline extends BaseController
         // Buat opsi untuk dropdown
         $options = '<option selected value="">Pilih Kelas Barang</option>';
         foreach ($data as $row) {
-            $options .= '<option value="' . $row['class_id'] . '">' 
-                    . $row['class_id'] . ' - ' . $row['class_name'] 
-                    . '</option>';
+            $options .= '<option value="' . $row['class_id'] . '">'
+                . $row['class_id'] . ' - ' . $row['class_name']
+                . '</option>';
         }
 
         return $this->response->setBody($options);
@@ -226,143 +227,140 @@ class Pipeline extends BaseController
         // Cek apakah ada data di session
         $session = \Config\Services::session();
 
-    // Ambil data temporary berdasarkan NIK
-    $nik = $this->request->getGet('nik') ?? 'default_nik'; // Ganti sesuai logika NIK
-    $temporaryData = $session->get('temporary_data') ?? [];
+        // Ambil data temporary berdasarkan NIK
+        $nik = $this->request->getGet('nik') ?? 'default_nik'; // Ganti sesuai logika NIK
+        $temporaryData = $session->get('temporary_data') ?? [];
 
-    if (isset($temporaryData[$nik])) {
+        if (isset($temporaryData[$nik])) {
+            return $this->response->setJSON([
+                'status' => 'success',
+                'data' => $temporaryData[$nik]
+            ]);
+        }
+
         return $this->response->setJSON([
-            'status' => 'success',
-            'data' => $temporaryData[$nik]
+            'status' => 'error',
+            'message' => 'Tidak ada data untuk NIK ini.'
         ]);
-    }
-
-    return $this->response->setJSON([
-        'status' => 'error',
-        'message' => 'Tidak ada data untuk NIK ini.'
-    ]);
     }
 
     public function saveTemporerDetailPipeline()
     {
         $session = \Config\Services::session();
 
-    // Ambil input dari request
-    $data = $this->request->getJSON(true);
+        // Ambil input dari request
+        $data = $this->request->getJSON(true);
 
-    // Validasi data input
-    if (empty($data['cust_id']) || empty($data['target_call']) || empty($data['target_ec']) || empty($data['target_value'])) {
-        return $this->response->setJSON([
-            'status' => 'error',
-            'message' => 'Semua field harus diisi.'
-        ]);
-    }
-
-    // Ambil data yang sudah ada di session
-    $temporaryData = $session->get('temporary_data') ?? [];
-
-    // Tambahkan data baru ke dalam session
-    $nik = $this->request->getPost('nik') ?? 'default_nik'; // Ganti sesuai logika nik
-    if (!isset($temporaryData[$nik])) {
-        $temporaryData[$nik] = [];
-    }
-
-    $temporaryData[$nik][] = $data;
-
-    // Simpan kembali ke session
-    $session->set('temporary_data', $temporaryData);
-
-    return $this->response->setJSON([
-        'status' => 'success',
-        'message' => 'Data berhasil disimpan ke sesi.',
-    ]);
-    }
-
-    public function insertFormPipeline()
-{
-    try {
-        $username = $this->session->get('username');
-        if (!$username) {
+        // Validasi data input
+        if (empty($data['cust_id']) || empty($data['target_call']) || empty($data['target_ec']) || empty($data['target_value'])) {
             return $this->response->setJSON([
                 'status' => 'error',
-                'message' => 'Session login tidak valid. Silakan login kembali.',
+                'message' => 'Semua field harus diisi.'
             ]);
         }
 
-        $nik = $username;
+        // Ambil data yang sudah ada di session
+        $temporaryData = $session->get('temporary_data') ?? [];
 
-        $detailData = $this->pipelineModel->getTemporaryData($nik);
-
-        log_message('debug', 'Data detail pipeline: ' . print_r($detailData, true));
-
-        if (empty($detailData) || !is_array($detailData)) {
-            log_message('error', 'Data detail pipeline kosong atau tidak valid: ' . print_r($detailData, true));
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Tidak ada data detail pipeline untuk disimpan.',
-            ]);
+        // Tambahkan data baru ke dalam session
+        $nik = $this->request->getPost('nik') ?? 'default_nik'; // Ganti sesuai logika nik
+        if (!isset($temporaryData[$nik])) {
+            $temporaryData[$nik] = [];
         }
 
-        $pipelineData = [
-            'year' => $this->request->getPost('tahun_pipeline'),
-            'month' => $this->request->getPost('bulan_pipeline'),
-            'group_id' => $this->request->getPost('grup_barang'),
-            'subgroup_id' => $this->request->getPost('subgrup_barang'),
-            'class_id' => $this->request->getPost('kelas_barang'),
-            'nik' => $nik,
-        ];
+        $temporaryData[$nik][] = $data;
 
-        $insertedPipelines = $this->pipelineModel->insertBatchReturning([$pipelineData]);
-
-        if (!$insertedPipelines) {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Gagal menyimpan data pipeline.',
-            ]);
-        }
-
-        $pipelineId = $insertedPipelines[0]['id'];
-
-        $detailPipeline = [];
-        foreach ($detailData as $detail) {
-            if (isset($detail['cust_id'], $detail['target_call'], $detail['target_ec'], $detail['target_value'], $detail['probability'])) {
-                $detailPipeline[] = [
-                    'id_ref' => $pipelineId,
-                    'cust_id' => $detail['cust_id'],
-                    'target_call' => $detail['target_call'],
-                    'target_ec' => $detail['target_ec'],
-                    'target_value' => $detail['target_value'],
-                    'probability' => $detail['probability'],
-                ];
-            }
-        }
-
-        log_message('debug', 'Detail pipeline yang akan disimpan: ' . print_r($detailPipeline, true));
-
-        if (!empty($detailPipeline)) {
-            $this->pipelineDetModel->insertBatch($detailPipeline);
-        } else {
-            return $this->response->setJSON([
-                'status' => 'error',
-                'message' => 'Data detail pipeline tidak valid.',
-            ]);
-        }
-
-        $this->pipelineModel->clearTemporaryData($nik);
-        log_message('debug', 'Data temporary untuk nik ' . $nik . ' telah dibersihkan.');
+        // Simpan kembali ke session
+        $session->set('temporary_data', $temporaryData);
 
         return $this->response->setJSON([
             'status' => 'success',
-            'message' => 'Data pipeline berhasil disimpan.',
-        ]);
-    } catch (\Exception $e) {
-        return $this->response->setJSON([
-            'status' => 'error',
-            'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            'message' => 'Data berhasil disimpan ke sesi.',
         ]);
     }
-}
 
+    public function insertFormPipeline()
+    {
+        try {
+            $username = $this->session->get('username');
+            if (!$username) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Session login tidak valid. Silakan login kembali.',
+                ]);
+            }
 
+            $nik = $username;
 
+            $detailData = $this->pipelineModel->getTemporaryData($nik);
+
+            log_message('debug', 'Data detail pipeline: ' . print_r($detailData, true));
+
+            if (empty($detailData) || !is_array($detailData)) {
+                log_message('error', 'Data detail pipeline kosong atau tidak valid: ' . print_r($detailData, true));
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Tidak ada data detail pipeline untuk disimpan.',
+                ]);
+            }
+
+            $pipelineData = [
+                'year' => $this->request->getPost('tahun_pipeline'),
+                'month' => $this->request->getPost('bulan_pipeline'),
+                'group_id' => $this->request->getPost('grup_barang'),
+                'subgroup_id' => $this->request->getPost('subgrup_barang'),
+                'class_id' => $this->request->getPost('kelas_barang'),
+                'nik' => $nik,
+            ];
+
+            $insertedPipelines = $this->pipelineModel->insertBatchReturning([$pipelineData]);
+
+            if (!$insertedPipelines) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Gagal menyimpan data pipeline.',
+                ]);
+            }
+
+            $pipelineId = $insertedPipelines[0]['id'];
+
+            $detailPipeline = [];
+            foreach ($detailData as $detail) {
+                if (isset($detail['cust_id'], $detail['target_call'], $detail['target_ec'], $detail['target_value'], $detail['probability'])) {
+                    $detailPipeline[] = [
+                        'id_ref' => $pipelineId,
+                        'cust_id' => $detail['cust_id'],
+                        'target_call' => $detail['target_call'],
+                        'target_ec' => $detail['target_ec'],
+                        'target_value' => $detail['target_value'],
+                        'probability' => $detail['probability'],
+                    ];
+                }
+            }
+
+            log_message('debug', 'Detail pipeline yang akan disimpan: ' . print_r($detailPipeline, true));
+
+            if (!empty($detailPipeline)) {
+                $this->pipelineDetModel->insertBatch($detailPipeline);
+            } else {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'Data detail pipeline tidak valid.',
+                ]);
+            }
+
+            $this->pipelineModel->clearTemporaryData($nik);
+            log_message('debug', 'Data temporary untuk nik ' . $nik . ' telah dibersihkan.');
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data pipeline berhasil disimpan.',
+            ]);
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ]);
+        }
+    }
 }
