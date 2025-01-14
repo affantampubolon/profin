@@ -7,19 +7,22 @@
   <div class="page-title">
     <div class="row">
       <div class="col-6">
-        <h4>Default</h4>
+        <h4>Beranda</h4>
       </div>
       <div class="col-6">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item">
-            <a href="index.html">
-              <svg class="stroke-icon">
-                <use
-                  href="<?= base_url(''); ?>riho/assets/svg/icon-sprite.svg#stroke-home"></use>
-              </svg></a>
-          </li>
-          <li class="breadcrumb-item">Dashboard</li>
-          <li class="breadcrumb-item active">Default</li>
+          <?php
+          $path_parts = explode(">", $breadcrumb['path_name']);
+          $current_path = '';
+          foreach ($path_parts as $part):
+            $current_path .= $part . '>';
+            if ($part != end($path_parts)): ?>
+              <li class="breadcrumb-item"><?= $part ?></li>
+            <?php else: ?>
+              <li class="breadcrumb-item active" aria-current="page">/ <?= $part ?></li>
+          <?php endif;
+          endforeach;
+          ?>
         </ol>
       </div>
     </div>

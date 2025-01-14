@@ -7,23 +7,15 @@ use App\Models\PipelineModel\PipelineModel;
 
 class Pipeline extends BaseController
 {
-    protected $pipelineModel;
     // Parent Construct
-    public function __construct()
-    {
-        $this->pipelineModel = new PipelineModel();
-        $this->Session = \Config\Services::session();
-    }
+    public function __construct() {}
 
-    // Function Index -> halaman LOGIN
     public function index()
     {
-       
         $data = [
             'title' => "Pembuatan Pipeline",
+            'breadcrumb' => $this->breadcrumb
         ];
         return view('pipeline/pembuatan', $data);
     }
-
-    
 }

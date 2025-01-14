@@ -89,9 +89,11 @@ class Filters extends BaseFilters
             // 'secureheaders',
             'filteradmin'   => [
                 'except' => [
+                    'logout',
                     'admin',
                     'beranda',
-                    'pipeline/*'
+                    'pipeline/*',
+                    'izin/*'
                 ],
             ],
         ],

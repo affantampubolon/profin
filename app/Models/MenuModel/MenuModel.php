@@ -29,6 +29,12 @@ class MenuModel extends Model
     return $query->getResultArray();
   }
 
+  public function getBreadcrumb($username, $link_menu)
+  {
+    $query = $this->db->query("SELECT fUll_path AS path_name FROM f_tv_getmenuuser_data(?) WHERE link = ?", [$username, $link_menu]);
+    return $query->getRowArray();
+  }
+
   public function buildMenuTree(array $elements, $parentId = null)
   {
     $branch = array();

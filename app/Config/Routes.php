@@ -30,5 +30,8 @@ $routes->setAutoRoute(true);
 // Auth
 $routes->get('/', 'Auth\Auth::index');
 $routes->post('/login', 'Auth\Auth::login');
+$routes->get('/logout', 'Auth\Auth::logout');
 $routes->get('/beranda', 'Auth\Auth::beranda');
 $routes->get('/pipeline/pembuatan', 'Pipeline\Pipeline::index');
+$routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
+$routes->get('/izin/monitoring', 'Izin\Izin::monitoring');

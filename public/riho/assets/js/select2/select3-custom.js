@@ -7,7 +7,7 @@
   var input = document.querySelector("input[name=basic]");
 
   // initialize Tagify on the above input node reference
-  new Tagify(input);
+  // new Tagify(input);
 
   // 2. Random suggestions
 
