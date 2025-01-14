@@ -89,6 +89,8 @@
   <link rel="stylesheet" type="text/css" href="<?= base_url(''); ?>riho/assets/css/responsive.css" />
   <!-- Tabulator table -->
   <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet">
+  <!-- select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 </head>
 
 <!-- End Head -->

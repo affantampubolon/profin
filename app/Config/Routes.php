@@ -33,3 +33,12 @@ $routes->post('/login', 'Auth\Auth::login');
 $routes->get('/beranda', 'Auth\Auth::beranda');
 $routes->get('/pipeline/pembuatan', 'Pipeline\Pipeline::index');
 $routes->post('/pipeline/upload', 'Pipeline\Pipeline::uploadpipeline');
+$routes->get('/pipeline/formulir', 'Pipeline\Pipeline::indexform');
+$routes->post('/pipeline/getSubGrupBarang', 'Pipeline\Pipeline::getSubGrupBarang');
+$routes->post('/pipeline/getKelasBarang', 'Pipeline\Pipeline::getKelasBarang');
+$routes->get('/pipeline/getMstPelanggan', 'Pipeline\Pipeline::getMstPelanggan');
+$routes->post('/pipeline/saveTemp', 'Pipeline\Pipeline::saveTemporerDetailPipeline');
+$routes->get('/pipeline/getTemp', 'Pipeline\Pipeline::getTemporerDetailPipeline');
+$routes->post('/pipeline/insertForm', 'Pipeline\Pipeline::insertFormPipeline');
+
+

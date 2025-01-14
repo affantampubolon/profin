@@ -14,6 +14,8 @@ use App\Models\UserModel\ParamEmpModel;
 use App\Models\MenuModel\MenuModel;
 use App\Models\PipelineModel\PipelineModel;
 use App\Models\PipelineModel\PipelineDetModel;
+use App\Models\MasterModel\KelasProdModel;
+use App\Models\MasterModel\PelangganModel;
 
 /**
  * Class BaseController
@@ -58,13 +60,17 @@ abstract class BaseController extends Controller
     protected $menuTree;
 
     // Deklarasi model di BaseController
+    //master
+    protected $kelasProdModel;
+    protected $pelangganModel;
+    //auth
     protected $userModel;
     protected $empModel;
     protected $paramEmpModel;
+    protected $menuModel;
     //Models Pipeline
     protected $pipelineModel;
     protected $pipelineDetModel;
-    protected $menuModel;
 
 
 
@@ -83,6 +89,10 @@ abstract class BaseController extends Controller
         // Inisialisasi $this->view
         $this->view = \Config\Services::renderer();
         // Deklarasi models
+        //Master Models
+        $this->kelasProdModel   = new KelasProdModel();
+        $this->pelangganModel   = new PelangganModel();
+        //General Models
         $this->userModel        = new UserModel();
         $this->empModel         = new EmpModel();
         $this->paramEmpModel    = new ParamEmpModel();
