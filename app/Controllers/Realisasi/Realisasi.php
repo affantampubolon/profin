@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Controllers\Izin;
+namespace App\Controllers\Realisasi;
 
 use App\Controllers\BaseController;
 
-class Izin extends BaseController
+class Realisasi extends BaseController
 {
   // Parent Construct
   public function __construct() {}
@@ -12,18 +12,18 @@ class Izin extends BaseController
   public function verifikasi()
   {
     $data = [
-      'title' => "Verifikasi Izin",
+      'title' => "Verifikasi Realisasi Kunjungan",
       'breadcrumb' => $this->breadcrumb
     ];
-    return view('izin/verifikasi', $data);
+    return view('realisasi/verifikasi', $data);
   }
 
   public function monitoring()
   {
     $data = [
-      'title' => "Monitoring Izin Kehadiran",
+      'title' => "Monitoring Realisasi Kunjungan",
       'breadcrumb' => $this->breadcrumb
     ];
-    return view('izin/monitoring', $data);
+    return view('realisasi/monitoring', $data);
   }
 }

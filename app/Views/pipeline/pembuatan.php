@@ -134,53 +134,50 @@
             </div>
         </div>
     </div>
-    <<<<<<< HEAD
-        </div>
-        <!-- Container-fluid Ends-->
-        =======
-        <!-- Container-fluid Ends-->
+</div>
+<!-- Container-fluid Ends-->
+<!-- Container-fluid Ends-->
 
-        <!-- Modal Progress Upload -->
-        <div
-            class="modal fade"
-            id="uploadModal"
-            tabindex="-1"
-            aria-labelledby="uploadModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadModalLabel">Proses Unggah</h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="uploadStatusModal" class="text-center mb-3"></div>
-                        <!-- Progress Bar -->
-                        <div class="progress mb-3">
-                            <div
-                                class="progress-bar progress-bar-animated progress-bar-striped bg-success"
-                                role="progressbar"
-                                style="width: 0%;"
-                                aria-valuenow="0"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                id="progressBarModal"></div>
-                        </div>
-                        <!-- Button Selesai -->
-                        <button
-                            class="btn btn-success w-100"
-                            id="finishButtonModal"
-                            style="display: none;">
-                            Selesai
-                        </button>
-                    </div>
+<!-- Modal Progress Upload -->
+<div
+    class="modal fade"
+    id="uploadModal"
+    tabindex="-1"
+    aria-labelledby="uploadModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Proses Unggah</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="uploadStatusModal" class="text-center mb-3"></div>
+                <!-- Progress Bar -->
+                <div class="progress mb-3">
+                    <div
+                        class="progress-bar progress-bar-animated progress-bar-striped bg-success"
+                        role="progressbar"
+                        style="width: 0%;"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        id="progressBarModal"></div>
                 </div>
+                <!-- Button Selesai -->
+                <button
+                    class="btn btn-success w-100"
+                    id="finishButtonModal"
+                    style="display: none;">
+                    Selesai
+                </button>
             </div>
         </div>
-        >>>>>>> 178e4a4aa58d977f142badd37398bfc256c27487
-        <?= $this->endSection(); ?>
-        <!-- END : End Main Content-->
+    </div>
+</div>
+<?= $this->endSection(); ?>
+<!-- END : End Main Content-->

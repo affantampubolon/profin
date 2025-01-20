@@ -35,7 +35,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header pb-0 card-no-border">
-          <h4>Verifikasi Izin Kehadiran</h4>
+          <h4>Verifikasi Realisasi Kunjungan</h4>
         </div>
         <div class="card-body">
           <div class="table-responsive custom-scrollbar">

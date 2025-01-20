@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12 footer-copyright text-center">
-        <p class="mb-0">Copyright 2024 © Riho theme by pixelstrap</p>
+        <p class="mb-0">Copyright 2024 © Raja Ampat by Nusindo</p>
       </div>
     </div>
   </div>
@@ -14,10 +14,12 @@
 <script type="text/javascript">
   var url = "<?= site_url(); ?>";
 </script>
-<!-- Tabulator table -->
-<script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 <!-- latest jquery-->
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>
+<!-- Tabulator table -->
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<!-- datatables -->
+<script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 <!-- select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <!-- Bootstrap js-->
@@ -66,8 +68,14 @@
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
 <script>
-  $(document).ready(function () {
+  $(document).ready(function() {
     $(".select2").select2();
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('#tabel-izin').DataTable();
   });
 </script>
 <!-- End Footer -->

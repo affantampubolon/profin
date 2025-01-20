@@ -43,3 +43,5 @@ $routes->get('/pipeline/getTemp', 'Pipeline\Pipeline::getTemporerDetailPipeline'
 $routes->post('/pipeline/insertForm', 'Pipeline\Pipeline::insertFormPipeline');
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
 $routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
+$routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');
+$routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');

@@ -93,7 +93,8 @@ class Filters extends BaseFilters
                     'admin',
                     'beranda',
                     'pipeline/*',
-                    'izin/*'
+                    'izin/*',
+                    'realisasi/*',
                 ],
             ],
         ],
