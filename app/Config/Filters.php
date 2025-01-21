@@ -93,6 +93,7 @@ class Filters extends BaseFilters
                     'admin',
                     'beranda',
                     'pipeline/*',
+                    'master/*',
                     'izin/*'
                 ],
             ],
