@@ -50,13 +50,13 @@
                                 <div class="growth-details">
                                     <span class="f-12 f-w-500 text-uppercase">Unduh Format Dokumen:</span>
                                     <div class="input-group mb-2">
-                                        <button
+                                        <a
                                             class="btn btn-info mb-2"
-                                            type="button"
-                                            data-bs-toggle="tooltip"
-                                            title="btn btn-info">
+                                            href="<?= base_url('riho/assets/template-file/template_master_pipeline.xlsx'); ?>"
+                                            download="template_master_pipeline.xlsx"
+                                            title="Unduh template Excel">
                                             Unduh
-                                        </button>
+                                        </a>
                                     </div>
                                     <div class="growth-details">
                                         <span class="f-12 f-w-500 text-uppercase">Unggah Dokumen:</span>
@@ -79,14 +79,18 @@
                                             </div>
                                         </form>
                                     </div>
-                                    <div class="growth-details">
-                                        <a href="product.html"><i class="fa fa-plus-square-o"></i> <b>Tambah data Pipeline</b></a>
+                                    <div class="col-xl-12 col-md-12 box-col-12">
+                                        <div class="row">
+                                            <div class="p-4">
+                                                <a href="/pipeline/formulir"><i class="fa fa-plus-circle"></i> <b>Tambah data Pipeline</b></a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-xl-4 col-md-4 box-col-12">
                             <div class="select-box">
                                 <div class="options-container">
@@ -113,7 +117,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -122,7 +126,53 @@
         <div class="col-xl-12 col-md-12 box-col-12">
             <div class="card">
                 <div class="card-header card-no-border">
-                    <!-- <h4>Pembuatan Pipeline</h4> -->
+                    <h4>Data Pipeline</h4>
+                    <div class="row g-3">
+                        <div class="col-xl-6 col-md-6 box-col-6">
+                            <label class="form-label" for=""
+                                >Tahun</label
+                            >
+                            <select id="tahunPipelineDet" class="select2 form-control" name="tahun_pipeline_det">
+                                <option value="<?= date('Y'); ?>"><?= date('Y'); ?></option>
+                                <option value="<?= date('Y')+ 1; ?>"><?= date('Y')+ 1; ?></option>
+                            </select>
+                        </div>
+                        <div class="col-xl-6 col-md-6 box-col-6">
+                            <label class="form-label" for=""
+                                >Bulan</label
+                            >
+                            <select id="bulanPipelineDet" class="select2 form-control" name="bulan_pipeline_det"></select>
+                        </div>
+                        <div class="col-xl-4 col-md-4">
+                            <label class="form-label" for=""
+                                >Grup Barang</label
+                            >
+                            <select id="grupBarang" class="select2 form-control" name="grup_barang">
+                                <option value="">Pilih Grup</option>
+                                <?php foreach ($group_barang as $group): ?>
+                                    <option value="<?= htmlspecialchars($group['group_id'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars($group['group_id'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($group['group_name'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-xl-4 col-md-4">
+                            <label class="form-label" for=""
+                                >Subgrup Barang</label
+                            >
+                            <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
+                                <option value="">Pilih Subgrup</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-4 col-md-4">
+                            <label class="form-label" for=""
+                                >Kelas Barang</label
+                            >
+                            <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
+                                <option value="">Pilih Kelas</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body pt-0">
                     <div class="row">
@@ -134,10 +184,7 @@
             </div>
         </div>
     </div>
-    <<<<<<< HEAD
         </div>
-        <!-- Container-fluid Ends-->
-        =======
         <!-- Container-fluid Ends-->
 
         <!-- Modal Progress Upload -->
@@ -181,6 +228,5 @@
                 </div>
             </div>
         </div>
-        >>>>>>> 178e4a4aa58d977f142badd37398bfc256c27487
         <?= $this->endSection(); ?>
         <!-- END : End Main Content-->

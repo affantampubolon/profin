@@ -6,23 +6,23 @@
     <div class="container-fluid">
         <div class="page-title">
             <div class="row">
-            <div class="col-6">
-                <h4>Pipeline</h4>
-            </div>
-            <div class="col-6">
-                <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    <a href="index.html">
-                    <svg class="stroke-icon">
-                        <use
-                        href="assets/svg/icon-sprite.svg#stroke-home"
-                        ></use></svg
-                    ></a>
-                </li>
-                <li class="breadcrumb-item">Dashboard</li>
-                <li class="breadcrumb-item active">Default</li>
-                </ol>
-            </div>
+                <div class="col-6">
+                    <h4>Pipeline</h4>
+                </div>
+                <div class="col-6">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="index.html">
+                        <svg class="stroke-icon">
+                            <use
+                            href="assets/svg/icon-sprite.svg#stroke-home"
+                            ></use></svg
+                        ></a>
+                    </li>
+                    <!--  -->
+                    </ol>
+                </div>
+                <!-- <div id="toast-container" class="toast-top-right"></div> -->
             </div>
         </div>
     </div>
@@ -32,6 +32,13 @@
             <div class="col-xl-12 col-md-12 box-col-12">
                 <div class="card">
                     <div class="card-header card-no-border">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                            <div class="row">
+                                <div class="p-2">
+                                    <a href="/pipeline/pembuatan"><i class="fa fa-arrow-circle-o-left"></i> <b>Kembali</b></a>
+                                </div>
+                            </div>
+                        </div>
                         <h4>Formulir Pembuatan Pipeline</h4>
                     </div>
                     <div class="card-body pt-0">
@@ -136,37 +143,40 @@
                         <form class="row g-3">
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
-                                    >Pelanggan</label
+                                    >Pelanggan <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <select id="masterpelanggan" class="select2 form-control" name="master_pelanggan"></select>
                             </div>
-                            <div class="col-xl-6 col-md-6 box-col-6">
+                            <div class="col-xl-4 col-md-4 box-col-4">
                                 <label class="form-label" for=""
-                                    >Target Call</label
+                                    >Target Call <span class="txt-danger f-w-600">*</span></label
                                 >
-                                <input class="form-control" id="targetCall" type="text" placeholder="0" >
+                                <input class="form-control" id="targetCall" type="text" placeholder="0">
                             </div>
-                            <div class="col-xl-6 col-md-6 box-col-6">
+                            <div class="col-xl-4 col-md-4 box-col-4">
                                 <label class="form-label" for=""
-                                    >Target Efective Call</label
+                                    >Target Efective Call <span class="txt-danger f-w-600">*</span></label
                                 >
-                                <input class="form-control" id="targetEfCall" type="text" placeholder="0" >
+                                <input class="form-control" id="targetEfCall" type="text" placeholder="0">
                             </div>
-                            <div class="col-xl-6 col-md-6 box-col-6">
+                            <div class="col-xl-4 col-md-4 box-col-4">
                                 <label class="form-label" for=""
-                                    >Target Nilai</label
+                                    >Target Nilai <span class="txt-danger f-w-600">*</span></label
                                 >
-                                <input class="form-control" id="targetNilai" type="text" placeholder="0" >
+                                <input class="form-control" id="targetNilai" type="text" placeholder="0">
                             </div>
-                            <div class="col-xl-6 col-md-6 box-col-6">
+                            <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
-                                    >Target Probabilitas</label
+                                    >Target Probabilitas <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <select id="targetProbabilitas" class="select2 form-control" name="tahun_pipeline">
                                     <option value="0">0 %</option>
                                     <option value="10">10 %</option>
                                     <option value="20">20 %</option>
                                 </select>
+                            </div>
+                            <div class="col-xl-12 col-md-12 box-col-12">
+                                <p class="f-w-600"><span class="txt-danger">*</span>) Wajib Diisi</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
