@@ -66,6 +66,7 @@
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/master/master.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
 <script>
   $(document).ready(function () {

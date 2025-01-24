@@ -16,6 +16,7 @@ use App\Models\PipelineModel\PipelineModel;
 use App\Models\PipelineModel\PipelineDetModel;
 use App\Models\MasterModel\KelasProdModel;
 use App\Models\MasterModel\PelangganModel;
+use App\Models\MasterModel\WilayahDetModel;
 
 /**
  * Class BaseController
@@ -63,6 +64,7 @@ abstract class BaseController extends Controller
     //master
     protected $kelasProdModel;
     protected $pelangganModel;
+    protected $wilayahModel;
     //auth
     protected $userModel;
     protected $empModel;
@@ -92,6 +94,7 @@ abstract class BaseController extends Controller
         //Master Models
         $this->kelasProdModel   = new KelasProdModel();
         $this->pelangganModel   = new PelangganModel();
+        $this->wilayahModel     = new WilayahDetModel();
         //General Models
         $this->userModel        = new UserModel();
         $this->empModel         = new EmpModel();
