@@ -94,6 +94,7 @@ class Filters extends BaseFilters
                     'beranda',
                     'pipeline/*',
                     'master/*',
+                    'master/pelanggan/*',
                     'izin/*'
                 ],
             ],

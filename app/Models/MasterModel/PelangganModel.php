@@ -23,4 +23,15 @@ class PelangganModel extends Model
             ->orderBy('cust_id')
             ->findAll();
     }
+
+    // Kategori Pelanggan
+    public function getMstKategoriPelanggan()
+    {
+        return $this->db->table('mst_category_cust')
+            ->select('id, category_id, category_name, flg_pharmacist')
+            ->where('flg_used', 't')
+            ->orderBy('category_id')
+            ->get()
+            ->getResultArray();
+    }
 }

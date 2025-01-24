@@ -33,6 +33,14 @@ $routes->get('/', 'Auth\Auth::index');
 $routes->post('/master/getSubGrupBarang', 'Master\Master::getSubGrupBarang');
 $routes->post('/master/getKelasBarang', 'Master\Master::getKelasBarang');
 $routes->get('/master/getMstPelanggan', 'Master\Master::getMstPelanggan');
+$routes->get('/master/getMstKategoriPelanggan', 'Master\Master::getMstKategoriPelanggan');
+$routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
+// Master Wilayah
+$routes->get('/master/getAreaProvinsi', 'Master\Master::getMstAreaProvinsi');
+$routes->post('/master/getAreaKotaKab', 'Master\Master::getMstAreaKotaKab');
+$routes->post('/master/getAreaKecamatan', 'Master\Master::getMstAreaKecamatan');
+$routes->post('/master/getAreaKelurahan', 'Master\Master::getMstAreaKelurahan');
+$routes->post('/master/getAreaKodePos', 'Master\Master::getMstAreaKodePos');
 // General
 $routes->post('/login', 'Auth\Auth::login');
 $routes->get('/logout', 'Auth\Auth::logout');
