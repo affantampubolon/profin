@@ -221,7 +221,3 @@
     </div>
     <?= $this->endSection(); ?>
     <!-- END : End Main Content-->
-    =======
-    <?= $this->endSection(); ?>
-    <!-- END : End Main Content-->
-    >>>>>>> 811dc2814bb24a2ce9894caeac90758468b4d91b
