@@ -216,8 +216,7 @@
                 </button>
             </div>
         </div>
-        <<<<<<< HEAD
-            </div>
     </div>
-    <?= $this->endSection(); ?>
-    <!-- END : End Main Content-->
+</div>
+<?= $this->endSection(); ?>
+<!-- END : End Main Content-->
