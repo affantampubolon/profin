@@ -7,7 +7,7 @@
   <div class="page-title">
     <div class="row">
       <div class="col-6">
-        <h4>Monitoring</h4>
+        <h4>Verifikasi</h4>
       </div>
       <div class="col-6">
         <ol class="breadcrumb">
@@ -35,7 +35,7 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header pb-0 card-no-border">
-          <h4>Monitoring Izin Kehadiran</h4>
+          <h4>Verifikasi Realisasi Kunjungan</h4>
         </div>
         <div class="card-body">
           <div class="table-responsive custom-scrollbar">
@@ -48,6 +48,7 @@
                   <th>Age</th>
                   <th>Start date</th>
                   <th>Salary</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -58,6 +59,9 @@
                   <td>61</td>
                   <td>2011/04/25</td>
                   <td>$320,800</td>
+                  <td>
+                    <button class="btn btn-1-ra btn-lg"> <a href="#"><i class="icon-pencil-alt"></i></a></button>
+                  </td>
                 </tr>
                 <tr>
                   <td>Garrett Winters</td>
@@ -66,6 +70,9 @@
                   <td>63</td>
                   <td>2011/07/25</td>
                   <td>$170,750</td>
+                  <td>
+                    <button class="btn btn-1-ra btn-lg"> <a href="#"><i class="icon-pencil-alt"></i></a></button>
+                  </td>
                 </tr>
                 <tr>
                   <td>Ashton Cox</td>
@@ -74,6 +81,9 @@
                   <td>66</td>
                   <td>2009/01/12</td>
                   <td>$86,000</td>
+                  <td>
+                    <button class="btn btn-1-ra btn-lg"> <a href="#"><i class="icon-pencil-alt"></i></a></button>
+                  </td>
                 </tr>
                 <tr>
                   <td>Cedric Kelly</td>
@@ -82,6 +92,9 @@
                   <td>22</td>
                   <td>2012/03/29</td>
                   <td>$433,060</td>
+                  <td>
+                    <button class="btn btn-1-ra btn-lg"> <a href="#"><i class="icon-pencil-alt"></i></a></button>
+                  </td>
                 </tr>
               </tbody>
             </table>

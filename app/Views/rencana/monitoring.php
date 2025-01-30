@@ -7,7 +7,7 @@
   <div class="page-title">
     <div class="row">
       <div class="col-6">
-        <h4>Verifikasi</h4>
+        <h4>Monitoring</h4>
       </div>
       <div class="col-6">
         <ol class="breadcrumb">
@@ -35,33 +35,53 @@
     <div class="col-sm-12">
       <div class="card">
         <div class="card-header pb-0 card-no-border">
-          <h4>Verifikasi Izin Kehadiran</h4>
+          <h4>Monitoring Rencana Kehadiran</h4>
         </div>
         <div class="card-body">
-          <div class="table-responsive">
-            <table id="tabel-izin">
+          <div class="table-responsive custom-scrollbar">
+            <table class="display" id="tabel-izin">
               <thead>
                 <tr>
-                  <th>Nama</th>
-                  <th>Tanggal Mulai</th>
-                  <th>Tanggal Selesai</th>
-                  <th>Absen</th>
-                  <th>Keterangan</th>
-                  <th>Aksi</th>
+                  <th>Name</th>
+                  <th>Position</th>
+                  <th>Office</th>
+                  <th>Age</th>
+                  <th>Start date</th>
+                  <th>Salary</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td>Tiger Nixon</td>
+                  <td>System Architect</td>
+                  <td>Edinburgh</td>
+                  <td>61</td>
                   <td>2011/04/25</td>
-                  <td>2011/04/25</td>
-                  <td>Sakit</td>
-                  <td>Sakit perut</td>
-                  <td>
-                    <button class="btn-3-ra"><i class="fa fa-check"></i></button>
-                    <button class="btn-2-ra"><i class="fa fa-times"></i></button>
-                    <!-- <button class="btn btn-1-ra"> <a href="#"><i class="icon-pencil-alt"></i></a></button> -->
-                  </td>
+                  <td>$320,800</td>
+                </tr>
+                <tr>
+                  <td>Garrett Winters</td>
+                  <td>Accountant</td>
+                  <td>Tokyo</td>
+                  <td>63</td>
+                  <td>2011/07/25</td>
+                  <td>$170,750</td>
+                </tr>
+                <tr>
+                  <td>Ashton Cox</td>
+                  <td>Junior Technical Author</td>
+                  <td>San Francisco</td>
+                  <td>66</td>
+                  <td>2009/01/12</td>
+                  <td>$86,000</td>
+                </tr>
+                <tr>
+                  <td>Cedric Kelly</td>
+                  <td>Senior Javascript Developer</td>
+                  <td>Edinburgh</td>
+                  <td>22</td>
+                  <td>2012/03/29</td>
+                  <td>$433,060</td>
                 </tr>
               </tbody>
             </table>

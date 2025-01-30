@@ -93,9 +93,11 @@ class Filters extends BaseFilters
                     'admin',
                     'beranda',
                     'pipeline/*',
+                    'izin/*',
+                    'realisasi/*',
+                    'rencana/*',
                     'master/*',
-                    'master/pelanggan/*',
-                    'izin/*'
+                    'izin/*',
                 ],
             ],
         ],

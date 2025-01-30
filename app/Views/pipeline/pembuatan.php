@@ -129,24 +129,18 @@
                     <h4>Data Pipeline</h4>
                     <div class="row g-3">
                         <div class="col-xl-6 col-md-6 box-col-6">
-                            <label class="form-label" for=""
-                                >Tahun</label
-                            >
+                            <label class="form-label" for="">Tahun</label>
                             <select id="tahunPipelineDet" class="select2 form-control" name="tahun_pipeline_det">
                                 <option value="<?= date('Y'); ?>"><?= date('Y'); ?></option>
-                                <option value="<?= date('Y')+ 1; ?>"><?= date('Y')+ 1; ?></option>
+                                <option value="<?= date('Y') + 1; ?>"><?= date('Y') + 1; ?></option>
                             </select>
                         </div>
                         <div class="col-xl-6 col-md-6 box-col-6">
-                            <label class="form-label" for=""
-                                >Bulan</label
-                            >
+                            <label class="form-label" for="">Bulan</label>
                             <select id="bulanPipelineDet" class="select2 form-control" name="bulan_pipeline_det"></select>
                         </div>
                         <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Grup Barang</label
-                            >
+                            <label class="form-label" for="">Grup Barang</label>
                             <select id="grupBarang" class="select2 form-control" name="grup_barang">
                                 <option value="">Pilih Grup</option>
                                 <?php foreach ($group_barang as $group): ?>
@@ -157,17 +151,13 @@
                             </select>
                         </div>
                         <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Subgrup Barang</label
-                            >
+                            <label class="form-label" for="">Subgrup Barang</label>
                             <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
                                 <option value="">Pilih Subgrup</option>
                             </select>
                         </div>
                         <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Kelas Barang</label
-                            >
+                            <label class="form-label" for="">Kelas Barang</label>
                             <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
                                 <option value="">Pilih Kelas</option>
                             </select>
@@ -184,49 +174,54 @@
             </div>
         </div>
     </div>
-        </div>
-        <!-- Container-fluid Ends-->
+</div>
+<!-- Container-fluid Ends-->
 
-        <!-- Modal Progress Upload -->
-        <div
-            class="modal fade"
-            id="uploadModal"
-            tabindex="-1"
-            aria-labelledby="uploadModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="uploadModalLabel">Proses Unggah</h5>
-                        <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="uploadStatusModal" class="text-center mb-3"></div>
-                        <!-- Progress Bar -->
-                        <div class="progress mb-3">
-                            <div
-                                class="progress-bar progress-bar-animated progress-bar-striped bg-success"
-                                role="progressbar"
-                                style="width: 0%;"
-                                aria-valuenow="0"
-                                aria-valuemin="0"
-                                aria-valuemax="100"
-                                id="progressBarModal"></div>
-                        </div>
-                        <!-- Button Selesai -->
-                        <button
-                            class="btn btn-success w-100"
-                            id="finishButtonModal"
-                            style="display: none;">
-                            Selesai
-                        </button>
-                    </div>
+<!-- Modal Progress Upload -->
+<div
+    class="modal fade"
+    id="uploadModal"
+    tabindex="-1"
+    aria-labelledby="uploadModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadModalLabel">Proses Unggah</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="uploadStatusModal" class="text-center mb-3"></div>
+                <!-- Progress Bar -->
+                <div class="progress mb-3">
+                    <div
+                        class="progress-bar progress-bar-animated progress-bar-striped bg-success"
+                        role="progressbar"
+                        style="width: 0%;"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        id="progressBarModal"></div>
                 </div>
+                <!-- Button Selesai -->
+                <button
+                    class="btn btn-success w-100"
+                    id="finishButtonModal"
+                    style="display: none;">
+                    Selesai
+                </button>
             </div>
         </div>
-        <?= $this->endSection(); ?>
-        <!-- END : End Main Content-->
+        <<<<<<< HEAD
+            </div>
+    </div>
+    <?= $this->endSection(); ?>
+    <!-- END : End Main Content-->
+    =======
+    <?= $this->endSection(); ?>
+    <!-- END : End Main Content-->
+    >>>>>>> 811dc2814bb24a2ce9894caeac90758468b4d91b

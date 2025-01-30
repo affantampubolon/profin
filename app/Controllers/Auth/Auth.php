@@ -84,7 +84,7 @@ class Auth extends BaseController
                                 return redirect()->to('/dashboard');
                             }
                         } else {
-                            $this->session->setFlashdata('msg', 'Hubungi Administrator Untuk Melengkapi Data!');
+                            $this->session->setFlashdata('msg', 'Hubungi it untuk melengkapi data!');
                             return redirect()->to('/');
                         }
                     } else {
@@ -92,7 +92,7 @@ class Auth extends BaseController
                         return redirect()->to('/');
                     }
                 } else {
-                    $this->session->setFlashdata('msg', 'Pengguna tidak Aktif Hubungi Administrator!');
+                    $this->session->setFlashdata('msg', 'Pengguna tidak aktif hubungi it!');
                     return redirect()->to('/');
                 }
             } else {
@@ -106,8 +106,9 @@ class Auth extends BaseController
 
     public function logout()
     {
-        $this->session->destroy();
-        $this->session->setFlashdata('logout', 'Pengguna atau kata sandi salah!');
+        $session_data = ['username', 'role_id', 'logged_in'];
+        $this->session->remove($session_data);
+        $this->session->setFlashdata('logout', 'Anda berhasil keluar!');
         return redirect()->to('/');
     }
     // public function login()
