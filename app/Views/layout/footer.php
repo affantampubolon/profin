@@ -16,10 +16,15 @@
 </script>
 <!-- latest jquery-->
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>
+<<<<<<< HEAD
 <!-- Tabulator table -->
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
 <!-- datatables -->
 <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
+=======
+<!-- Toast Notifications -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+>>>>>>> 811dc2814bb24a2ce9894caeac90758468b4d91b
 <!-- select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <!-- Bootstrap js-->
@@ -66,7 +71,12 @@
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
+<<<<<<< HEAD
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script> -->
+=======
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/master/master.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
+>>>>>>> 811dc2814bb24a2ce9894caeac90758468b4d91b
 <script>
   $(document).ready(function() {
     $(".select2").select2();

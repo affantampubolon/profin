@@ -96,6 +96,8 @@ class Filters extends BaseFilters
                     'izin/*',
                     'realisasi/*',
                     'rencana/*',
+                    'master/*',
+                    'izin/*',
                 ],
             ],
         ],

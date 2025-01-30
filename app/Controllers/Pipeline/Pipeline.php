@@ -14,6 +14,7 @@ class Pipeline extends BaseController
     {
         $data = [
             'title' => "Pembuatan Pipeline",
+            'group_barang' => $this->kelasProdModel->getGrupBarang(),
             'breadcrumb' => $this->breadcrumb
         ];
         return view('pipeline/pembuatan', $data);
@@ -163,64 +164,6 @@ class Pipeline extends BaseController
         return view('pipeline/form_input', $data);
     }
 
-    // Function untuk mendapatkan Subgrup Barang berdasarkan Grup Barang
-    public function getSubGrupBarang()
-    {
-        $grp_prod = $this->request->getPost('grp_prod');
-
-        // Validasi input
-        if (empty($grp_prod)) {
-            return $this->response
-                ->setStatusCode(400)
-                ->setJSON(['message' => 'Group Product tidak boleh kosong']);
-        }
-
-        // Ambil data dari model
-        $data = $this->kelasProdModel->getSubGrupBarang($grp_prod);
-
-        if (empty($data)) {
-            return $this->response
-                ->setStatusCode(404)
-                ->setJSON(['message' => 'Sub Grup Barang tidak ditemukan']);
-        }
-
-        // Buat opsi untuk dropdown
-        $options = '<option selected value="">Pilih Sub Grup Barang</option>';
-        foreach ($data as $row) {
-            $options .= '<option value="' . $row['subgroup_id'] . '">'
-                . $row['subgroup_id'] . ' - ' . $row['subgroup_name']
-                . '</option>';
-        }
-
-        return $this->response->setBody($options);
-    }
-
-    // Function untuk mendapatkan Kelas Barang berdasarkan Grup dan Subgrup Barang
-    public function getKelasBarang()
-    {
-        $grp_prod = $this->request->getPost('grp_prod');
-        $subgrp_prod = $this->request->getPost('subgrp_prod');
-
-        // 
-        $data = $this->kelasProdModel->getKelasBarang($grp_prod, $subgrp_prod);
-        // Buat opsi untuk dropdown
-        $options = '<option selected value="">Pilih Kelas Barang</option>';
-        foreach ($data as $row) {
-            $options .= '<option value="' . $row['class_id'] . '">'
-                . $row['class_id'] . ' - ' . $row['class_name']
-                . '</option>';
-        }
-
-        return $this->response->setBody($options);
-    }
-
-    // Function untuk mendapatkan Pelanggan
-    public function getMstPelanggan()
-    {
-        $data = $this->pelangganModel->getMstPelanggan();
-        echo json_encode($data);
-    }
-
     // PENYIMPANAN SEMENTARA DETAIL PIPELINE
     public function getTemporerDetailPipeline()
     {
@@ -268,6 +211,16 @@ class Pipeline extends BaseController
             $temporaryData[$nik] = [];
         }
 
+        // Validasi duplikasi
+        foreach ($temporaryData[$nik] as $existingData) {
+            if ($existingData['cust_id'] === $data['cust_id']) {
+                return $this->response->setJSON([
+                    'status' => 'error',
+                    'message' => 'ID pelanggan tidak boleh sama.'
+                ]);
+            }
+        }
+
         $temporaryData[$nik][] = $data;
 
         // Simpan kembali ke session
@@ -276,6 +229,31 @@ class Pipeline extends BaseController
         return $this->response->setJSON([
             'status' => 'success',
             'message' => 'Data berhasil disimpan ke sesi.',
+        ]);
+    }
+
+    public function deleteTemporerDetailPipeline()
+    {
+        $session = \Config\Services::session();
+        $cust_id = $this->request->getJSON(true)['cust_id'] ?? null;
+        $nik = $this->request->getPost('nik') ?? 'default_nik';
+        $temporaryData = $session->get('temporary_data') ?? [];
+
+        if (isset($temporaryData[$nik])) {
+            $temporaryData[$nik] = array_filter($temporaryData[$nik], function ($data) use ($cust_id) {
+                return $data['cust_id'] !== $cust_id;
+            });
+            $session->set('temporary_data', $temporaryData);
+
+            return $this->response->setJSON([
+                'status' => 'success',
+                'message' => 'Data berhasil dihapus.'
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Data tidak ditemukan.'
         ]);
     }
 
@@ -291,7 +269,6 @@ class Pipeline extends BaseController
             }
 
             $nik = $username;
-
             $detailData = $this->pipelineModel->getTemporaryData($nik);
 
             log_message('debug', 'Data detail pipeline: ' . print_r($detailData, true));
@@ -304,6 +281,7 @@ class Pipeline extends BaseController
                 ]);
             }
 
+            // Menyimpan data pipeline
             $pipelineData = [
                 'year' => $this->request->getPost('tahun_pipeline'),
                 'month' => $this->request->getPost('bulan_pipeline'),
@@ -311,6 +289,7 @@ class Pipeline extends BaseController
                 'subgroup_id' => $this->request->getPost('subgrup_barang'),
                 'class_id' => $this->request->getPost('kelas_barang'),
                 'nik' => $nik,
+                'user_create' => $nik,
             ];
 
             $insertedPipelines = $this->pipelineModel->insertBatchReturning([$pipelineData]);
@@ -324,6 +303,7 @@ class Pipeline extends BaseController
 
             $pipelineId = $insertedPipelines[0]['id'];
 
+            // Menyimpan detail pipeline
             $detailPipeline = [];
             foreach ($detailData as $detail) {
                 if (isset($detail['cust_id'], $detail['target_call'], $detail['target_ec'], $detail['target_value'], $detail['probability'])) {
@@ -334,6 +314,7 @@ class Pipeline extends BaseController
                         'target_ec' => $detail['target_ec'],
                         'target_value' => $detail['target_value'],
                         'probability' => $detail['probability'],
+                        'user_create' => $nik,
                     ];
                 }
             }
@@ -349,9 +330,11 @@ class Pipeline extends BaseController
                 ]);
             }
 
+            // Menghapus data temporary setelah berhasil disimpan
             $this->pipelineModel->clearTemporaryData($nik);
             log_message('debug', 'Data temporary untuk nik ' . $nik . ' telah dibersihkan.');
 
+            // Mengirimkan response sukses
             return $this->response->setJSON([
                 'status' => 'success',
                 'message' => 'Data pipeline berhasil disimpan.',
@@ -363,4 +346,16 @@ class Pipeline extends BaseController
             ]);
         }
     }
+
+    // Function Index -> halaman Persetujuan Pipeline
+    public function indexPersetujuan()
+    {
+        $data = [
+            'title' => "Persetujuan Pipeline",
+            'group_barang' => $this->kelasProdModel->getGrupBarang(),
+            'breadcrumb' => $this->breadcrumb
+        ];
+        return view('pipeline/persetujuan', $data);
+    }
+
 }
