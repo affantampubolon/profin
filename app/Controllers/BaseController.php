@@ -16,6 +16,7 @@ use App\Models\PipelineModel\PipelineModel;
 use App\Models\PipelineModel\PipelineDetModel;
 use App\Models\MasterModel\KelasProdModel;
 use App\Models\MasterModel\PelangganModel;
+use App\Models\IzinModel\IzinModel;
 
 /**
  * Class BaseController
@@ -60,17 +61,19 @@ abstract class BaseController extends Controller
     protected $menuTree;
 
     // Deklarasi model di BaseController
-    //master
+    // kelas
     protected $kelasProdModel;
     protected $pelangganModel;
-    //auth
+    // auth 
     protected $userModel;
     protected $empModel;
     protected $paramEmpModel;
     protected $menuModel;
-    //Models Pipeline
+    // pipeline 
     protected $pipelineModel;
     protected $pipelineDetModel;
+    // izin 
+    protected $izinModel;
 
     protected $breadcrumb;
 
@@ -99,6 +102,7 @@ abstract class BaseController extends Controller
         $this->menuModel        = new MenuModel();
         $this->pipelineModel    = new PipelineModel();
         $this->pipelineDetModel = new PipelineDetModel();
+        $this->izinModel        = new IzinModel();
         // Ambil dan buat tree menu di BaseController
         $this->loadMenu();
 

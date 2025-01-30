@@ -18,6 +18,46 @@
   cursor: pointer; /* Mengubah kursor menjadi pointer */
 }
 
+.btn-2-ra{
+  background: #EF3B3B;
+  border-radius: 50px;
+  font-family: 'Open Sans';
+  line-height: 15px;
+  /* identical to box height */
+  align-items: center;
+  border: none;
+  padding: 10px 20px;
+  color: #ffffff; /* Contoh warna teks agar kontras dengan background */
+  display: inline-flex; /* Agar align-items berfungsi */
+  justify-content: center; /* Agar teks berada di tengah horizontal */
+  transition: all 0.3s ease; /* Transisi halus untuk efek hover */
+}
+
+.btn-2-ra:hover {
+  filter: brightness(0.9); /* Menggelapkan 10% */
+  cursor: pointer; /* Mengubah kursor menjadi pointer */
+}
+
+.btn-3-ra{
+  background: #19AC6D;
+  border-radius: 50px;
+  font-family: 'Open Sans';
+  line-height: 15px;
+  /* identical to box height */
+  align-items: center;
+  border: none;
+  padding: 10px 20px;
+  color: #ffffff; /* Contoh warna teks agar kontras dengan background */
+  display: inline-flex; /* Agar align-items berfungsi */
+  justify-content: center; /* Agar teks berada di tengah horizontal */
+  transition: all 0.3s ease; /* Transisi halus untuk efek hover */
+}
+
+.btn-3-ra:hover {
+  filter: brightness(0.9); /* Menggelapkan 10% */
+  cursor: pointer; /* Mengubah kursor menjadi pointer */
+}
+
 
 .btn-primary-ra {
   background-color: #75C2F6 !important;

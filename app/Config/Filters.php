@@ -95,6 +95,7 @@ class Filters extends BaseFilters
                     'pipeline/*',
                     'izin/*',
                     'realisasi/*',
+                    'rencana/*',
                 ],
             ],
         ],

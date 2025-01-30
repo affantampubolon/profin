@@ -45,3 +45,5 @@ $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
 $routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
 $routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');
 $routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
+$routes->get('/rencana/verifikasi', 'Rencana\Rencana::verifikasi');
+$routes->get('/rencana/monitoring', 'Rencana\Rencana::monitoring');
