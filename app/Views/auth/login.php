@@ -11,10 +11,11 @@
           <div>
             <a class="logo" href="index.html"><img
                 class="img-fluid for-dark"
-                src="<?= base_url(''); ?>riho/assets/images/logo/logo.png"
+                src="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat_text.png"
                 alt="looginpage" /><img
                 class="img-fluid for-light"
-                src="<?= base_url(''); ?>riho/assets/images/logo/logo_dark.png"
+                src="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat_text.png"
+                style="width: 10%;"
                 alt="looginpage" /></a>
           </div>
           <div class="login-main">
@@ -22,7 +23,7 @@
             <center>
               <h3>SELAMAT DATANG</h3>
             </center>
-            <div class="form-group mt-3">
+            <div class="form-group">
               <label class="col-form-label">ID Pengguna</label>
               <input
                 class="form-control"
