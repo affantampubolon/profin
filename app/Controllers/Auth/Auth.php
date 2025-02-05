@@ -84,7 +84,7 @@ class Auth extends BaseController
                                 return redirect()->to('/dashboard');
                             }
                         } else {
-                            $this->session->setFlashdata('msg', 'Hubungi it untuk melengkapi data!');
+                            $this->session->setFlashdata('msg', 'Hubungi IT untuk melengkapi data!');
                             return redirect()->to('/');
                         }
                     } else {
