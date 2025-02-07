@@ -9,7 +9,7 @@
       <div class="login-card login-dark">
         <div>
           <div>
-            <a class="logo" href="index.html"><img
+            <a class="logo"><img
                 class="img-fluid for-dark"
                 src="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat_text.png"
                 alt="looginpage" /><img
