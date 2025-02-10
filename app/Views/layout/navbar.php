@@ -1,26 +1,6 @@
 <!-- Page Header Start-->
 <div class="page-header">
   <div class="header-wrapper row m-0">
-    <form class="form-inline search-full col" action="#" method="get">
-      <div class="form-group w-100">
-        <div class="Typeahead Typeahead--twitterUsers">
-          <div class="u-posRelative">
-            <input
-              class="demo-input Typeahead-input form-control-plaintext w-100"
-              type="text"
-              placeholder="Search Riho .."
-              name="q"
-              title=""
-              autofocus />
-            <div class="spinner-border Typeahead-spinner" role="status">
-              <span class="sr-only">Loading... </span>
-            </div>
-            <i class="close-search" data-feather="x"></i>
-          </div>
-          <div class="Typeahead-menu"></div>
-        </div>
-      </div>
-    </form>
     <div class="header-logo-wrapper col-auto p-0">
       <div class="logo-wrapper">
         <a href="index.html"><img
@@ -43,13 +23,9 @@
         <a class="toggle-sidebar" href="#">
           <i class="iconly-Category icli"> </i></a>
         <div class="d-flex align-items-center gap-2">
-          <h4 class="f-w-600">Welcome Alex</h4>
+          <h4 class="f-w-600">Selamat Datang <?= $session->get('name') ?>,</h4>
           <img class="mt-0" src="<?= base_url(''); ?>riho/assets/images/hand.gif" alt="hand-gif" />
         </div>
-      </div>
-      <div class="welcome-content d-xl-block d-none">
-        <span class="text-truncate col-12">Here’s what’s happening with your store today.
-        </span>
       </div>
     </div>
     <div
@@ -122,9 +98,9 @@
               alt="" />
             <div class="media-body d-xxl-block d-none box-col-none">
               <div class="d-flex align-items-center gap-2">
-                <span>Alex Mora </span><i class="middle fa fa-angle-down"> </i>
+                <span><?= $session->get('name') ?> </span><i class="middle fa fa-angle-down"> </i>
               </div>
-              <p class="mb-0 font-roboto">Admin</p>
+              <p class="mb-0 font-roboto"><?= $session->get('role_id') ?></p>
             </div>
           </div>
           <ul class="profile-dropdown onhover-show-div">
@@ -166,10 +142,6 @@
                 <div class="ProfileCard-realName">{{name}}</div>
               </div>
             </div>
-          </script>
-    <script class="empty-template" type="text/x-handlebars-template">
-      <div class="EmptyMessage">Your search turned up 0 results. This most
-              likely means the backend is down, yikes!</div>
           </script>
   </div>
 </div>

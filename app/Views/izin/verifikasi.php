@@ -58,8 +58,8 @@
                   <td>Sakit</td>
                   <td>Sakit perut</td>
                   <td>
-                    <button class="btn-3-ra"><i class="fa fa-check"></i></button>
-                    <button class="btn-2-ra"><i class="fa fa-times"></i></button>
+                    <a class="btn-3-ra"><i class="fa fa-check"></i></a>
+                    <a class="btn-2-ra"><i class="fa fa-times"></i></a>
                     <!-- <button class="btn btn-1-ra"> <a href="#"><i class="icon-pencil-alt"></i></a></button> -->
                   </td>
                 </tr>

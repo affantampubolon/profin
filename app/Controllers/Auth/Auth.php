@@ -33,7 +33,8 @@ class Auth extends BaseController
         $data = [
             'title' => "Beranda",
             'validation' => $this->validation,
-            'breadcrumb' => $this->breadcrumb
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('auth/dashboard', $data);
     }
@@ -75,6 +76,7 @@ class Auth extends BaseController
                                 // Data session login
                                 $ses_data = [
                                     'username'   => $data['username'],
+                                    'name'   => $empData['name'],
                                     'role_id'   => 1,
                                     'logged_in'  => TRUE
                                 ];
