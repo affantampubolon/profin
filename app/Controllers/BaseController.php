@@ -17,6 +17,7 @@ use App\Models\PipelineModel\PipelineDetModel;
 use App\Models\MasterModel\KelasProdModel;
 use App\Models\MasterModel\PelangganModel;
 use App\Models\IzinModel\IzinModel;
+use App\Models\MasterModel\DepartmentModel;
 use App\Models\MasterModel\WilayahDetModel;
 
 /**
@@ -76,6 +77,8 @@ abstract class BaseController extends Controller
     protected $pipelineDetModel;
     // izin 
     protected $izinModel;
+    // department
+    protected $DeptModel;
 
     protected $breadcrumb;
 
@@ -106,6 +109,7 @@ abstract class BaseController extends Controller
         $this->pipelineModel    = new PipelineModel();
         $this->pipelineDetModel = new PipelineDetModel();
         $this->izinModel        = new IzinModel();
+        $this->DeptModel        = new DepartmentModel();
         // Ambil dan buat tree menu di BaseController
         $this->loadMenu();
 

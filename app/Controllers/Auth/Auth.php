@@ -70,19 +70,20 @@ class Auth extends BaseController
                         // Jika paramEmp ada maka ambil datanya
                         if ($paramEmp) {
                             $empData = $this->empModel->getEmployeeByNik($paramEmp['nik']);
+                            $deptData = $this->DeptModel->getGroupByDeptID($paramEmp['department_id']);
                             // Set sessionnya berdasarkan role
                             if ($empData == TRUE) {
                                 // Jika Role id nya == 1 maka dia admin , maka -> Create session loginnya :
                                 // Data session login
                                 $ses_data = [
-                                    'username'   => $data['username'],
-                                    'name'   => $empData['name'],
-                                    'role_id'   => $paramEmp['role_id'],
-                                    'branch_id' => $paramEmp['branch_id'],
-                                    'position_id' => $paramEmp['position_id'],
+                                    'username'      => $data['username'],
+                                    'name'          => $empData['name'],
+                                    'role_id'       => $paramEmp['role_id'],
+                                    'branch_id'     => $paramEmp['branch_id'],
+                                    'position_id'   => $paramEmp['position_id'],
                                     'department_id' => $paramEmp['department_id'],
-                                    'group_id' => $paramEmp['group_id'],
-                                    'logged_in'  => TRUE,
+                                    'group_id'      => $deptData['group_id'],
+                                    'logged_in'     => TRUE,
                                 ];
                                 // Set session
                                 $this->session->set($ses_data);
