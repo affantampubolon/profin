@@ -77,8 +77,12 @@ class Auth extends BaseController
                                 $ses_data = [
                                     'username'   => $data['username'],
                                     'name'   => $empData['name'],
-                                    'role_id'   => 1,
-                                    'logged_in'  => TRUE
+                                    'role_id'   => $paramEmp['role_id'],
+                                    'branch_id' => $paramEmp['branch_id'],
+                                    'position_id' => $paramEmp['position_id'],
+                                    'department_id' => $paramEmp['department_id'],
+                                    'group_id' => $paramEmp['group_id'],
+                                    'logged_in'  => TRUE,
                                 ];
                                 // Set session
                                 $this->session->set($ses_data);
