@@ -11,6 +11,6 @@ class DepartmentModel extends Model
 
     public function getGroupByDeptID($dept_id)
     {
-        return $this->where('id', $id)->where('flg_used', TRUE)->first();
+        return $this->where('id', $dept_id)->where('flg_used', TRUE)->first();
     }
 }

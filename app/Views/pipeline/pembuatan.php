@@ -42,6 +42,9 @@
             <div class="card">
                 <div class="card-header card-no-border">
                     <h4>Pembuatan Pipeline</h4>
+                    <pre>
+                        <?= print_r(session()->get(), true); ?>
+                    </pre>
                 </div>
                 <div class="card-body pt-0">
                     <div class="row">
@@ -126,7 +129,7 @@
         <div class="col-xl-12 col-md-12 box-col-12">
             <div class="card">
                 <div class="card-header card-no-border">
-                    <h4>Data Pipeline</h4>
+                    <h4>Data Draft Pipeline</h4>
                     <div class="row g-3">
                         <div class="col-xl-6 col-md-6 box-col-6">
                             <label class="form-label" for="">Tahun</label>
@@ -144,9 +147,7 @@
                             <select id="grupBarang" class="select2 form-control" name="grup_barang">
                                 <option value="">Pilih Grup</option>
                                 <?php foreach ($group_barang as $group): ?>
-                                    <option value="<?= htmlspecialchars($group['group_id'], ENT_QUOTES, 'UTF-8') ?>">
-                                        <?= htmlspecialchars($group['group_id'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($group['group_name'], ENT_QUOTES, 'UTF-8') ?>
-                                    </option>
+                                        <option value="<?= $group->group_id; ?>"> <?= $group->group_id ?> - <?= $group->group_name; ?> </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -167,7 +168,7 @@
                 <div class="card-body pt-0">
                     <div class="row">
                         <div class="col-xl-12 col-md-12 box-col-12">
-                            <div id="tabel_pembuatan_pipeline"></div>
+                            <div id="tabel_draft_pipeline"></div>
                         </div>
                     </div>
                 </div>

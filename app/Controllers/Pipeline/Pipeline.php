@@ -12,10 +12,15 @@ class Pipeline extends BaseController
     // Function Index -> halaman PIPELINE
     public function index()
     {
+        // Ambil username dari session
+        $username = session()->get('username');
+
         $data = [
             'title' => "Pembuatan Pipeline",
-            'group_barang' => $this->kelasProdModel->getGrupBarang(),
-            'breadcrumb' => $this->breadcrumb
+            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('pipeline/pembuatan', $data);
     }
@@ -80,10 +85,9 @@ class Pipeline extends BaseController
 
                 $dataTabelPipelineDet[] = [
                     'cust_id' => $rowArray['F'],
-                    'target_call' => $rowArray['G'] ?? 0,
-                    'target_ec' => $rowArray['H'] ?? 0,
-                    'target_value' => $rowArray['I'] ?? 0,
-                    'probability' => $rowArray['J'] ?? 0,
+                    'freq_visit' => $rowArray['G'] ?? 0,
+                    'target_value' => $rowArray['H'] ?? 0,
+                    'probability' => $rowArray['I'] ?? 0,
                     'pipeline_key' => $key,
                     'user_create' => $username,
                 ];
@@ -156,10 +160,16 @@ class Pipeline extends BaseController
     // Function Index -> halaman Formulir Pipeline
     public function indexform()
     {
+        // Ambil username dari session
+        $username = session()->get('username');
+        
         $data = [
             'title' => "Formulir Pipeline",
-            'group_barang' => $this->kelasProdModel->getGrupBarang(),
-            'breadcrumb' => $this->breadcrumb
+            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'probabilitas' => $this->probabilitasModel->getSkalaProbabilitas($username),
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('pipeline/form_input', $data);
     }
@@ -195,7 +205,7 @@ class Pipeline extends BaseController
         $data = $this->request->getJSON(true);
 
         // Validasi data input
-        if (empty($data['cust_id']) || empty($data['target_call']) || empty($data['target_ec']) || empty($data['target_value'])) {
+        if (empty($data['cust_id']) || empty($data['target_value'])) {
             return $this->response->setJSON([
                 'status' => 'error',
                 'message' => 'Semua field harus diisi.'
@@ -235,25 +245,35 @@ class Pipeline extends BaseController
     public function deleteTemporerDetailPipeline()
     {
         $session = \Config\Services::session();
-        $cust_id = $this->request->getJSON(true)['cust_id'] ?? null;
-        $nik = $this->request->getPost('nik') ?? 'default_nik';
+        $requestData = $this->request->getJSON(true);
+    
+        $cust_id = $requestData['cust_id'] ?? null;
+        $nik = $requestData['nik'] ?? 'default_nik';
+    
         $temporaryData = $session->get('temporary_data') ?? [];
 
-        if (isset($temporaryData[$nik])) {
-            $temporaryData[$nik] = array_filter($temporaryData[$nik], function ($data) use ($cust_id) {
-                return $data['cust_id'] !== $cust_id;
-            });
-            $session->set('temporary_data', $temporaryData);
-
+        if (!isset($temporaryData[$nik])) {
             return $this->response->setJSON([
-                'status' => 'success',
-                'message' => 'Data berhasil dihapus.'
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan untuk NIK ini.'
             ]);
         }
 
+        if ($cust_id) {
+            // Hapus hanya data dengan cust_id tertentu
+            $temporaryData[$nik] = array_filter($temporaryData[$nik], function ($data) use ($cust_id) {
+                return $data['cust_id'] !== $cust_id;
+            });
+        } else {
+            // Hapus semua data terkait NIK
+            unset($temporaryData[$nik]);
+        }
+
+        $session->set('temporary_data', $temporaryData);
+
         return $this->response->setJSON([
-            'status' => 'error',
-            'message' => 'Data tidak ditemukan.'
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus.'
         ]);
     }
 
@@ -306,12 +326,11 @@ class Pipeline extends BaseController
             // Menyimpan detail pipeline
             $detailPipeline = [];
             foreach ($detailData as $detail) {
-                if (isset($detail['cust_id'], $detail['target_call'], $detail['target_ec'], $detail['target_value'], $detail['probability'])) {
+                if (isset($detail['cust_id'], $detail['freq_visit'], $detail['target_value'], $detail['probability'])) {
                     $detailPipeline[] = [
                         'id_ref' => $pipelineId,
                         'cust_id' => $detail['cust_id'],
-                        'target_call' => $detail['target_call'],
-                        'target_ec' => $detail['target_ec'],
+                        'freq_visit' => $detail['freq_visit'],
                         'target_value' => $detail['target_value'],
                         'probability' => $detail['probability'],
                         'user_create' => $nik,
@@ -330,9 +349,7 @@ class Pipeline extends BaseController
                 ]);
             }
 
-            // Menghapus data temporary setelah berhasil disimpan
-            $this->pipelineModel->clearTemporaryData($nik);
-            log_message('debug', 'Data temporary untuk nik ' . $nik . ' telah dibersihkan.');
+            
 
             // Mengirimkan response sukses
             return $this->response->setJSON([
@@ -347,15 +364,121 @@ class Pipeline extends BaseController
         }
     }
 
+    // Data draft pipeline
+    public function dataDraftPipeline()
+    {
+        // Ambil username dari session
+        $username = session()->get('username');
+        //filter data draft pipeline
+        $tahun = $this->request->getPost('thn');
+        $bulan = $this->request->getPost('bln');
+        $group_id = $this->request->getPost('grp_prod');
+        $subgroup_id = $this->request->getPost('subgrp_prod');
+        $class_id = $this->request->getPost('clsgrp_prod');
+
+        $data = $this->pipelineDetModel->getDataPipelineDet($username, $tahun, $bulan, $group_id, $subgroup_id, $class_id);
+        echo json_encode($data);
+    }
+
+    // Update data draft pipeline
+    public function updateDraftPipeline()
+    {
+        $request = $this->request->getJSON();
+        $id = $request->id;
+
+        // Ambil username dari session
+        $username = $this->session->get('username');
+
+        $data = [
+            'freq_visit' => $request->freq_visit,
+            'target_value' => $request->target_value,
+            'user_update' => $username,
+            'update_date' => date('Y-m-d H:i:s') // Format timestamp
+        ];
+
+        $update = $this->pipelineDetModel->updatePipelineDet($id, $data);
+
+        if ($update) {
+            die(json_encode(['status' => 'success', 'message' => 'Berhasil memperbarui data']));
+        } else {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data']);
+        }
+    }
+
+    // Hapus data draft pipeline
+    public function deleteDraftPipeline()
+    {
+        $request = $this->request->getJSON();
+        $id = $request->id;
+
+        $delete = $this->pipelineDetModel->deletePipelineDet($id);
+
+        if ($delete) {
+            return $this->response->setJSON(['status' => 'success' , 'message' => 'Berhasil menghapus data']);
+        } else {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menghapus data']);
+        }
+    }
+
     // Function Index -> halaman Persetujuan Pipeline
     public function indexPersetujuan()
     {
+        // Ambil username dari session
+        $username = session()->get('username');
+
         $data = [
             'title' => "Persetujuan Pipeline",
-            'group_barang' => $this->kelasProdModel->getGrupBarang(),
-            'breadcrumb' => $this->breadcrumb
+            'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
+            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('pipeline/persetujuan', $data);
     }
 
+    // Data verifikasi pipeline
+    public function dataVerifPipeline()
+    {
+        //filter data verifikasi pipeline
+        $nik = $this->request->getPost('sales_marketing');
+        $thn = $this->request->getPost('thn');
+        $bln = $this->request->getPost('bln');
+        $grp_prod = $this->request->getPost('grp_prod');
+        $subgrp_prod = $this->request->getPost('subgrp_prod');
+
+        $data = $this->pipelineDetModel->getDataPipelineVerifikasi($nik, $thn, $bln, $grp_prod, $subgrp_prod);
+        echo json_encode($data);
+    }
+
+    public function updateVerifikasi()
+    {
+        $id = $this->request->getPost('id');
+        $flg_approve = $this->request->getPost('flg_approve');
+        $reason_reject = $this->request->getPost('reason_reject') ?? '';
+
+        // Ambil username dari session
+        $username = $this->session->get('username');
+
+        $data = [
+        'flg_approve' => $flg_approve,
+            'reason_reject' => $reason_reject,
+            'user_update' => $username,
+            'update_date' => date('Y-m-d H:i:s'), // Format timestamp
+            'user_approve' => $username,
+            'date_approve' => date('Y-m-d H:i:s') // Format timestamp
+        ];
+
+        $update = $this->pipelineDetModel->updatePipelineDet($id, $data);
+
+        if ($update) {
+            $message = $flg_approve
+                ? "Pipeline ID $id berhasil disetujui."
+                : "Pipeline ID $id ditolak dengan alasan: $reason_reject.";
+
+            return $this->response->setJSON(['status' => 'success', 'message' => $message]);
+        } else {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data.']);
+        }
+    }
 }

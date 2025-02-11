@@ -1,9 +1,16 @@
 $(document).ready(function () {
   if (window.location.pathname == "/pipeline/pembuatan") {
+    //mendapatkan nilai
+    var tahun = $("#tahunPipelineDet").val();
+    var bulan = $("#bulanPipelineDet").val();
     var grp_prod = $("#grupBarang").val();
     var subgrp_prod = $("#subgrupBarang").val();
     var kls_prod = $("#kelasBarang").val();
 
+    //data draft pipeline
+    tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
+
+    //FUNGSI DROPDOWN BULAN
     // Nama bulan dalam bahasa Indonesia
     const bulanIndonesia = [
       "01 - Januari",
@@ -56,8 +63,34 @@ $(document).ready(function () {
       console.log(`Value: ${selectedValue}, Text: ${selectedText}`);
     });
 
+    //PERUBAHAN FILTER DROPDOWN
+    //Tahun
+    $("#tahunPipelineDet").change(function () {
+      var tahun = $(this).val();
+      var bulan = $("#bulanPipelineDet").val();
+      var grp_prod = $("#grupBarang").val();
+      var subgrp_prod = $("#subgrupBarang").val();
+      var kls_prod = $("#kelasBarang").val();
+
+      tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
+    });
+
+    //Bulan
+    $("#bulanPipelineDet").change(function () {
+      var tahun = $("#tahunPipelineDet").val();
+      var bulan = $(this).val();
+      var grp_prod = $("#grupBarang").val();
+      var subgrp_prod = $("#subgrupBarang").val();
+      var kls_prod = $("#kelasBarang").val();
+
+      tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
+    });
+
+    //Grup Barang
     // Update Option change grup barang
     $("#grupBarang").change(function () {
+      var tahun = $("#tahunPipelineDet").val();
+      var bulan = $("#bulanPipelineDet").val();
       var grp_prod = $(this).val();
       // AJAX request --
       $.ajax({
@@ -84,13 +117,17 @@ $(document).ready(function () {
           $("#kelasBarang").empty();
 
           // panggil function
-          console.log("grup barang adalah = " + grp_prod);
+          console.log("grup barang = " + grp_prod);
+          tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
         },
       });
     });
 
+    //SubGrup Barang
     // Update Option change subgrup barang
     $("#subgrupBarang").change(function () {
+      var tahun = $("#tahunPipelineDet").val();
+      var bulan = $("#bulanPipelineDet").val();
       var grp_prod = $("#grupBarang").val();
       var subgrp_prod = $(this).val();
       // AJAX request --
@@ -108,11 +145,9 @@ $(document).ready(function () {
 
           // panggil function
           console.log(
-            "grup barang = " +
-              grp_prod +
-              "subgrup barang adalah = " +
-              subgrp_prod
+            "grup barang = " + grp_prod + "subgrup barang = " + subgrp_prod
           );
+          tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
         },
 
         // error: function (xhr, status, error) {
@@ -124,8 +159,11 @@ $(document).ready(function () {
       });
     });
 
+    //Kelas Barang
     // Update Option change subgrup barang
     $("#kelasBarang").change(function () {
+      var tahun = $("#tahunPipelineDet").val();
+      var bulan = $("#bulanPipelineDet").val();
       var grp_prod = $("#grupBarang").val();
       var subgrp_prod = $("#subgrupBarang").val();
       var kls_prod = $(this).val();
@@ -136,84 +174,132 @@ $(document).ready(function () {
           grp_prod +
           "subgrup barang = " +
           subgrp_prod +
-          "kelas barang" +
+          "kelas barang = " +
           kls_prod
       );
+      tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
     });
 
-    // Data pelanggan
-    const customerNames = [
-      "Toko Haji Tongkang",
-      "T.B Bangun Bersama",
-      "Apotek Sehat Sentosa",
-      "RS. Umrah Depok",
-      "Labkesda Kabupaten Pandeglang",
-      "Toko Abu Abi",
-      "Buaya Swalayan",
-      "Apotek Bugar Sejahtera",
-      "Rumah Sakit Umum Daerah Dr. Karya",
-      "Labkesda Kabupaten Rokan Hilir",
-      "Toko Buku Bobo",
-      "Kios Baju Wanita",
-      "Toko Obat Ong Sang Ling Long",
-      "IHC Pelindo Banjarmasin",
-      "Laboratorium Kota Subulussalam",
-    ];
+    // Inisialisasi tabel Draft Pipeline
+    function tabel_draft_pipeline(
+      tahun,
+      bulan,
+      grp_prod,
+      subgrp_prod,
+      kls_prod
+    ) {
+      $.ajax({
+        type: "POST",
+        url: url + "/pipeline/dataDraft",
+        async: true,
+        data: {
+          thn: tahun,
+          bln: bulan,
+          grp_prod: grp_prod,
+          subgrp_prod: subgrp_prod,
+          clsgrp_prod: kls_prod,
+        },
+        dataType: "json",
 
-    // Skala probabilitas
-    const probabilityScales = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+        success: function (data) {
+          var table = new Tabulator("#tabel_draft_pipeline", {
+            data: data,
+            movableColumns: true,
+            layout: "fitColumns",
+            columns: [
+              {
+                title: "Kode Pelanggan",
+                field: "cust_id",
+              },
+              {
+                title: "Nama Pelanggan",
+                field: "cust_name",
+              },
+              {
+                title: "Frekuensi Kunjungan",
+                field: "freq_visit",
+                editor: "input",
+                cellEdited: function (cell) {
+                  updateDraftPipeline(cell.getRow().getData());
+                },
+              },
+              {
+                title: "Target Nilai (Rp)",
+                field: "target_value",
+                align: "right",
+                editor: "input",
+                cellEdited: function (cell) {
+                  updateDraftPipeline(cell.getRow().getData());
+                },
+              },
+              {
+                title: "Probabilitas",
+                field: "probability",
+              },
+              {
+                title: "Aksi",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                formatter: "buttonCross",
+                cellClick: function (e, cell) {
+                  deleteDraftPipeline(cell.getRow());
+                },
+              },
+            ],
+          });
+        },
+      });
+    }
 
-    // Data dummy
-    const dummyData = customerNames.map((name) => ({
-      cust_name: name,
-      target_call: 10,
-      target_ec: 5,
-      probability: 50,
-    }));
+    // Fungsi untuk mengupdate data saat sel diubah
+    function updateDraftPipeline(data) {
+      fetch(url + "/pipeline/updateDraft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: data.id,
+          freq_visit: data.freq_visit,
+          target_value: data.target_value,
+        }),
+      })
+        .then((res) => res.json())
+        .then((response) => {
+          console.log("Response JSON:", response); // Debug respons JSON
+          console.log("Toastr Message:", response.message); // Debug message sebelum ditampilkan
+          if (response.status === "success") {
+            toastr.success(response.message || "Data berhasil diperbarui");
+          } else {
+            toastr.error(response.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating data:", error);
+          toastr.error("Terjadi kesalahan saat memperbarui data.");
+        });
+    }
 
-    // Inisialisasi tabel Tabulator
-    var table = new Tabulator("#tabel_pembuatan_pipeline", {
-      layout: "fitColumns",
-      columns: [
-        {
-          title: "Pelanggan",
-          field: "cust_name",
-          editor: "list",
-          editorParams: {
-            values: customerNames,
-            autocomplete: true,
-            allowEmpty: false,
-            listOnEmpty: true,
-            valuesLookup: true,
-          },
-        },
-        {
-          title: "Target Call",
-          field: "target_call",
-          hozAlign: "center",
-          editor: "number",
-        },
-        {
-          title: "Target EC",
-          field: "target_ec",
-          hozAlign: "center",
-          editor: "number",
-        },
-        {
-          title: "Probabilitas",
-          field: "probability",
-          editor: "list",
-          editorParams: {
-            values: probabilityScales,
-            autocomplete: true,
-            allowEmpty: false,
-            listOnEmpty: true,
-            valuesLookup: true,
-          },
-        },
-      ],
-      data: dummyData,
-    });
+    // Fungsi untuk menghapus data
+    function deleteDraftPipeline(row) {
+      const data = row.getData();
+      fetch(url + "/pipeline/deleteDraft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: data.id }),
+      })
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.status === "success") {
+            row.delete();
+            toastr.success(response.message || "Data berhasil dihapus.");
+          } else {
+            toastr.error(response.message);
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting data:", error);
+          toastr.error("Terjadi kesalahan saat menghapus data.");
+        });
+    }
 
     // Form Upload
     const uploadForm = document.getElementById("uploadForm");
@@ -318,7 +404,7 @@ $(document).ready(function () {
     }
 
     // Tambahkan event listener ke input fields
-    ["targetCall", "targetEfCall", "targetNilai"].forEach((id) => {
+    ["freqVisit", "targetNilai"].forEach((id) => {
       const inputField = document.getElementById(id);
 
       // Event saat mengetik untuk memformat angka dengan separator ribuan
@@ -480,7 +566,7 @@ $(document).ready(function () {
 
     // Fetch data pelanggan
     $.ajax({
-      url: url + "master/getMstPelanggan",
+      url: url + "master/getMstPelangganCab",
       method: "GET",
       dataType: "json",
       success: function (data) {
@@ -496,8 +582,8 @@ $(document).ready(function () {
         data.forEach((pelanggan) => {
           $("#masterpelanggan").append(
             `<option value="${pelanggan.cust_id}">
-                        ${pelanggan.cust_id} - ${pelanggan.cust_name}
-                    </option>`
+          ${pelanggan.cust_id} - ${pelanggan.cust_name}
+        </option>`
           );
         });
 
@@ -545,21 +631,33 @@ $(document).ready(function () {
       layout: "fitColumns",
       placeholder: "Belum ada data detail pipeline.",
       columns: [
-        { title: "Pelanggan", field: "cust_id", width: 200 },
-        { title: "Target Call", field: "target_call", hozAlign: "center" },
         {
-          title: "Target Effective Call",
-          field: "target_ec",
+          title: "Pelanggan",
+          field: "cust_id",
+          width: 200,
+          headerHozAlign: "center",
+        },
+        {
+          title: "Frekuensi Kunjungan",
+          field: "freq_visit",
+          headerHozAlign: "center",
           hozAlign: "center",
         },
-        { title: "Target Nilai", field: "target_value", hozAlign: "center" },
+        {
+          title: "Target Nilai",
+          field: "target_value",
+          headerHozAlign: "center",
+          hozAlign: "center",
+        },
         {
           title: "Target Probabilitas",
           field: "probability",
+          headerHozAlign: "center",
           hozAlign: "center",
         },
         {
           title: "Aksi",
+          headerHozAlign: "center",
           hozAlign: "center",
           formatter: "buttonCross",
           cellClick: function (e, cell) {
@@ -594,7 +692,7 @@ $(document).ready(function () {
         if (data.status === "success") {
           pipelineTable.setData(data.data);
         } else {
-          toastr.error("Gagal memuat data: " + data.message);
+          toastr.error("Proses memuat data: " + data.message);
         }
       })
       .catch((error) => {
@@ -606,11 +704,8 @@ $(document).ready(function () {
     if (tambahButton) {
       tambahButton.addEventListener("click", function () {
         const pelanggan = document.querySelector("#masterpelanggan")?.value;
-        const targetCall = removeCommas(
-          document.querySelector("#targetCall")?.value || "0"
-        );
-        const targetEfCall = removeCommas(
-          document.querySelector("#targetEfCall")?.value || "0"
+        const freqVisit = removeCommas(
+          document.querySelector("#freqVisit")?.value || "0"
         );
         const targetNilai = removeCommas(
           document.querySelector("#targetNilai")?.value || "0"
@@ -619,7 +714,7 @@ $(document).ready(function () {
           "#targetProbabilitas"
         )?.value;
 
-        if (!pelanggan || !targetCall || !targetEfCall || !targetNilai) {
+        if (!pelanggan || !targetNilai) {
           toastr.error("Semua field harus diisi!");
           return;
         }
@@ -639,8 +734,7 @@ $(document).ready(function () {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             cust_id: pelanggan,
-            target_call: targetCall,
-            target_ec: targetEfCall,
+            freq_visit: freqVisit,
             target_value: targetNilai,
             probability: targetProbabilitas,
           }),
@@ -652,12 +746,19 @@ $(document).ready(function () {
               pipelineTable.addData([
                 {
                   cust_id: pelanggan,
-                  target_call: targetCall,
-                  target_ec: targetEfCall,
+                  freq_visit: freqVisit,
                   target_value: targetNilai,
                   probability: `${targetProbabilitas}`,
                 },
               ]);
+
+              // **RESET FORM SETELAH SIMPAN**
+              document.querySelector("#freqVisit").value = "";
+              document.querySelector("#targetNilai").value = "";
+
+              // Reset Select2 dropdown
+              $("#masterpelanggan").val("").trigger("change");
+              $("#targetProbabilitas").val("").trigger("change");
             } else {
               toastr.error(response.message);
             }
@@ -674,7 +775,7 @@ $(document).ready(function () {
     const form = document.getElementById("formPipeline"); // Replace with your form ID
 
     form.addEventListener("submit", (e) => {
-      e.preventDefault(); // Prevent default form submission
+      e.preventDefault();
 
       Swal.fire({
         title: "Apakah Anda yakin?",
@@ -685,7 +786,6 @@ $(document).ready(function () {
         cancelButtonText: "Batal",
       }).then((result) => {
         if (result.isConfirmed) {
-          // Submit form data using fetch or a library like Axios
           fetch("/pipeline/insertForm", {
             method: "POST",
             body: new FormData(form),
@@ -693,6 +793,29 @@ $(document).ready(function () {
             .then((response) => response.json())
             .then((data) => {
               if (data.status === "success") {
+                // Setelah berhasil menyimpan, hapus data temporary
+                fetch("/pipeline/deleteTemp", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({ nik: data.nik, cust_id: null }), // Tambahkan cust_id sebagai null
+                })
+                  .then((res) => res.json())
+                  .then((deleteData) => {
+                    if (deleteData.status === "success") {
+                      console.log("Data temporary berhasil dihapus");
+                    } else {
+                      console.error(
+                        "Gagal menghapus data temporary:",
+                        deleteData.message
+                      );
+                    }
+                  })
+                  .catch((error) =>
+                    console.error("Error saat menghapus data temporary:", error)
+                  );
+
                 Swal.fire("Berhasil!", data.message, "success").then(() => {
                   window.location.href = "/pipeline/pembuatan";
                 });
@@ -701,6 +824,7 @@ $(document).ready(function () {
               }
             })
             .catch((error) => {
+              console.error("Fetch Error:", error);
               Swal.fire(
                 "Error!",
                 "Terjadi kesalahan saat menyimpan data.",
@@ -711,6 +835,22 @@ $(document).ready(function () {
       });
     });
   } else if (window.location.pathname === "/pipeline/persetujuan") {
+    //mendapatkan nilai
+    var tahun_acc = $("#tahunAccPipeline").val();
+    var bulan_acc = $("#bulanAccPipeline").val();
+    var sales_marketing = $("#salesMarketing").val();
+    var grp_prod_acc = $("#grupBarang").val();
+    var subgrp_prod_acc = $("#subgrupBarang").val();
+
+    //data pipeline yang akan diverifikasi
+    tabel_verifikasi_pipeline(
+      tahun_acc,
+      bulan_acc,
+      sales_marketing,
+      grp_prod_acc,
+      subgrp_prod_acc
+    );
+
     // Nama bulan dalam bahasa Indonesia
     const bulanIndonesia = [
       "01 - Januari",
@@ -763,84 +903,297 @@ $(document).ready(function () {
       console.log(`Value: ${selectedValue}, Text: ${selectedText}`);
     });
 
-    // Data pelanggan
-    const customerNames = [
-      "Toko Haji Tongkang",
-      "T.B Bangun Bersama",
-      "Apotek Sehat Sentosa",
-      "RS. Umrah Depok",
-      "Labkesda Kabupaten Pandeglang",
-      "Toko Abu Abi",
-      "Buaya Swalayan",
-      "Apotek Bugar Sejahtera",
-      "Rumah Sakit Umum Daerah Dr. Karya",
-      "Labkesda Kabupaten Rokan Hilir",
-      "Toko Buku Bobo",
-      "Kios Baju Wanita",
-      "Toko Obat Ong Sang Ling Long",
-      "IHC Pelindo Banjarmasin",
-      "Laboratorium Kota Subulussalam",
-    ];
+    //PERUBAHAN FILTER DROPDOWN
+    //Tahun
+    $("#tahunAccPipeline").change(function () {
+      var tahun_acc = $(this).val();
+      var bulan_acc = $("#bulanAccPipeline").val();
+      var sales_marketing = $("#salesMarketing").val();
+      var grp_prod_acc = $("#grupBarang").val();
+      var subgrp_prod_acc = $("#subgrupBarang").val();
 
-    // Skala probabilitas
-    const probabilityScales = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-
-    // Data dummy
-    const dummyData = customerNames.map((name) => ({
-      cust_name: name,
-      target_call: 10,
-      target_ec: 5,
-      probability: 50,
-    }));
-
-    // Inisialisasi tabel Tabulator
-    var table = new Tabulator("#tabel_persetujuan_pipeline", {
-      layout: "fitColumns",
-      columns: [
-        {
-          title: "Pelanggan",
-          field: "cust_name",
-          editor: "list",
-          editorParams: {
-            values: customerNames,
-            autocomplete: true,
-            allowEmpty: false,
-            listOnEmpty: true,
-            valuesLookup: true,
-          },
-        },
-        {
-          title: "Target Call",
-          field: "target_call",
-          hozAlign: "center",
-          editor: "number",
-        },
-        {
-          title: "Target EC",
-          field: "target_ec",
-          hozAlign: "center",
-          editor: "number",
-        },
-        {
-          title: "Probabilitas",
-          field: "probability",
-          editor: "list",
-          editorParams: {
-            values: probabilityScales,
-            autocomplete: true,
-            allowEmpty: false,
-            listOnEmpty: true,
-            valuesLookup: true,
-          },
-        },
-        {
-          title: "",
-          hozAlign: "center",
-          editor: true,
-          formatter: "tickCross",
-        },
-      ],
-      data: dummyData,
+      tabel_verifikasi_pipeline(
+        tahun_acc,
+        bulan_acc,
+        sales_marketing,
+        grp_prod_acc,
+        subgrp_prod_acc
+      );
     });
+
+    //Bulan
+    $("#bulanAccPipeline").change(function () {
+      var tahun_acc = $("#tahunAccPipeline").val();
+      var bulan_acc = $(this).val();
+      var sales_marketing = $("#salesMarketing").val();
+      var grp_prod_acc = $("#grupBarang").val();
+      var subgrp_prod_acc = $("#subgrupBarang").val();
+
+      tabel_verifikasi_pipeline(
+        tahun_acc,
+        bulan_acc,
+        sales_marketing,
+        grp_prod_acc,
+        subgrp_prod_acc
+      );
+    });
+
+    //Tim Sales Marketing
+    $("#salesMarketing").change(function () {
+      var tahun_acc = $("#tahunAccPipeline").val();
+      var bulan_acc = $("#bulanAccPipeline").val();
+      var sales_marketing = $(this).val();
+      var grp_prod_acc = $("#grupBarang").val();
+      var subgrp_prod_acc = $("#subgrupBarang").val();
+
+      // panggil function
+      console.log(
+        "tahun = " +
+          tahun_acc +
+          " bulan = " +
+          bulan_acc +
+          " sales/marketing = " +
+          sales_marketing
+      );
+
+      tabel_verifikasi_pipeline(
+        tahun_acc,
+        bulan_acc,
+        sales_marketing,
+        grp_prod_acc,
+        subgrp_prod_acc
+      );
+    });
+
+    //Grup Barang
+    // Update Option change grup barang
+    $("#grupBarang").change(function () {
+      var tahun_acc = $("#tahunAccPipeline").val();
+      var bulan_acc = $("#bulanAccPipeline").val();
+      var sales_marketing = $("#salesMarketing").val();
+      var grp_prod_acc = $(this).val();
+      // AJAX request --
+      $.ajax({
+        url: url + "master/getSubGrupBarang",
+        method: "POST",
+        data: {
+          grp_prod: grp_prod_acc,
+        },
+        success: function (data) {
+          // Add options
+          $("#subgrupBarang").html(data);
+          var subgrp_prod_acc = $("#subgrupBarang").val();
+
+          // // empty options
+          // $("#kelasBarang").select2({
+          //   placeholder: "Pilih Kelas",
+          //   allowClear: true,
+          // });
+
+          $("#kelasBarang").html(
+            '<option selected value="">Pilih Kelas Barang</option>'
+          );
+
+          $("#kelasBarang").empty();
+
+          // panggil function
+          console.log("grup barang = " + grp_prod_acc);
+          tabel_verifikasi_pipeline(
+            tahun_acc,
+            bulan_acc,
+            sales_marketing,
+            grp_prod_acc,
+            subgrp_prod_acc
+          );
+        },
+      });
+    });
+
+    //SubGrup Barang
+    // Update Option change subgrup barang
+    $("#subgrupBarang").change(function () {
+      var tahun_acc = $("#tahunAccPipeline").val();
+      var bulan_acc = $("#bulanAccPipeline").val();
+      var sales_marketing = $("#salesMarketing").val();
+      var grp_prod_acc = $("#grupBarang").val();
+      var subgrp_prod_acc = $(this).val();
+      // AJAX request --
+      $.ajax({
+        url: url + "master/getKelasBarang",
+        method: "POST",
+        data: {
+          grp_prod: grp_prod_acc,
+          subgrp_prod: subgrp_prod_acc,
+        },
+        success: function (data) {
+          // Add options
+          $("#kelasBarang").html(data);
+          var kls_prod_acc = $("#kelasBarang").val();
+
+          // panggil function
+          console.log(
+            "grup barang = " +
+              grp_prod_acc +
+              " subgrup barang = " +
+              subgrp_prod_acc
+          );
+          tabel_verifikasi_pipeline(
+            tahun_acc,
+            bulan_acc,
+            sales_marketing,
+            grp_prod_acc,
+            subgrp_prod_acc
+          );
+        },
+
+        // error: function (xhr, status, error) {
+        //   console.error("Error:", error);
+        //   alert(
+        //     "Terjadi kesalahan saat memuat Sub Grup Barang: " + xhr.responseText
+        //   );
+        // },
+      });
+    });
+
+    //Kelas Barang
+    // Update Option change kelas barang
+    $("#kelasBarang").change(function () {
+      var tahun_acc = $("#tahunAccPipeline").val();
+      var bulan_acc = $("#bulanAccPipeline").val();
+      var sales_marketing = $("#salesMarketing").val();
+      var grp_prod_acc = $("#grupBarang").val();
+      var subgrp_prod_acc = $("#subgrupBarang").val();
+
+      // panggil function
+      console.log(
+        "grup barang = " +
+          grp_prod_acc +
+          " subgrup barang = " +
+          subgrp_prod_acc +
+          " kelas barang = " +
+          kls_prod_acc
+      );
+      tabel_verifikasi_pipeline(
+        tahun_acc,
+        bulan_acc,
+        sales_marketing,
+        grp_prod_acc,
+        subgrp_prod_acc
+      );
+    });
+
+    // Inisialisasi tabel Verifikasi Pipeline
+    function tabel_verifikasi_pipeline(
+      tahun_acc,
+      bulan_acc,
+      sales_marketing,
+      grp_prod_acc,
+      subgrp_prod_acc
+    ) {
+      $.ajax({
+        type: "POST",
+        url: url + "/pipeline/dataVerifikasi",
+        async: true,
+        data: {
+          thn: tahun_acc,
+          bln: bulan_acc,
+          sales_marketing: sales_marketing,
+          grp_prod: grp_prod_acc,
+          subgrp_prod: subgrp_prod_acc,
+        },
+        dataType: "json",
+
+        success: function (data) {
+          var table = new Tabulator("#tabel_verifikasi_pipeline", {
+            data: data,
+            movableColumns: true,
+            layout: "fitColumns",
+            columns: [
+              { title: "Kode Pelanggan", field: "cust_id" },
+              { title: "Nama Pelanggan", field: "cust_name" },
+              { title: "Frekuensi Kunjungan", field: "freq_visit" },
+              {
+                title: "Target Nilai (Rp)",
+                field: "target_value",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: "," },
+              },
+              { title: "Probabilitas", field: "probability" },
+              {
+                title: "Aksi",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                formatter: function (cell, formatterParams) {
+                  return `
+                <i class='fa fa-check approve-icon' style='color: green; cursor: pointer; margin-right: 5px;'></i>
+                <i class='fa fa-times reject-icon' style='color: red; cursor: pointer;'></i>
+              `;
+                },
+                cellClick: function (e, cell) {
+                  let rowData = cell.getRow().getData();
+                  let targetClass = e.target.classList;
+
+                  if (targetClass.contains("approve-icon")) {
+                    // Jika ikon cek diklik, setuju (approve)
+                    let newStatus = true;
+                    updateVerifPipeline(rowData.id, newStatus, "", cell);
+                  } else if (targetClass.contains("reject-icon")) {
+                    // Jika ikon silang diklik, tolak (reject) dengan modal alasan
+                    $("#rejectModal").modal("show");
+                    $("#reject_reason").val("");
+
+                    $("#saveReject")
+                      .off("click")
+                      .on("click", function () {
+                        let reason = $("#reject_reason").val().trim();
+                        if (reason === "") {
+                          alert("Silakan isi alasan penolakan!");
+                          return;
+                        }
+
+                        let newStatus = false;
+                        updateVerifPipeline(
+                          rowData.id,
+                          newStatus,
+                          reason,
+                          cell
+                        );
+                        $("#rejectModal").modal("hide");
+                      });
+                  }
+                },
+              },
+            ],
+          });
+        },
+      });
+    }
+
+    // Fungsi AJAX untuk mengupdate verifikasi ke server dan menghapus baris dari tabel
+    function updateVerifPipeline(id, status, reason, cell) {
+      $.ajax({
+        type: "POST",
+        url: url + "/pipeline/updateVerifikasi",
+        data: { id: id, flg_approve: status, reason_reject: reason },
+        dataType: "json",
+        success: function (response) {
+          if (response.status === "success") {
+            let message = status
+              ? `Pipeline ID ${id} disetujui`
+              : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
+            toastr.success(message);
+
+            // Hapus baris dari tabel setelah aksi sukses
+            cell.getRow().delete();
+          } else {
+            toastr.error("Gagal memperbarui data.");
+          }
+        },
+        error: function (xhr) {
+          toastr.error("Terjadi kesalahan saat memperbarui data.");
+          console.error("Error:", xhr.responseText);
+        },
+      });
+    }
   }
 });
