@@ -100,25 +100,43 @@
 </div>
 <!-- Container-fluid Ends-->
 <!-- Modal Input Alasan Penolakan -->
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="rejectModalLabel">Alasan Penolakan</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <label for="reject_reason">Masukkan alasan:</label>
-        <textarea id="reject_reason" class="form-control" rows="3"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-danger" id="saveReject">Simpan</button>
-      </div>
+<div
+        class="modal fade"
+        id="rejectModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="rejectModal"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div
+                class="modal-toggle-wrapper text-start dark-sign-up"
+                >
+                    <h3
+                        class="modal-header justify-content-center border-0"
+                    >
+                        Alasan Penolakan
+                    </h3>
+                    <div class="modal-body">
+                        <form class="row g-3">
+                            <div class="col-xl-12 col-md-12 box-col-12">
+                                <label for="reject_reason">Alasan Penolakan:</label>
+                                <textarea id="reject_reason" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="col-xl-12 col-md-12 box-col-12">
+                                <p class="f-w-600"><span class="txt-danger">*</span>) Wajib Diisi</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-primary" id="saveReject"><i class="fa fa-save"></i> Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->

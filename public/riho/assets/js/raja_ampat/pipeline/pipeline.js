@@ -1115,41 +1115,33 @@ $(document).ready(function () {
               {
                 title: "Target Nilai (Rp)",
                 field: "target_value",
-                align: "right",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: "," },
               },
               { title: "Probabilitas", field: "probability" },
               {
                 title: "Aksi",
                 headerHozAlign: "center",
                 hozAlign: "center",
-                formatter: "html",
                 formatter: function (cell, formatterParams) {
-                  let value = cell.getRow().getData().flg_approve;
-
-                  let span = document.createElement("span");
-                  span.style.color = value ? "green" : "green";
-                  span.style.fontSize = "12px";
-
-                  let icon = document.createElement("i");
-                  icon.className = value ? "fa fa-check" : "fa fa-check";
-
-                  span.appendChild(icon);
-                  return span;
+                  return `
+                <i class='fa fa-check approve-icon' style='color: green; cursor: pointer; margin-right: 5px;'></i>
+                <i class='fa fa-times reject-icon' style='color: red; cursor: pointer;'></i>
+              `;
                 },
                 cellClick: function (e, cell) {
                   let rowData = cell.getRow().getData();
-                  let newStatus = !rowData.flg_approve; // Toggle antara true dan false
+                  let targetClass = e.target.classList;
 
-                  if (newStatus) {
-                    // Jika dicentang, langsung update ke server
-                    updateVerifPipeline(rowData.id, newStatus, "");
-                    cell
-                      .getRow()
-                      .update({ flg_approve: newStatus, reason_reject: "" });
-                  } else {
-                    // Jika silang, tampilkan modal input alasan
+                  if (targetClass.contains("approve-icon")) {
+                    // Jika ikon cek diklik, setuju (approve)
+                    let newStatus = true;
+                    updateVerifPipeline(rowData.id, newStatus, "", cell);
+                  } else if (targetClass.contains("reject-icon")) {
+                    // Jika ikon silang diklik, tolak (reject) dengan modal alasan
                     $("#rejectModal").modal("show");
                     $("#reject_reason").val("");
+
                     $("#saveReject")
                       .off("click")
                       .on("click", function () {
@@ -1158,11 +1150,14 @@ $(document).ready(function () {
                           alert("Silakan isi alasan penolakan!");
                           return;
                         }
-                        updateVerifPipeline(rowData.id, newStatus, reason);
-                        cell.getRow().update({
-                          flg_approve: newStatus,
-                          reason_reject: reason,
-                        });
+
+                        let newStatus = false;
+                        updateVerifPipeline(
+                          rowData.id,
+                          newStatus,
+                          reason,
+                          cell
+                        );
                         $("#rejectModal").modal("hide");
                       });
                   }
@@ -1170,28 +1165,32 @@ $(document).ready(function () {
               },
             ],
           });
-
-          // Tombol "Select All"
-          $("#selectAll").on("click", function () {
-            table.getRows().forEach((row) => {
-              row.update({ flg_approve: true, reason_reject: "" });
-              updateVerifPipeline(row.getData().id, true, "");
-            });
-          });
         },
       });
     }
 
-    // Fungsi AJAX untuk mengupdate verifikasi ke server
-    function updateVerifPipeline(id, status, reason) {
+    // Fungsi AJAX untuk mengupdate verifikasi ke server dan menghapus baris dari tabel
+    function updateVerifPipeline(id, status, reason, cell) {
       $.ajax({
         type: "POST",
         url: url + "/pipeline/updateVerifikasi",
         data: { id: id, flg_approve: status, reason_reject: reason },
+        dataType: "json",
         success: function (response) {
-          console.log("Update sukses:", response);
+          if (response.status === "success") {
+            let message = status
+              ? `Pipeline ID ${id} disetujui`
+              : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
+            toastr.success(message);
+
+            // Hapus baris dari tabel setelah aksi sukses
+            cell.getRow().delete();
+          } else {
+            toastr.error("Gagal memperbarui data.");
+          }
         },
         error: function (xhr) {
+          toastr.error("Terjadi kesalahan saat memperbarui data.");
           console.error("Error:", xhr.responseText);
         },
       });

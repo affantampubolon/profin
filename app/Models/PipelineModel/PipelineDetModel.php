@@ -24,7 +24,7 @@ class PipelineDetModel extends Model
             ->where('a.group_id', $group_id)
             ->where('a.subgroup_id', $subgroup_id)
             ->where('a.class_id', $class_id)
-            ->where('b.flg_approve', 'f')
+            ->where('b.flg_approve', null)
             ->orderBy('b.id')
             ->get()
             ->getResultArray();
@@ -59,7 +59,7 @@ class PipelineDetModel extends Model
             ->where('a.month', $bln)
             ->where('a.group_id', $grp_prod)
             ->where('a.subgroup_id', $subgrp_prod)
-            ->where('b.flg_approve', 'f')
+            ->where('b.flg_approve', null)
             ->orderBy('b.id')
             ->get()
             ->getResultArray();

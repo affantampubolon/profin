@@ -88,7 +88,7 @@ class Auth extends BaseController
                                 // Set session
                                 $this->session->set($ses_data);
                                 // Redirect ke halaman admin
-                                return redirect()->to('/dashboard');
+                                return redirect()->to('/beranda');
                             }
                         } else {
                             $this->session->setFlashdata('msg', 'Hubungi IT untuk melengkapi data!');

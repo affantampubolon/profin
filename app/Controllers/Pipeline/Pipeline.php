@@ -18,7 +18,9 @@ class Pipeline extends BaseController
         $data = [
             'title' => "Pembuatan Pipeline",
             'group_barang' => $this->kelasProdModel->getGrupBarang($username),
-            'breadcrumb' => $this->breadcrumb
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('pipeline/pembuatan', $data);
     }
@@ -160,24 +162,14 @@ class Pipeline extends BaseController
     {
         // Ambil username dari session
         $username = session()->get('username');
-
-        // Ambil department_id dari user yang sedang login
-        $db = \Config\Database::connect();
-        $query = $db->table('mst_user u')
-            ->select('p.department_id')
-            ->join('mst_param_emp p', 'u.id_ref = p.id', 'inner')
-            ->where('u.username', $username)
-            ->get();
-    
-        $department = $query->getRow();
-        $department_id = $department ? $department->department_id : null;
-
+        
         $data = [
             'title' => "Formulir Pipeline",
             'group_barang' => $this->kelasProdModel->getGrupBarang($username),
             'probabilitas' => $this->probabilitasModel->getSkalaProbabilitas($username),
+            'validation' => $this->validation,
             'breadcrumb' => $this->breadcrumb,
-            'department_id' => $department_id // Kirim ke View
+            'session' => $this->session
         ];
         return view('pipeline/form_input', $data);
     }
@@ -438,7 +430,9 @@ class Pipeline extends BaseController
             'title' => "Persetujuan Pipeline",
             'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
             'group_barang' => $this->kelasProdModel->getGrupBarang($username),
-            'breadcrumb'          => $this->breadcrumb
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('pipeline/persetujuan', $data);
     }
@@ -467,8 +461,8 @@ class Pipeline extends BaseController
         $username = $this->session->get('username');
 
         $data = [
-            'flg_approve' => $flg_approve,
-            'reason_reject' => $flg_approve ? null : $reason_reject,
+        'flg_approve' => $flg_approve,
+            'reason_reject' => $reason_reject,
             'user_update' => $username,
             'update_date' => date('Y-m-d H:i:s'), // Format timestamp
             'user_approve' => $username,
@@ -478,9 +472,13 @@ class Pipeline extends BaseController
         $update = $this->pipelineDetModel->updatePipelineDet($id, $data);
 
         if ($update) {
-            return $this->response->setJSON(['status' => 'success']);
+            $message = $flg_approve
+                ? "Pipeline ID $id berhasil disetujui."
+                : "Pipeline ID $id ditolak dengan alasan: $reason_reject.";
+
+            return $this->response->setJSON(['status' => 'success', 'message' => $message]);
         } else {
-            return $this->response->setJSON(['status' => 'error']);
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data.']);
         }
     }
 }
