@@ -14,13 +14,18 @@ class KelasProdModel extends Model
      * 
      * @return array
      */
-    public function getGrupBarang()
+    public function getGrupBarang($username)
     {
-        return $this->distinct()
-            ->select('group_id, group_name')
-            ->where('flg_used', 't')
-            ->orderBy('group_id')
-            ->findAll();
+        $db = \Config\Database::connect();
+
+        $query = $db->table('mst_department c')
+            ->select('c.group_id, f_tv_group_name(c.group_id) as group_name')
+            ->join('mst_param_emp p', 'p.department_id = c.id', 'inner')
+            ->join('mst_user u', 'u.id_ref = p.id', 'inner')
+            ->where('u.username', $username)
+            ->get();
+
+        return $query->getResult();
     }
 
     /**
@@ -58,4 +63,5 @@ class KelasProdModel extends Model
             ->orderBy('class_id')
             ->findAll();
     }
+
 }

@@ -32,7 +32,7 @@ $routes->get('/', 'Auth\Auth::index');
 // Master
 $routes->post('/master/getSubGrupBarang', 'Master\Master::getSubGrupBarang');
 $routes->post('/master/getKelasBarang', 'Master\Master::getKelasBarang');
-$routes->get('/master/getMstPelanggan', 'Master\Master::getMstPelanggan');
+$routes->get('/master/getMstPelangganCab', 'Master\Master::getMstPelanggan');
 $routes->get('/master/getMstKategoriPelanggan', 'Master\Master::getMstKategoriPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
 // Master Wilayah
@@ -53,6 +53,15 @@ $routes->post('/pipeline/saveTemp', 'Pipeline\Pipeline::saveTemporerDetailPipeli
 $routes->get('/pipeline/getTemp', 'Pipeline\Pipeline::getTemporerDetailPipeline');
 $routes->post('/pipeline/deleteTemp', 'Pipeline\Pipeline::deleteTemporerDetailPipeline');
 $routes->post('/pipeline/insertForm', 'Pipeline\Pipeline::insertFormPipeline');
+//draft pipeline
+$routes->post('/pipeline/dataDraft', 'Pipeline\Pipeline::dataDraftPipeline');
+$routes->post('/pipeline/updateDraft', 'Pipeline\Pipeline::updateDraftPipeline');
+$routes->post('/pipeline/deleteDraft', 'Pipeline\Pipeline::deleteDraftPipeline');
+
+//verifikasi pipeline
+$routes->post('/pipeline/dataVerifikasi', 'Pipeline\Pipeline::dataVerifPipeline');
+$routes->post('/pipeline/updateVerifikasi', 'Pipeline\Pipeline::updateVerifikasi');
+
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
 $routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
 $routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');

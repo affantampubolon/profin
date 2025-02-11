@@ -14,14 +14,20 @@ class PelangganModel extends Model
      * 
      * @return array
      */
-    public function getMstPelanggan()
+    // Master Pelanggan
+    public function getMstPelangganCab($username)
     {
-        return $this
-            ->select(['cust_id', 'cust_name'])
-            ->where('flg_used', 't')
-            ->where('branch_id', '11')
-            ->orderBy('cust_id')
-            ->findAll();
+        $db = \Config\Database::connect();
+
+        $query = $db->table('mst_customer c')
+            ->select('c.cust_id, c.cust_name')
+            ->join('mst_param_emp p', 'p.branch_id = c.branch_id', 'inner')
+            ->join('mst_user u', 'u.id_ref = p.id', 'inner')
+            ->where('u.username', $username)
+            ->orderBy('c.cust_id')
+            ->get();
+
+        return $query->getResultArray();
     }
 
     // Kategori Pelanggan

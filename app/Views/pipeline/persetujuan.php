@@ -50,7 +50,12 @@
                             <label class="form-label" for=""
                                 >Sales / Marketing</label
                             >
-                            <select id="salesAccPipeline" class="select2 form-control" name="sales_acc_pipeline"></select>
+                            <select id="salesMarketing" class="select2 form-control" name="sales_marketing">
+                                <option value="">Pilih Sales/Marketing</option>
+                                <?php foreach ($data_salesmarketing as $salesmarketing): ?>
+                                    <option value="<?= $salesmarketing->nik; ?>"> <?= $salesmarketing->name ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="col-xl-4 col-md-4">
                             <label class="form-label" for=""
@@ -59,9 +64,7 @@
                             <select id="grupBarang" class="select2 form-control" name="grup_barang">
                                 <option value="">Pilih Grup</option>
                                 <?php foreach ($group_barang as $group): ?>
-                                    <option value="<?= htmlspecialchars($group['group_id'], ENT_QUOTES, 'UTF-8') ?>">
-                                        <?= htmlspecialchars($group['group_id'], ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars($group['group_name'], ENT_QUOTES, 'UTF-8') ?>
-                                    </option>
+                                    <option value="<?= $group->group_id; ?>"> <?= $group->group_id ?> - <?= $group->group_name; ?> </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -81,13 +84,13 @@
                                 <option value="">Pilih Kelas</option>
                             </select>
                         </div>
-                        <div class="col-xl-12 col-md-12 box-col-12">
-                            <div id="tabel_persetujuan_pipeline"></div>
-                        </div>
                         <div class="col-xl-12 col-md-12">
-                            <button class="btn btn-primary" type="submit">
-                                <i class="fa fa-save"></i> Simpan
+                            <button id="selectAll" class="btn btn-pill btn-outline btn-success">
+                                <i class="fa fa-check-circle-o"></i> Pilih Semua
                             </button>
+                        </div>
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                             <div id="tabel_verifikasi_pipeline"></div>
                         </div>
                     </div>
                 </div>
@@ -96,5 +99,26 @@
     </div>
 </div>
 <!-- Container-fluid Ends-->
+<!-- Modal Input Alasan Penolakan -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rejectModalLabel">Alasan Penolakan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="reject_reason">Masukkan alasan:</label>
+        <textarea id="reject_reason" class="form-control" rows="3"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-danger" id="saveReject">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->

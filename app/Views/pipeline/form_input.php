@@ -145,23 +145,18 @@
                                 <label class="form-label" for=""
                                     >Pelanggan <span class="txt-danger f-w-600">*</span></label
                                 >
-                                <select id="masterpelanggan" class="select2 form-control" name="master_pelanggan"></select>
+                                <select id="masterpelanggan" class="select2 form-control" name="master_pelanggan">
+                                </select>
                             </div>
-                            <div class="col-xl-4 col-md-4 box-col-4">
+                            <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
-                                    >Target Call <span class="txt-danger f-w-600">*</span></label
+                                    >Frekuensi Kunjungan <span class="txt-danger f-w-600">*</span></label
                                 >
-                                <input class="form-control" id="targetCall" type="text" placeholder="0">
+                                <input class="form-control" id="freqVisit" type="text" placeholder="0">
                             </div>
-                            <div class="col-xl-4 col-md-4 box-col-4">
+                            <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
-                                    >Target Efective Call <span class="txt-danger f-w-600">*</span></label
-                                >
-                                <input class="form-control" id="targetEfCall" type="text" placeholder="0">
-                            </div>
-                            <div class="col-xl-4 col-md-4 box-col-4">
-                                <label class="form-label" for=""
-                                    >Target Nilai <span class="txt-danger f-w-600">*</span></label
+                                    >Target Nilai (Rp) <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <input class="form-control" id="targetNilai" type="text" placeholder="0">
                             </div>
@@ -170,9 +165,12 @@
                                     >Target Probabilitas <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <select id="targetProbabilitas" class="select2 form-control" name="tahun_pipeline">
-                                    <option value="0">0 %</option>
-                                    <option value="10">10 %</option>
-                                    <option value="20">20 %</option>
+                                    <option value="">Probabilitas</option>
+                                    <?php foreach ($probabilitas as $probabilitas): ?>
+                                        <option value="<?= htmlspecialchars($probabilitas['scale'], ENT_QUOTES, 'UTF-8') ?>">
+                                            <?= htmlspecialchars($probabilitas['scale'], ENT_QUOTES, 'UTF-8') ?>% - <?= htmlspecialchars($probabilitas['description'], ENT_QUOTES, 'UTF-8') ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="col-xl-12 col-md-12 box-col-12">

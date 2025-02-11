@@ -16,6 +16,8 @@ use App\Models\PipelineModel\PipelineModel;
 use App\Models\PipelineModel\PipelineDetModel;
 use App\Models\MasterModel\KelasProdModel;
 use App\Models\MasterModel\PelangganModel;
+use App\Models\MasterModel\SalesMarketingModel;
+use App\Models\MasterModel\SkalaProbabilitasModel;
 use App\Models\IzinModel\IzinModel;
 use App\Models\MasterModel\WilayahDetModel;
 
@@ -65,6 +67,7 @@ abstract class BaseController extends Controller
     // kelas
     protected $kelasProdModel;
     protected $pelangganModel;
+    protected $probabilitasModel;
     protected $wilayahModel;
     //auth
     protected $userModel;
@@ -95,9 +98,11 @@ abstract class BaseController extends Controller
         $this->view = \Config\Services::renderer();
         // Deklarasi models
         //Master Models
-        $this->kelasProdModel   = new KelasProdModel();
-        $this->pelangganModel   = new PelangganModel();
-        $this->wilayahModel     = new WilayahDetModel();
+        $this->kelasProdModel      = new KelasProdModel();
+        $this->pelangganModel      = new PelangganModel();
+        $this->probabilitasModel   = new SkalaProbabilitasModel();
+        $this->wilayahModel        = new WilayahDetModel();
+        $this->salesMarketingModel = new SalesMarketingModel();
         //General Models
         $this->userModel        = new UserModel();
         $this->empModel         = new EmpModel();

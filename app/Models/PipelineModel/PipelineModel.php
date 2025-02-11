@@ -63,20 +63,20 @@ class PipelineModel extends Model
     }
 
     public function clearTemporaryData($nik)
-{
-    $session = \Config\Services::session();
+    {
+        $session = \Config\Services::session();
 
-    // Ambil data sementara dari sesi
-    $temporaryData = $session->get('temporary_data') ?? [];
+        // Ambil data sementara dari sesi
+        $temporaryData = $session->get('temporary_data') ?? [];
 
-    // Hapus data sementara untuk NIK tertentu
-    if (isset($temporaryData['default_nik']['nik']) && $temporaryData['default_nik']['nik'] === $nik) {
-        unset($temporaryData['default_nik']); // Hapus key default_nik
-        $session->set('temporary_data', $temporaryData); // Perbarui sesi
-        log_message('debug', 'Data temporary untuk NIK ' . $nik . ' telah dihapus.');
-    } else {
-        log_message('error', 'Data temporary untuk NIK ' . $nik . ' tidak ditemukan.');
+        // Hapus data sementara untuk NIK tertentu
+        if (isset($temporaryData['default_nik']['nik']) && $temporaryData['default_nik']['nik'] === $nik) {
+            unset($temporaryData['default_nik']); // Hapus key default_nik
+            $session->set('temporary_data', $temporaryData); // Perbarui sesi
+            log_message('debug', 'Data temporary untuk NIK ' . $nik . ' telah dihapus.');
+        } else {
+            log_message('error', 'Data temporary untuk NIK ' . $nik . ' tidak ditemukan.');
+        }
     }
-}
 
 }

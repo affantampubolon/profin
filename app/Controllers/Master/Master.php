@@ -57,6 +57,8 @@ class Master extends BaseController
         return $this->response->setBody($options);
     }
 
+    //MASTER PELANGGAN
+
     // Function Index -> halaman Registrasi Pelanggan
     public function indexRegisPelanggan()
     {
@@ -70,7 +72,10 @@ class Master extends BaseController
     // Function untuk mendapatkan Pelanggan
     public function getMstPelanggan()
     {
-        $data = $this->pelangganModel->getMstPelanggan();
+        // Ambil username dari session
+        $username = session()->get('username');
+
+        $data = $this->pelangganModel->getMstPelangganCab($username);
         echo json_encode($data);
     }
 
