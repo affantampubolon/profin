@@ -9,10 +9,10 @@
     name="keywords"
     content="Raja Ampat, Operasioanl, admin, dashboard, web app" />
   <meta name="NUSINDO" content="dashboard" />
-  <link rel="icon" href="<?= base_url(''); ?>riho/assets/images/favicon.png" type="image/x-icon" />
+  <link rel="icon" href="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat.png" type="image/x-icon" />
   <link
     rel="shortcut icon"
-    href="<?= base_url(''); ?>riho/assets/images/favicon.png"
+    href="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat.png"
     type="image/x-icon" />
   <title><?= $title; ?></title>
   <!-- Google font-->

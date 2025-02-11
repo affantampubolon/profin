@@ -3,6 +3,7 @@
 namespace App\Controllers\Rencana;
 
 use App\Controllers\BaseController;
+use Config\Session;
 
 class Rencana extends BaseController
 {
@@ -13,7 +14,8 @@ class Rencana extends BaseController
   {
     $data = [
       'title' => "Verifikasi Rencana Kunjungan",
-      'breadcrumb' => $this->breadcrumb
+      'breadcrumb' => $this->breadcrumb,
+      'session' => $this->session
     ];
     return view('rencana/verifikasi', $data);
   }
@@ -22,7 +24,8 @@ class Rencana extends BaseController
   {
     $data = [
       'title' => "Monitoring Rencana Kunjungan",
-      'breadcrumb' => $this->breadcrumb
+      'breadcrumb' => $this->breadcrumb,
+      'session' => $this->session
     ];
     return view('rencana/monitoring', $data);
   }
