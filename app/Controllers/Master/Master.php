@@ -69,6 +69,34 @@ class Master extends BaseController
         return view('master/regis_pelanggan', $data);
     }
 
+    //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA SUBGROUP DAN CLASS DIAMBIL
+    // Function untuk mendapatkan Subgroup Barang berdasarkan Group Product
+    public function getFilterSubgrp()
+    {
+        // $data = $this->builder->where('group_id', $this->request->getPost('group'))->get()->getResult();
+        $data = $this->kelasProdModel->getFilterMstprodsubgrp($this->request->getPost('group_prod'))->getResult();
+        // echo '<option selected value="">Pilih SubGroup Product</option>';
+        foreach ($data as $row) {
+            echo '<option value="' . $row->subgroup_id . '">' . $row->subgroup_id . ' - ' . $row->subgroup_name . '</option>';
+        }
+        // echo json_encode($data);
+    }
+
+    // Function untuk mendapatkan Class Barang berdasarkan Group dan Subgroup Barang
+    public function getFilterClass()
+    {
+        // $data = $this->builder2->where('subgroup_id', $this->request->getPost('subgroup'))->where('group_id', $this->request->getPost('group_id'))->get()->getResult();
+        $data = $this->kelasProdModel->getFilterMstclass($this->request->getPost('group_prod'), $this->request->getPost('subgroup_prod'))->getResult();
+        // echo '<option selected value="">Pilih Class Product</option>';
+        foreach ($data as $row) {
+            echo '<option value="' . $row->class_id . '"> ' . $row->class_id . ' - ' . $row->class_name . '</option>';
+        }
+
+        // echo json_encode($data);
+    }
+
+
+
     // Function untuk mendapatkan Pelanggan
     public function getMstPelanggan()
     {
@@ -146,5 +174,24 @@ class Master extends BaseController
 
         $data = $this->wilayahModel->getAreaKodePos($province_id, $city_id, $district_id, $subdistrict_id);
         echo json_encode($data);
+    }
+
+    public function dataFilterProbabilitas()
+    {
+        // Ambil username dari session
+        $username = session()->get('username');
+    
+        $data = $this->probabilitasModel->getSkalaProbabilitas($username);
+    
+        // Format data agar cocok dengan Tabulator
+        $formattedData = [];
+        foreach ($data as $item) {
+            $formattedData[] = [
+                "value" => $item['scale'],       // Ini yang dipilih saat update
+                "label" => $item['description']  // Ini yang ditampilkan di dropdown
+            ];
+        }
+
+        return $this->response->setJSON($formattedData);
     }
 }

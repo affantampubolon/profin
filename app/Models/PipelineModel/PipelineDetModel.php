@@ -13,21 +13,20 @@ class PipelineDetModel extends Model
     //data draft pipeline
     public function getDataPipelineDet($username, $tahun, $bulan, $group_id, $subgroup_id, $class_id)
     {
-        return $this->db->table('trn_pipeline a')
-            ->select('a.year, a.month, a.nik, a.group_id, a.subgroup_id, a.class_id, 
+        $query =    "SELECT a.year, a.month, a.nik, a.group_id, a.subgroup_id, a.class_id, f_tv_class_name(a.group_id, a.subgroup_id, a.class_id) class_name,
                     b.id, b.id_ref, b.cust_id, f_tv_customer_name(b.cust_id) AS cust_name, 
-                    b.freq_visit, b.target_value, b.probability')
-            ->join('trn_pipeline_det b', 'a.id = b.id_ref')
-            ->where('a.nik', $username)
-            ->where('a.year', $tahun)
-            ->where('a.month', $bulan)
-            ->where('a.group_id', $group_id)
-            ->where('a.subgroup_id', $subgroup_id)
-            ->where('a.class_id', $class_id)
-            ->where('b.flg_approve', null)
-            ->orderBy('b.id')
-            ->get()
-            ->getResultArray();
+                    b.freq_visit, b.target_value, b.probability
+                    FROM trn_pipeline a, trn_pipeline_det b
+	                    WHERE a.id = b.id_ref
+	                    AND a.nik = '" . $username . "'
+                    AND a.year = '" . $tahun . "'
+                    AND a.month = '" . $bulan . "'
+                    AND a.group_id = '" . $group_id . "'
+                    AND a.subgroup_id = CASE WHEN '" . $subgroup_id . "' = '' THEN a.subgroup_id ELSE '" . $subgroup_id . "' END
+	                    AND a.class_id = CASE WHEN '" . $class_id . "' = '' THEN a.class_id ELSE '" . $class_id . "' END	
+                    AND b.flg_approve IS NULL
+                        ";
+        return $this->db->query($query)->getResult();
     }
 
     // Update data draft pipeline berdasarkan ID
@@ -46,23 +45,25 @@ class PipelineDetModel extends Model
             ->delete();
     }
 
-    //data verifikasi pipeline
-    public function getDataPipelineVerifikasi($nik, $thn, $bln, $grp_prod, $subgrp_prod)
+    
+    //data monitoring pipeline
+    public function getDataPipelineMonitoring($nik, $tahun, $bulan, $grp_id, $subgrp_id, $clsgrp_id)
     {
-        return $this->db->table('trn_pipeline a')
-            ->select('a.year, a.month, a.nik, a.group_id, a.subgroup_id, a.class_id, 
-                    b.id, b.id_ref, b.cust_id, f_tv_customer_name(b.cust_id) AS cust_name, 
-                    b.freq_visit, b.target_value, b.probability')
-            ->join('trn_pipeline_det b', 'a.id = b.id_ref')
-            ->where('a.nik', $nik)
-            ->where('a.year', $thn)
-            ->where('a.month', $bln)
-            ->where('a.group_id', $grp_prod)
-            ->where('a.subgroup_id', $subgrp_prod)
-            ->where('b.flg_approve', null)
-            ->orderBy('b.id')
-            ->get()
-            ->getResultArray();
+        $query =    "SELECT a.year, a.month, a.nik, a.group_id, a.subgroup_id, a.class_id, f_tv_class_name(a.group_id, a.subgroup_id, a.class_id) class_name,
+                     b.id, b.id_ref, b.cust_id, f_tv_customer_name(b.cust_id) AS cust_name, 
+                     b.freq_visit, b.target_value, b.real_value, b.adj_value, b.probability
+                     FROM trn_pipeline a, trn_pipeline_det b
+	                     WHERE a.id = b.id_ref
+	                     AND a.nik = [$nik]
+                         AND a.year = [$tahun]
+                         AND a.month = [$bulan]
+                         AND a.group_id = [$grp_id]
+                         AND a.subgroup_id = CASE WHEN [$subgrp_id] = '' THEN a.subgroup_id ELSE [$subgrp_id] END
+	                     AND a.class_id = CASE WHEN [$clsgrp_id] = '' THEN a.class_id ELSE [$clsgrp_id] END
+					     AND b.flg_approve = 't'
+				     ORDER BY b.id, a.class_id
+                        ";
+        return $this->db->query($query)->getResult();
     }
 
 }

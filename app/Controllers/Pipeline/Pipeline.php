@@ -9,6 +9,14 @@ class Pipeline extends BaseController
 {
     // Parent Construct
     public function __construct() {}
+
+    // Function mengambil group_id berdasarkan session user
+    public function getUserGroupSession()
+    {
+        $session = session();
+        return $this->response->setJSON(['group_id' => $session->get('group_id')]);
+    }
+
     // Function Index -> halaman PIPELINE
     public function index()
     {
@@ -325,19 +333,34 @@ class Pipeline extends BaseController
 
             // Menyimpan detail pipeline
             $detailPipeline = [];
+            $groupId = $this->session->get('group_id');
+
             foreach ($detailData as $detail) {
-                if (isset($detail['cust_id'], $detail['freq_visit'], $detail['target_value'], $detail['probability'])) {
-                    $detailPipeline[] = [
-                        'id_ref' => $pipelineId,
-                        'cust_id' => $detail['cust_id'],
-                        'freq_visit' => $detail['freq_visit'],
-                        'target_value' => $detail['target_value'],
-                        'probability' => $detail['probability'],
-                        'user_create' => $nik,
-                    ];
+                if (!isset($detail['cust_id'], $detail['target_value'])) {
+                    continue; // Lewati jika data tidak lengkap
                 }
+
+                $pipelineDetail = [
+                    'id_ref' => $pipelineId,
+                    'cust_id' => $detail['cust_id'],
+                    'target_value' => $detail['target_value'],
+                    'user_create' => $nik,
+                ];
+
+                // Jika group_id adalah '01' atau '03', tambahkan freq_visit
+                if (in_array($groupId, ['01', '03'])) {
+                    $pipelineDetail['freq_visit'] = $detail['freq_visit'] ?? null;
+                }
+
+                // Jika group_id adalah '02' atau '05', tambahkan probability
+                if (in_array($groupId, ['02', '05'])) {
+                    $pipelineDetail['probability'] = $detail['probability'] ?? null;
+                }
+
+                $detailPipeline[] = $pipelineDetail;
             }
 
+            // Debugging log untuk memeriksa data sebelum insert
             log_message('debug', 'Detail pipeline yang akan disimpan: ' . print_r($detailPipeline, true));
 
             if (!empty($detailPipeline)) {
@@ -348,8 +371,6 @@ class Pipeline extends BaseController
                     'message' => 'Data detail pipeline tidak valid.',
                 ]);
             }
-
-            
 
             // Mengirimkan response sukses
             return $this->response->setJSON([
@@ -392,6 +413,7 @@ class Pipeline extends BaseController
         $data = [
             'freq_visit' => $request->freq_visit,
             'target_value' => $request->target_value,
+            'probability' => $request->probability,
             'user_update' => $username,
             'update_date' => date('Y-m-d H:i:s') // Format timestamp
         ];
@@ -441,13 +463,14 @@ class Pipeline extends BaseController
     public function dataVerifPipeline()
     {
         //filter data verifikasi pipeline
-        $nik = $this->request->getPost('sales_marketing');
-        $thn = $this->request->getPost('thn');
-        $bln = $this->request->getPost('bln');
-        $grp_prod = $this->request->getPost('grp_prod');
-        $subgrp_prod = $this->request->getPost('subgrp_prod');
+        $username = $this->request->getPost('sales_marketing');
+        $tahun = $this->request->getPost('thn');
+        $bulan = $this->request->getPost('bln');
+        $group_id = $this->request->getPost('grp_prod');
+        $subgroup_id = $this->request->getPost('subgrp_prod');
+        $class_id = $this->request->getPost('klsgrp_prod');
 
-        $data = $this->pipelineDetModel->getDataPipelineVerifikasi($nik, $thn, $bln, $grp_prod, $subgrp_prod);
+        $data = $this->pipelineDetModel->getDataPipelineDet($username, $tahun, $bulan, $group_id, $subgroup_id, $class_id);
         echo json_encode($data);
     }
 
@@ -480,5 +503,22 @@ class Pipeline extends BaseController
         } else {
             return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data.']);
         }
+    }
+
+    // Function Index -> halaman Monitoring Pipeline
+    public function indexMonitoring()
+    {
+        // Ambil username dari session
+        $username = session()->get('username');
+
+        $data = [
+            'title' => "Monitoring Pipeline",
+            'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
+            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('pipeline/monitoring', $data);
     }
 }
