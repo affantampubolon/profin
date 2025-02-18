@@ -146,24 +146,27 @@
                                 <select id="masterpelanggan" class="select2 form-control" name="master_pelanggan">
                                 </select>
                             </div>
+                            <?php if (in_array($session->get('group_id'), ['01', '03'])): ?>
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
                                     >Frekuensi Kunjungan <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <input class="form-control" id="freqVisit" type="text" placeholder="0">
                             </div>
+                            <?php endif; ?>
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
                                     >Target Nilai (Rp) <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <input class="form-control" id="targetNilai" type="text" placeholder="0">
                             </div>
+                            <?php if (in_array($session->get('group_id'), ['02', '05'])): ?>
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <label class="form-label" for=""
                                     >Target Probabilitas <span class="txt-danger f-w-600">*</span></label
                                 >
                                 <select id="targetProbabilitas" class="select2 form-control" name="tahun_pipeline">
-                                    <option value="">Probabilitas</option>
+                                    <option value="0">Probabilitas</option>
                                     <?php foreach ($probabilitas as $probabilitas): ?>
                                         <option value="<?= htmlspecialchars($probabilitas['scale'], ENT_QUOTES, 'UTF-8') ?>">
                                             <?= htmlspecialchars($probabilitas['scale'], ENT_QUOTES, 'UTF-8') ?>% - <?= htmlspecialchars($probabilitas['description'], ENT_QUOTES, 'UTF-8') ?>
@@ -171,6 +174,7 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
+                            <?php endif; ?>
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <p class="f-w-600"><span class="txt-danger">*</span>) Wajib Diisi</p>
                             </div>

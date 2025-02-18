@@ -64,4 +64,46 @@ class KelasProdModel extends Model
             ->findAll();
     }
 
+    //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA SUBGROUP DAN CLASS DIAMBIL
+    //Filter Dropdown Subgroup
+    /**
+    * Get distinct subgroup_id dan subgroup_name dari tabel mst_prod_subgrp dengan opsi default "ALL SUBGROUP".
+    *
+    * @param string $group_prod
+    * @return object
+    */
+    public function getFilterMstprodsubgrp($group_prod) 
+    {
+        $query = "SELECT subgroup_id, subgroup_name
+                    FROM (SELECT DISTINCT a.subgroup_id, a.subgroup_name
+                        FROM mst_prod_class a
+						WHERE group_id = '" . $group_prod . "'
+						UNION ALL
+						SELECT NULL,'Semua Subgrup') b 
+				  ORDER BY subgroup_id IS NOT NULL, subgroup_id ASC";
+        return $this->db->query($query);
+    }
+
+
+    //Filter Dropdown Class
+    /**
+    * Get distinct class_id dan class_name dari tabel mst_prod_class dengan opsi default "ALL CLASS GROUP".
+    *
+    * @param string $group_prod
+    * @param string $subgroup_prod
+    * @return object
+    */
+    public function getFilterMstclass($group_prod, $subgroup_prod) 
+    {
+        $query = "SELECT class_id, class_name
+                  FROM (SELECT DISTINCT a.class_id, a.class_name
+                        FROM mst_prod_class a
+                        WHERE group_id = '" . $group_prod . "'
+                        AND subgroup_id = '" . $subgroup_prod . "'
+							UNION ALL
+							SELECT NULL,'Semua Kelas') b
+				  ORDER BY class_id IS NOT NULL, class_id ASC";
+        return $this->db->query($query);
+    }
+
 }

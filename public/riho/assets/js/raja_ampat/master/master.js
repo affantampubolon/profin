@@ -2,7 +2,7 @@ $(document).ready(function () {
   if (window.location.pathname == "/master/pelanggan/registrasi") {
     // Fetch data kategori pelanggan
     $.ajax({
-      url: url + "master/getMstKategoriPelanggan",
+      url: url + "master/kategoripelanggan",
       method: "GET",
       dataType: "json",
       success: function (data) {
@@ -59,7 +59,7 @@ $(document).ready(function () {
     // DATA WILAYAH
     // Fetch Provinsi
     $.ajax({
-      url: url + "master/getAreaProvinsi",
+      url: url + "master/area/provinsi",
       method: "GET",
       dataType: "json",
       success: function (data) {
@@ -91,7 +91,7 @@ $(document).ready(function () {
 
       if (provinceId) {
         $.ajax({
-          url: url + "master/getAreaKotaKab",
+          url: url + "master/area/kotakab",
           method: "POST",
           data: { province_id: provinceId },
           dataType: "json",
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
       if (cityId) {
         $.ajax({
-          url: url + "master/getAreaKecamatan",
+          url: url + "master/area/kecamatan",
           method: "POST",
           data: { province_id: provinceId, city_id: cityId },
           dataType: "json",
@@ -147,7 +147,7 @@ $(document).ready(function () {
 
       if (districtId) {
         $.ajax({
-          url: url + "master/getAreaKelurahan",
+          url: url + "master/area/kelurahandesa",
           method: "POST",
           data: {
             province_id: provinceId,
@@ -176,7 +176,7 @@ $(document).ready(function () {
 
       if (subdistrictId) {
         $.ajax({
-          url: url + "master/getAreaKodePos",
+          url: url + "master/area/kodepos",
           method: "POST",
           data: {
             province_id: provinceId,

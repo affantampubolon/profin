@@ -17,7 +17,7 @@ class SalesMarketingModel extends Model
             ->select('b.branch_id, a.nik, a.name, c.group_id')
             ->join('mst_param_emp b', 'a.nik = b.nik', 'inner')
             ->join('mst_department c', 'b.department_id = c.id', 'inner')
-            ->where('b.position_id', 14)
+            ->whereIn('b.position_id', [14, 16])
             ->where('b.flg_used', 't');
 
         // Subquery kedua (y)
