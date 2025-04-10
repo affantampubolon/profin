@@ -21,11 +21,11 @@ class Pipeline extends BaseController
     public function index()
     {
         // Ambil username dari session
-        $username = session()->get('username');
+        $grp_prod = session()->get('group_id');
 
         $data = [
             'title' => "Pembuatan Pipeline",
-            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'subgroup_barang' => $this->kelasProdModel->getSubGrupBarang($grp_prod),
             'validation' => $this->validation,
             'breadcrumb' => $this->breadcrumb,
             'session' => $this->session
@@ -37,6 +37,7 @@ class Pipeline extends BaseController
     {
         try {
             $username = $this->session->get('username');
+            $branch = $this->session->get('branch_id');
             if (!$username) {
                 return $this->response->setJSON([
                     'status' => 'error',
@@ -81,6 +82,7 @@ class Pipeline extends BaseController
                 $key = $username . '|' . $rowArray['A'] . '|' . $rowArray['B'] . '|' . $rowArray['C'] . '|' . $rowArray['D'] . '|' . $rowArray['E'];
                 if (!isset($uniquePipeline[$key])) {
                     $uniquePipeline[$key] = [
+                        'branch_id' => $branch,
                         'nik' => $username,
                         'group_id' => $rowArray['A'],
                         'subgroup_id' => $rowArray['B'],
@@ -447,11 +449,12 @@ class Pipeline extends BaseController
     {
         // Ambil username dari session
         $username = session()->get('username');
+        $grp_prod = session()->get('group_id');
 
         $data = [
             'title' => "Persetujuan Pipeline",
             'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
-            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'subgroup_barang' => $this->kelasProdModel->getSubGrupBarang($grp_prod),
             'validation' => $this->validation,
             'breadcrumb' => $this->breadcrumb,
             'session' => $this->session
@@ -510,15 +513,31 @@ class Pipeline extends BaseController
     {
         // Ambil username dari session
         $username = session()->get('username');
+        $grp_prod = session()->get('group_id');
 
         $data = [
             'title' => "Monitoring Pipeline",
             'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
-            'group_barang' => $this->kelasProdModel->getGrupBarang($username),
+            'subgroup_barang' => $this->kelasProdModel->getSubGrupBarang($grp_prod),
             'validation' => $this->validation,
             'breadcrumb' => $this->breadcrumb,
             'session' => $this->session
         ];
         return view('pipeline/monitoring', $data);
+    }
+
+    // Data monitoring pipeline
+    public function dataMonPipeline()
+    {
+        //filter data monitoring pipeline
+        $nik = $this->request->getPost('sales_marketing');
+        $tahun = $this->request->getPost('thn');
+        $bulan = $this->request->getPost('bln');
+        $grp_id = $this->request->getPost('grp_prod');
+        $subgrp_id = $this->request->getPost('subgrp_prod');
+        $clsgrp_id = $this->request->getPost('klsgrp_prod');
+
+        $data = $this->pipelineDetModel->getDataPipelineMonitoring($nik, $tahun, $bulan, $grp_id, $subgrp_id, $clsgrp_id);
+        echo json_encode($data);
     }
 }

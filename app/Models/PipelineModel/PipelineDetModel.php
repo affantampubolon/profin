@@ -49,21 +49,44 @@ class PipelineDetModel extends Model
     //data monitoring pipeline
     public function getDataPipelineMonitoring($nik, $tahun, $bulan, $grp_id, $subgrp_id, $clsgrp_id)
     {
-        $query =    "SELECT a.year, a.month, a.nik, a.group_id, a.subgroup_id, a.class_id, f_tv_class_name(a.group_id, a.subgroup_id, a.class_id) class_name,
-                     b.id, b.id_ref, b.cust_id, f_tv_customer_name(b.cust_id) AS cust_name, 
-                     b.freq_visit, b.target_value, b.real_value, b.adj_value, b.probability
-                     FROM trn_pipeline a, trn_pipeline_det b
-	                     WHERE a.id = b.id_ref
-	                     AND a.nik = [$nik]
-                         AND a.year = [$tahun]
-                         AND a.month = [$bulan]
-                         AND a.group_id = [$grp_id]
-                         AND a.subgroup_id = CASE WHEN [$subgrp_id] = '' THEN a.subgroup_id ELSE [$subgrp_id] END
-	                     AND a.class_id = CASE WHEN [$clsgrp_id] = '' THEN a.class_id ELSE [$clsgrp_id] END
-					     AND b.flg_approve = 't'
-				     ORDER BY b.id, a.class_id
-                        ";
-        return $this->db->query($query)->getResult();
+        $builder = $this->db->table('trn_pipeline a')
+            ->select("
+                a.year, 
+                a.month, 
+                a.nik, 
+                a.group_id, 
+                a.subgroup_id, 
+                a.class_id, 
+                f_tv_class_name(a.group_id, a.subgroup_id, a.class_id) AS class_name,
+                b.id, 
+                b.id_ref, 
+                b.cust_id, 
+                f_tv_customer_name(b.cust_id) AS cust_name,
+                b.freq_visit, 
+                b.target_value, 
+                b.real_value, 
+                b.adj_value, 
+                b.probability
+            ")
+            ->join('trn_pipeline_det b', 'a.id = b.id_ref')
+            ->where('a.nik', $nik)
+            ->where('a.year', $tahun)
+            ->where('a.month', $bulan)
+            ->where('a.group_id', $grp_id)
+            ->where('b.flg_approve', 't')
+            ->orderBy('b.id, a.class_id');
+
+            // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
+            if ($subgrp_id !== '') {
+                $builder->where('a.subgroup_id', $subgrp_id);
+            }
+
+            // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
+            if ($clsgrp_id !== '') {
+                $builder->where('a.class_id', $clsgrp_id);
+            }
+
+            return $builder->get()->getResult();
     }
 
 }

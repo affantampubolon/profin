@@ -66,9 +66,9 @@
                                         >
                                         <select id="grupBarang" class="select2 form-control" name="grup_barang">
                                             <option value="">Pilih Grup</option>
-                                            <?php foreach ($group_barang as $group): ?>
-                                                <option value="<?= $group->group_id; ?>"> <?= $group->group_id ?> - <?= $group->group_name; ?> </option>
-                                            <?php endforeach; ?>
+                                            <option value="<?= $session->get('group_id'); ?>" selected>
+                                                <?= $session->get('group_id'); ?> - <?= $session->get('group_name'); ?>
+                                            </option>
                                         </select>
                                     </div>
                                     <div class="col-xl-4 col-md-4">

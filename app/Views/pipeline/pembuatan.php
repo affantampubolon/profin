@@ -144,17 +144,20 @@
                         </div>
                         <div class="col-xl-4 col-md-4">
                             <label class="form-label" for="">Grup Barang</label>
-                            <select id="grupBarang" class="select2 form-control" name="grup_barang">
-                                <option value="">Pilih Grup</option>
-                                <?php foreach ($group_barang as $group): ?>
-                                        <option value="<?= $group->group_id; ?>"> <?= $group->group_id ?> - <?= $group->group_name; ?> </option>
-                                <?php endforeach; ?>
+                            <select id="grupBarang" class="select2 form-control" name="grup_barang" disabled>
+                                <option value="<?= $session->get('group_id'); ?>" selected>
+                                    <?= $session->get('group_id'); ?> - <?= $session->get('group_name'); ?>
+                                </option>
                             </select>
                         </div>
                         <div class="col-xl-4 col-md-4">
                             <label class="form-label" for="">Subgrup Barang</label>
                             <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
-                                <option value="">Pilih Subgrup</option>
+                                <?php foreach ($subgroup_barang as $subgroupbarang): ?>
+                                    <option value="<?= $subgroupbarang['subgroup_id']; ?>"> 
+                                        <?= $subgroupbarang['subgroup_id'] ?> - <?= $subgroupbarang['subgroup_name'] ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-xl-4 col-md-4">

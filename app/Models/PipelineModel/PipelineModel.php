@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class PipelineModel extends Model
 {
     protected $table = 'trn_pipeline';
-    protected $allowedFields = ['nik', 'group_id', 'subgroup_id', 'class_id', 'month', 'year'];
+    protected $allowedFields = ['branch_id', 'nik', 'group_id', 'subgroup_id', 'class_id', 'month', 'year'];
 
     public function getTemporaryData($nik)
     {

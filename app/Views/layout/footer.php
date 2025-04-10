@@ -18,6 +18,9 @@
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>
 <!-- Tabulator table -->
 <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js
+"></script>
 <!-- datatables -->
 <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 <!-- jsGrid Tables -->
@@ -28,6 +31,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- select2 -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<!-- Plugins DateRangePicker -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<!-- Map Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <!-- Bootstrap js-->
 <script src="<?= base_url(''); ?>riho/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
 <!-- feather icon js-->
@@ -72,8 +80,10 @@
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
-<!-- <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script> -->
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/rencana-kunjungan/rencana-kunjungan.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/realisasi-kunjungan/realisasi-kunjungan.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/master/master.js"></script>
+<!-- <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script> -->
 <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
 <script>
   $(document).ready(function() {

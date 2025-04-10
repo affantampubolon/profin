@@ -31,41 +31,73 @@
                 <div class="card-header card-no-border">
                     <h4>Persetujuan Pipeline</h4>
                     <div class="row g-3">
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Tahun</label
-                            >
-                            <select id="tahunAccPipeline" class="select2 form-control" name="tahun_acc_pipeline">
-                                <option value="<?= date('Y'); ?>"><?= date('Y'); ?></option>
-                                <option value="<?= date('Y')+ 1; ?>"><?= date('Y')+ 1; ?></option>
-                            </select>
+                        <div class="row g-3">
+                            <div class="col-xl-6 col-md-6">
+                                <label class="form-label" for=""
+                                    >Tahun</label
+                                >
+                                <select id="tahunAccPipeline" class="select2 form-control" name="tahun_acc_pipeline">
+                                    <option value="<?= date('Y'); ?>"><?= date('Y'); ?></option>
+                                    <option value="<?= date('Y')+ 1; ?>"><?= date('Y')+ 1; ?></option>
+                                </select>
+                            </div>
+                            <div class="col-xl-6 col-md-6">
+                                <label class="form-label" for=""
+                                    >Bulan</label
+                                >
+                                <select id="bulanAccPipeline" class="select2 form-control" name="bulan_acc_pipeline"></select>
+                            </div>
                         </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Bulan</label
-                            >
-                            <select id="bulanAccPipeline" class="select2 form-control" name="bulan_acc_pipeline"></select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Sales / Marketing</label
-                            >
-                            <select id="salesMarketing" class="select2 form-control" name="sales_marketing">
-                                <option value="">Pilih Sales/Marketing</option>
-                                <?php foreach ($data_salesmarketing as $salesmarketing): ?>
-                                    <option value="<?= $salesmarketing->nik; ?>"> <?= $salesmarketing->name ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <div class="row g-1">
+                            <div class="col-xl-6 col-md-6">
+                                    <label class="form-label" for=""
+                                        >Cabang</label
+                                    >
+                                    <select id="cabangOps" class="select2 form-control" name="cabang_ops"
+                                        <?= ($session->get('branch_id') <> '11') ? 'disabled' : ''; ?>>
+                                        <?php if ($session->get('branch_id') <> '11'): ?>
+                                            <!-- Jika bukan branch_id = 11 -->
+                                            <option value="<?= $session->get('branch_id'); ?>" selected>
+                                                <?= $session->get('branch_id'); ?> - <?= $session->get('branch_name'); ?>
+                                            </option>
+                                        <?php else: ?>
+                                            <!-- Jika branch_id = 11, tampilkan opsi dropdown biasa -->
+                                            <option value="">Pilih Cabang</option>
+                                        <?php endif; ?>
+                                    </select>
+                            </div>
+                            <div class="col-xl-6 col-md-6">
+                                <label class="form-label" for="">Sales / Marketing</label>
+                                <select id="salesMarketing" class="select2 form-control" name="sales_marketing"
+                                    <?= ($session->get('role_id') == '5') ? 'disabled' : ''; ?>>
+                                    <?php if ($session->get('role_id') == '5' && $session->get('branch_id') != '11'): ?>
+                                        <!-- Jika role_id = 5, set default ke username -->
+                                        <option value="<?= $session->get('username'); ?>" selected>
+                                            <?= $session->get('name'); ?>
+                                        </option>
+                                    <?php elseif ($session->get('role_id') != '5' && $session->get('branch_id') != '11'): ?>
+                                        <!-- Jika bukan role_id = 5, tampilkan opsi dropdown biasa -->
+                                        <option value="">Pilih Sales/Marketing</option>
+                                        <?php foreach ($data_salesmarketing as $salesmarketing): ?>
+                                            <option value="<?= $salesmarketing->nik; ?>">
+                                                <?= $salesmarketing->name ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php elseif ($session->get('role_id') != '5' && $session->get('branch_id') == '11'): ?>
+                                        <option value="">Pilih Sales/Marketing</option>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
                         </div>
                         <div class="col-xl-4 col-md-4">
                             <label class="form-label" for=""
                                 >Grup Barang</label
                             >
-                            <select id="grupBarang" class="select2 form-control" name="grup_barang">
+                            <select id="grupBarang" class="select2 form-control" name="grup_barang" disabled>
                                 <option value="">Pilih Grup</option>
-                                <?php foreach ($group_barang as $group): ?>
-                                    <option value="<?= $group->group_id; ?>"> <?= $group->group_id ?> - <?= $group->group_name; ?> </option>
-                                <?php endforeach; ?>
+                                <option value="<?= $session->get('group_id'); ?>" selected>
+                                    <?= $session->get('group_id'); ?> - <?= $session->get('group_name'); ?>
+                                </option>
                             </select>
                         </div>
                         <div class="col-xl-4 col-md-4">
@@ -73,7 +105,11 @@
                                 >Subgrup Barang</label
                             >
                             <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
-                                <option value="">Pilih Subgrup</option>
+                                <?php foreach ($subgroup_barang as $subgroupbarang): ?>
+                                    <option value="<?= $subgroupbarang['subgroup_id']; ?>"> 
+                                        <?= $subgroupbarang['subgroup_id'] ?> - <?= $subgroupbarang['subgroup_name'] ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="col-xl-4 col-md-4">
@@ -85,8 +121,8 @@
                             </select>
                         </div>
                         <div class="col-xl-12 col-md-12">
-                            <button id="selectAll" class="btn btn-pill btn-outline btn-success">
-                                <i class="fa fa-check-circle-o"></i> Pilih Semua
+                            <button id="saveApproveAll" class="btn btn-pill btn-outline btn-success">
+                                <i class="fa fa-check-circle-o"></i> Simpan Data
                             </button>
                         </div>
                         <div class="col-xl-12 col-md-12 box-col-12">

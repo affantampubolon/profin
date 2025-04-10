@@ -9,7 +9,7 @@ class Master extends BaseController
     // Function untuk mendapatkan Subgrup Barang berdasarkan Grup Barang
     public function getSubGrupBarang()
     {
-        $grp_prod = $this->request->getPost('grp_prod');
+        $grp_prod = session()->get('group_id');
 
         // Validasi input
         if (empty($grp_prod)) {
@@ -95,7 +95,25 @@ class Master extends BaseController
         // echo json_encode($data);
     }
 
+    // Function untuk mendapatkan Data Unit/Cabang
+    public function getMstCabang()
+    {
+        $data = $this->cabangModel->getCabang();
+        echo json_encode($data);
+    }
 
+    // Data Sales/Marketing
+    public function getMstSalesMarketing()
+    {
+        $grp_prod = session()->get('group_id');
+        $branch_id = $this->request->getPost('branch_id');
+        if (empty($branch_id)) {
+            return $this->response->setStatusCode(400)->setJSON(['message' => 'Branch ID tidak boleh kosong']);
+        }
+
+        $data = $this->salesMarketingModel->getSalesMarketingByFilter($branch_id, $grp_prod);
+        echo json_encode($data);
+    }
 
     // Function untuk mendapatkan Pelanggan
     public function getMstPelanggan()
