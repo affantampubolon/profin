@@ -208,7 +208,7 @@ $(document).ready(function () {
       );
     });
 
-    // Fungsi tabel_verifikasi_rencana_kunjungan tetap sama seperti sebelumnya
+    // Fungsi tabel_verifikasi_rencana_kunjungan
     function tabel_verifikasi_rencana_kunjungan(
       tanggal_acc,
       sales_marketing,
@@ -227,20 +227,26 @@ $(document).ready(function () {
         success: function (response) {
           let group_id = response.group_id;
           let columns = [
+            { title: "Sales/Marketing", field: "nik", visible: false },
             {
-              title: "Nama Kelas Barang",
-              field: "class_name",
+              title: "Tgl Kunjungan",
+              field: "date",
               headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: "datetime",
+              formatterParams: {
+                inputFormat: "yyyy-MM-dd",
+                outputFormat: "dd-MMM-yyyy",
+              },
             },
             {
-              title: "Kode Pelanggan",
+              title: "Pelanggan",
               field: "cust_id",
               headerHozAlign: "center",
-            },
-            {
-              title: "Nama Pelanggan",
-              field: "cust_name",
-              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.cust_id + " - " + rowData.cust_name;
+              },
             },
             {
               title: "Deskripsi",
@@ -257,75 +263,105 @@ $(document).ready(function () {
             });
           }
 
-          columns.push({
-            title: "Setujui",
-            field: "flg_approve",
-            hozAlign: "center",
-            headerHozAlign: "center",
-            titleFormatter: function (cell) {
-              var checkbox = document.createElement("input");
-              checkbox.type = "checkbox";
-              checkbox.id = "header-checkbox";
-
-              checkbox.addEventListener("click", function () {
-                let isChecked = this.checked;
-                table.getRows().forEach((row) => {
-                  let rowCheckbox = row
-                    .getElement()
-                    .querySelector(".row-checkbox");
-                  if (rowCheckbox) {
-                    rowCheckbox.checked = isChecked;
-                  }
-                });
-              });
-
-              return checkbox;
+          columns.push(
+            {
+              title: "Aksi",
+              field: "",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                return `<i class="fa fa-search" style="cursor: pointer;"></i>`;
+              },
+              cellClick: function (e, cell) {
+                var rowData = cell.getRow().getData();
+                showDetailModal(
+                  rowData.nik,
+                  rowData.date,
+                  rowData.cust_id,
+                  rowData.cust_name
+                );
+              },
             },
-            formatter: function (cell) {
-              let isApproved = cell.getValue();
-              return `
-                <input type="checkbox" class="row-checkbox" ${
-                  isApproved ? "checked" : ""
-                } style="margin-right: 10px;">
-                <button class="btn btn-sm btn-danger reject-btn"><i class='fa fa-edit'></i></button>
-              `;
-            },
-            cellClick: function (e, cell) {
-              let row = cell.getRow();
-              let rowData = row.getData();
-              let target = e.target;
+            {
+              title: "Setujui",
+              field: "flg_approve",
+              hozAlign: "center",
+              headerHozAlign: "center",
+              titleFormatter: function (cell) {
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = "header-checkbox";
 
-              if (target.classList.contains("row-checkbox")) {
-                let isApproved = target.checked;
-                if (isApproved) {
-                  updateVerifRencana(rowData.id, true, "", row).then(() => {
-                    row.delete();
-                  });
-                }
-              }
-
-              if (target.classList.contains("reject-btn")) {
-                $("#rejectModal").modal("show");
-                $("#reject_reason").val("");
-
-                $("#saveReject")
-                  .off("click")
-                  .on("click", function () {
-                    let reason = $("#reject_reason").val().trim();
-                    if (reason === "") {
-                      alert("Silakan isi alasan penolakan!");
-                      return;
+                checkbox.addEventListener("click", function () {
+                  let isChecked = this.checked;
+                  table.getRows().forEach((row) => {
+                    let rowCheckbox = row
+                      .getElement()
+                      .querySelector(".row-checkbox");
+                    if (rowCheckbox) {
+                      rowCheckbox.checked = isChecked;
                     }
-                    updateVerifRencana(rowData.id, false, reason, row).then(
-                      () => {
+                  });
+                });
+
+                return checkbox;
+              },
+              formatter: function (cell) {
+                let isApproved = cell.getValue();
+                return `
+              <input type="checkbox" class="row-checkbox" ${
+                isApproved ? "checked" : ""
+              } style="margin-right: 10px;">
+              <button class="btn btn-sm btn-danger reject-btn"><i class='fa fa-edit'></i></button>
+            `;
+              },
+              cellClick: function (e, cell) {
+                let row = cell.getRow();
+                let rowData = row.getData();
+                let target = e.target;
+
+                if (target.classList.contains("row-checkbox")) {
+                  let isApproved = target.checked;
+                  if (isApproved) {
+                    updateVerifRencana(
+                      rowData.cust_id,
+                      rowData.nik,
+                      rowData.date,
+                      true,
+                      ""
+                    ).then(() => {
+                      row.delete();
+                    });
+                  }
+                }
+
+                if (target.classList.contains("reject-btn")) {
+                  $("#rejectModal").modal("show");
+                  $("#reject_reason").val("");
+
+                  $("#saveReject")
+                    .off("click")
+                    .on("click", function () {
+                      let reason = $("#reject_reason").val().trim();
+                      if (reason === "") {
+                        alert("Silakan isi alasan penolakan!");
+                        return;
+                      }
+                      updateVerifRencana(
+                        rowData.cust_id,
+                        rowData.nik,
+                        rowData.date,
+                        false,
+                        reason
+                      ).then(() => {
                         row.delete();
                         $("#rejectModal").modal("hide");
-                      }
-                    );
-                  });
-              }
-            },
-          });
+                      });
+                    });
+                }
+              },
+            }
+          );
 
           $.ajax({
             type: "POST",
@@ -376,35 +412,61 @@ $(document).ready(function () {
                   cancelButtonText: "Batal",
                 }).then((result) => {
                   if (result.isConfirmed) {
-                    let updatePromises = [];
-
+                    // Kumpulkan kombinasi unik dari cust_id, nik, date
+                    let uniqueCombinations = {};
                     rowsToApprove.forEach((row) => {
                       let rowData = row.getData();
-                      updatePromises.push(
-                        updateVerifRencana(rowData.id, true, "", row)
-                      );
+                      let key = `${rowData.cust_id}_${rowData.nik}_${rowData.date}`;
+                      if (!uniqueCombinations[key]) {
+                        uniqueCombinations[key] = {
+                          cust_id: rowData.cust_id,
+                          nik: rowData.nik,
+                          date: rowData.date,
+                        };
+                      }
                     });
 
-                    Promise.all(updatePromises)
-                      .then(() => {
-                        Swal.fire({
-                          title: "Berhasil!",
-                          text: "Data yang dipilih telah disetujui.",
-                          icon: "success",
-                          confirmButtonText: "OK",
-                        }).then(() => {
-                          window.location.href = "/rencana/verifikasi";
-                        });
-                      })
-                      .catch((error) => {
-                        console.error("Error:", error);
+                    let combinations = Object.values(uniqueCombinations);
+
+                    // Kirim kombinasi ke server untuk diupdate
+                    $.ajax({
+                      type: "POST",
+                      url: url + "/rencana/verifikasi/updateall",
+                      data: {
+                        combinations: JSON.stringify(combinations),
+                        flg_approve: true,
+                        reason_reject: "",
+                      },
+                      dataType: "json",
+                      success: function (response) {
+                        if (response.status === "success") {
+                          Swal.fire({
+                            title: "Berhasil!",
+                            text: "Data yang dipilih telah disetujui.",
+                            icon: "success",
+                            confirmButtonText: "OK",
+                          }).then(() => {
+                            window.location.href = "/rencana/verifikasi";
+                          });
+                        } else {
+                          Swal.fire({
+                            title: "Gagal!",
+                            text: "Terjadi kesalahan saat menyimpan data.",
+                            icon: "error",
+                            confirmButtonText: "OK",
+                          });
+                        }
+                      },
+                      error: function (xhr) {
+                        console.error("Error:", xhr.responseText);
                         Swal.fire({
                           title: "Gagal!",
                           text: "Terjadi kesalahan saat menyimpan data.",
                           icon: "error",
                           confirmButtonText: "OK",
                         });
-                      });
+                      },
+                    });
                   }
                 });
               });
@@ -414,19 +476,133 @@ $(document).ready(function () {
       });
     }
 
+    // Fungsi untuk menampilkan modal dengan data detail
+    function showDetailModal(nik, date, cust_id, cust_name) {
+      // Set kode_pelanggan dan nama_pelanggan di header modal
+      $("#kode_pelanggan").text(cust_id);
+      $("#nama_pelanggan").text(cust_name);
+
+      // Ambil group_id dari endpoint /pipeline/groupuser
+      $.ajax({
+        type: "GET",
+        url: url + "/pipeline/groupuser",
+        dataType: "json",
+        success: function (response) {
+          let group_id = response.group_id;
+
+          // Definisikan kolom dasar untuk Tabulator
+          let columns = [
+            {
+              title: "Grup Produk",
+              field: "group_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.group_id + " - " + rowData.group_name;
+              },
+            },
+            {
+              title: "SubGrup Produk",
+              field: "subgroup_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.subgroup_id + " - " + rowData.subgroup_name;
+              },
+            },
+            {
+              title: "Kelas Produk",
+              field: "class_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.class_id + " - " + rowData.class_name;
+              },
+            },
+          ];
+
+          // Tambahkan kolom User Pelanggan jika group_id adalah '02' atau '05'
+          if (group_id === "02" || group_id === "05") {
+            columns.push({
+              title: "User Pelanggan",
+              field: "cust_user_name",
+              headerHozAlign: "center",
+            });
+          }
+
+          // Ambil data detail
+          $.ajax({
+            type: "POST",
+            url: url + "rencana/verifikasi/getdetdata",
+            data: {
+              sales_marketing: nik,
+              tanggal: date,
+              cust_id: cust_id,
+            },
+            dataType: "json",
+            success: function (data) {
+              // Sembunyikan tabel statis dan kosongkan tbody untuk keamanan
+              $("#detailTable").hide();
+              $("#detailTable tbody").empty();
+
+              if (data.length > 0) {
+                // Inisialisasi tabel Tabulator
+                var detailTable = new Tabulator(
+                  "#tabel_det_verifikasi_rencana_kunjungan",
+                  {
+                    data: data,
+                    height: "250px",
+                    pagination: "local",
+                    paginationSize: 10,
+                    paginationSizeSelector: [5, 10, 20],
+                    layout: "fitColumns",
+                    columns: columns,
+                  }
+                );
+              } else {
+                // Tampilkan tabel statis dengan pesan "Tidak ada data"
+                $("#detailTable").show();
+                // Sesuaikan colspan berdasarkan jumlah kolom
+                let colspan = group_id === "02" || group_id === "05" ? 5 : 4;
+                $("#detailTable tbody").append(
+                  `<tr><td colspan='${colspan}'>Tidak ada data</td></tr>`
+                );
+              }
+
+              $("#detailModal").modal("show");
+            },
+            error: function (xhr, status, error) {
+              console.error("Error:", error);
+              alert("Terjadi kesalahan saat mengambil data detail.");
+            },
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error);
+          alert("Terjadi kesalahan saat mengambil group_id.");
+        },
+      });
+    }
+
     // Fungsi AJAX untuk mengupdate verifikasi ke server
-    function updateVerifRencana(id, status, reason, row) {
+    function updateVerifRencana(cust_id, nik, date, status, reason) {
       return new Promise((resolve, reject) => {
         $.ajax({
           type: "POST",
           url: url + "/rencana/verifikasi/update",
-          data: { id: id, flg_approve: status, reason_reject: reason },
+          data: {
+            cust_id: cust_id,
+            nik: nik,
+            date: date,
+            flg_approve: status,
+            reason_reject: reason,
+          },
           dataType: "json",
           success: function (response) {
             if (response.status === "success") {
               let message = status
-                ? `Rencana kunjungan ID ${id} disetujui`
-                : `Rencana kunjungan ID ${id} ditolak dengan alasan: ${reason}`;
+                ? `Rencana kunjungan untuk cust_id: ${cust_id}, nik: ${nik}, date: ${date} disetujui`
+                : `Rencana kunjungan untuk cust_id: ${cust_id}, nik: ${nik}, date: ${date} ditolak dengan alasan: ${reason}`;
               toastr.success(message);
               resolve();
             } else {
@@ -632,7 +808,7 @@ $(document).ready(function () {
       );
     });
 
-    // Inisialisasi tabel Verifikasi Pipeline
+    // Inisialisasi tabel monitoring Rencana Kunjungan
     function tabel_monitoring_rencana_kunjungan(
       tgl_1,
       tgl_2,
@@ -641,8 +817,6 @@ $(document).ready(function () {
       subgrp_prod_mon,
       kls_prod_mon
     ) {
-      var table; // Deklarasikan di luar AJAX agar bisa diakses oleh #selectAll
-
       $.ajax({
         type: "GET",
         url: url + "/pipeline/groupuser", // Ambil group_id dari server
@@ -650,31 +824,46 @@ $(document).ready(function () {
         success: function (response) {
           let group_id = response.group_id;
           let columns = [
+            { title: "Sales/Marketing", field: "nik", visible: false },
+            {
+              title: "Non route?",
+              field: "flg_non_route",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams) {
+                var value = cell.getValue();
+                console.log("Status value:", value); // Debugging: Log the value to ensure correctness
+
+                if (value === "f") {
+                  return "<i class='fa fa-circle' style='color:#578FCA'></i>";
+                } else if (value === "t") {
+                  return "<i class='fa fa-circle' style='color:#FF5677'></i>";
+                }
+              },
+            },
+            {
+              title: "Absen?",
+              field: "flg_absence",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams) {
+                var value = cell.getValue();
+                console.log("Status value:", value); // Debugging: Log the value to ensure correctness
+
+                if (value === "f") {
+                  return "<i class='fa fa-circle' style='color:#578FCA'></i>";
+                } else if (value === "t") {
+                  return "<i class='fa fa-circle' style='color:#FF5677'></i>";
+                }
+              },
+            },
             {
               title: "Tanggal Rencana",
               field: "date",
               headerHozAlign: "center",
+              hozAlign: "center",
               formatter: "datetime",
               formatterParams: {
                 inputFormat: "yyyy-MM-dd",
                 outputFormat: "dd-MMM-yyyy",
-              },
-            },
-            {
-              title: "Kelas Barang",
-              field: "class_name",
-              headerHozAlign: "center",
-              formatter: function (cell, formatterParams, onRendered) {
-                // Ambil data dari baris
-                var rowData = cell.getRow().getData();
-                // Gabungkan cust_id dan cust_name
-                return (
-                  rowData.group_id +
-                  rowData.subgroup_id +
-                  rowData.class_id +
-                  " - " +
-                  rowData.class_name
-                );
               },
             },
             {
@@ -697,11 +886,32 @@ $(document).ready(function () {
               headerHozAlign: "center",
             });
           }
-          columns.push({
-            title: "Deskripsi",
-            field: "description",
-            headerHozAlign: "center",
-          });
+
+          columns.push(
+            {
+              title: "Deskripsi",
+              field: "description",
+              headerHozAlign: "center",
+            },
+            {
+              title: "Aksi",
+              field: "",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                return `<i class="fa fa-search" style="cursor: pointer;"></i>`;
+              },
+              cellClick: function (e, cell) {
+                var rowData = cell.getRow().getData();
+                showDetailModal(
+                  rowData.nik,
+                  rowData.date,
+                  rowData.cust_id,
+                  rowData.cust_name
+                );
+              },
+            }
+          );
 
           // Panggil API untuk mendapatkan data tabel
           $.ajax({
@@ -729,6 +939,114 @@ $(document).ready(function () {
               });
             },
           });
+        },
+      });
+    }
+
+    // Fungsi untuk menampilkan modal dengan data detail
+    function showDetailModal(nik, date, cust_id, cust_name) {
+      // Set kode_pelanggan dan nama_pelanggan di header modal
+      $("#kode_pelanggan").text(cust_id);
+      $("#nama_pelanggan").text(cust_name);
+
+      // Ambil group_id dari endpoint /pipeline/groupuser
+      $.ajax({
+        type: "GET",
+        url: url + "/pipeline/groupuser",
+        dataType: "json",
+        success: function (response) {
+          let group_id = response.group_id;
+
+          // Definisikan kolom dasar untuk Tabulator
+          let columns = [
+            {
+              title: "Grup Produk",
+              field: "group_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.group_id + " - " + rowData.group_name;
+              },
+            },
+            {
+              title: "SubGrup Produk",
+              field: "subgroup_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.subgroup_id + " - " + rowData.subgroup_name;
+              },
+            },
+            {
+              title: "Kelas Produk",
+              field: "class_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.class_id + " - " + rowData.class_name;
+              },
+            },
+          ];
+
+          // Tambahkan kolom User Pelanggan jika group_id adalah '02' atau '05'
+          if (group_id === "02" || group_id === "05") {
+            columns.push({
+              title: "User Pelanggan",
+              field: "cust_user_name",
+              headerHozAlign: "center",
+            });
+          }
+
+          // Ambil data detail
+          $.ajax({
+            type: "POST",
+            url: url + "rencana/monitoring/getdetdata",
+            data: {
+              sales_marketing: nik,
+              tanggal: date,
+              cust_id: cust_id,
+            },
+            dataType: "json",
+            success: function (data) {
+              // Sembunyikan tabel statis dan kosongkan tbody untuk keamanan
+              $("#detailTable").hide();
+              $("#detailTable tbody").empty();
+
+              if (data.length > 0) {
+                // Inisialisasi tabel Tabulator
+                var detailTable = new Tabulator(
+                  "#tabel_det_monitoring_rencana_kunjungan",
+                  {
+                    data: data,
+                    height: "250px",
+                    pagination: "local",
+                    paginationSize: 10,
+                    paginationSizeSelector: [5, 10, 20],
+                    layout: "fitColumns",
+                    columns: columns,
+                  }
+                );
+              } else {
+                // Tampilkan tabel statis dengan pesan "Tidak ada data"
+                $("#detailTable").show();
+                // Sesuaikan colspan berdasarkan jumlah kolom
+                let colspan = group_id === "02" || group_id === "05" ? 5 : 4;
+                $("#detailTable tbody").append(
+                  `<tr><td colspan='${colspan}'>Tidak ada data</td></tr>`
+                );
+              }
+
+              $("#detailModalMonitoring").modal("show");
+            },
+            error: function (xhr, status, error) {
+              console.error("Error:", error);
+              alert("Terjadi kesalahan saat mengambil data detail.");
+            },
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error);
+          alert("Terjadi kesalahan saat mengambil group_id.");
         },
       });
     }

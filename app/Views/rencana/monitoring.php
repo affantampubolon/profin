@@ -34,7 +34,7 @@
                         <div class="row g-3">
                             <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for=""
-                                    >Tanggal</label
+                                    >Tanggal Rencana</label
                                 >
                                 <div class="form-group">
                                   <input
@@ -120,6 +120,7 @@
                             </select>
                         </div>
                         <div class="col-xl-12 col-md-12 box-col-12">
+                            <p><b>Keterangan:</b> <i class='fa fa-circle' style='color:#578FCA'></i> Tidak <i class='fa fa-circle' style='color:#FF5677'></i> Ya</p>
                              <div id="tabel_monitoring_rencana_kunjungan"></div>
                         </div>
                     </div>
@@ -128,6 +129,46 @@
         </div>
     </div>
 </div>
+
+<!-- Modal untuk menampilkan detail -->
+    <div
+        class="modal fade"
+        id="detailModalMonitoring"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="detailModalMonitoringLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-toggle-wrapper text-start dark-sign-up">
+                    <div class="modal-header justify-content-center border-0">
+                        <div class="row">
+                            <h5 class="justify-content-center border-0">
+                                Detail Rencana Kunjungan
+                            </h5>
+                        </div>
+                        <!-- <div class="row">
+                            <p class="justify-content-center border-0" id="kode_pelanggan"></p> <p>-</p> <p class="justify-content-center border-0" id="nama_pelanggan"></p>
+                        </div> -->
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                             <div id="tabel_det_monitoring_rencana_kunjungan"></div>
+                             <!-- Elemen table untuk kondisi data kosong -->
+                             <table id="detailTable" class="table table-bordered" style="display: none;">
+                              <tbody></tbody>
+                             </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- Container-fluid Ends-->
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->

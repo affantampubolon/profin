@@ -4340,7 +4340,7 @@ strong ~ p {
 }
 
 .toast-primary {
-  color: #006666 !important;
+  color: white !important;
 }
 
 .list-group-horizontal-sm .list-group-item.border-left-primary, .list-group-horizontal-md .list-group-item.border-left-primary, .list-group-horizontal-lg .list-group-item.border-left-primary, .list-group-horizontal-xl .list-group-item.border-left-primary, .list-group-horizontal-xxl .list-group-item.border-left-primary {
@@ -4501,7 +4501,7 @@ strong ~ p {
 }
 
 .toast-secondary {
-  color: #FE6A49 !important;
+  color: white !important;
 }
 
 .list-group-horizontal-sm .list-group-item.border-left-secondary, .list-group-horizontal-md .list-group-item.border-left-secondary, .list-group-horizontal-lg .list-group-item.border-left-secondary, .list-group-horizontal-xl .list-group-item.border-left-secondary, .list-group-horizontal-xxl .list-group-item.border-left-secondary {
@@ -4662,7 +4662,7 @@ strong ~ p {
 }
 
 .toast-success {
-  color: #00AC46 !important;
+  color: white !important;
 }
 
 .list-group-horizontal-sm .list-group-item.border-left-success, .list-group-horizontal-md .list-group-item.border-left-success, .list-group-horizontal-lg .list-group-item.border-left-success, .list-group-horizontal-xl .list-group-item.border-left-success, .list-group-horizontal-xxl .list-group-item.border-left-success {
@@ -4824,7 +4824,7 @@ strong ~ p {
 }
 
 .toast-danger {
-  color: #FE6A49 !important;
+  color: white !important;
 }
 
 .list-group-horizontal-sm .list-group-item.border-left-danger, .list-group-horizontal-md .list-group-item.border-left-danger, .list-group-horizontal-lg .list-group-item.border-left-danger, .list-group-horizontal-xl .list-group-item.border-left-danger, .list-group-horizontal-xxl .list-group-item.border-left-danger {
@@ -4985,7 +4985,7 @@ strong ~ p {
 }
 
 .toast-warning {
-  color: #FFAE1A !important;
+  color: white !important;
 }
 
 .list-group-horizontal-sm .list-group-item.border-left-warning, .list-group-horizontal-md .list-group-item.border-left-warning, .list-group-horizontal-lg .list-group-item.border-left-warning, .list-group-horizontal-xl .list-group-item.border-left-warning, .list-group-horizontal-xxl .list-group-item.border-left-warning {
@@ -5146,7 +5146,7 @@ strong ~ p {
 }
 
 .toast-info {
-  color: #173878 !important;
+  color: white !important;
 }
 
 .list-group-horizontal-sm .list-group-item.border-left-info, .list-group-horizontal-md .list-group-item.border-left-info, .list-group-horizontal-lg .list-group-item.border-left-info, .list-group-horizontal-xl .list-group-item.border-left-info, .list-group-horizontal-xxl .list-group-item.border-left-info {

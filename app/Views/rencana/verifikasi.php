@@ -34,7 +34,7 @@
                         <div class="row g-3">
                             <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for=""
-                                    >Tanggal</label
+                                    >Tanggal Pembuatan</label
                                 >
                                 <div class="input-group flatpicker-calender">
                                   <input
@@ -167,6 +167,46 @@
                                 <button type="button" class="btn btn-primary" id="saveReject"><i class="fa fa-save"></i> Simpan</button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal untuk menampilkan detail -->
+    <div
+        class="modal fade"
+        id="detailModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-toggle-wrapper text-start dark-sign-up">
+                    <div class="modal-header justify-content-center border-0">
+                        <div class="row">
+                            <h5 class="justify-content-center border-0">
+                                Detail Rencana Kunjungan
+                            </h5>
+                        </div>
+                        <!-- <div class="row">
+                            <p class="justify-content-center border-0" id="kode_pelanggan"></p> <p>-</p> <p class="justify-content-center border-0" id="nama_pelanggan"></p>
+                        </div> -->
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                             <div id="tabel_det_verifikasi_rencana_kunjungan"></div>
+                             <!-- Elemen table untuk kondisi data kosong -->
+                             <table id="detailTable" class="table table-bordered" style="display: none;">
+                              <tbody></tbody>
+                             </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        </div>
                     </div>
                 </div>
             </div>

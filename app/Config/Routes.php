@@ -76,12 +76,15 @@ $routes->post('/pipeline/monitoring/getdata', 'Pipeline\Pipeline::dataMonPipelin
 //verifikasi rencana kunjungan
 $routes->get('/rencana/verifikasi', 'Rencana\Rencana::verifikasi');
 $routes->post('/rencana/verifikasi/getdata', 'Rencana\Rencana::dataVerifRencana');
+$routes->post('/rencana/verifikasi/getdetdata', 'Rencana\Rencana::dataVerifRencanaDet');
 $routes->post('/rencana/verifikasi/update', 'Rencana\Rencana::updateVerifikasi');
+$routes->post('/rencana/verifikasi/updateall', 'Rencana\Rencana::updateVerifikasiAll');
 
 
 $routes->get('/rencana/monitoring', 'Rencana\Rencana::monitoring');
 //monitoring rencana
 $routes->post('/rencana/monitoring/getdata', 'Rencana\Rencana::dataMonitoringRencana');
+$routes->post('/rencana/monitoring/getdetdata', 'Rencana\Rencana::dataMonitoringRencanaDet');
 
 //verifikasi realisasi kunjungan
 $routes->get('/realisasi/cabuser', 'Realisasi\Realisasi::getUserBranchSession');
@@ -90,6 +93,8 @@ $routes->post('/realisasi/verifikasi/getdata', 'Realisasi\Realisasi::dataVerifRe
 $routes->post('/realisasi/verifikasi/update', 'Realisasi\Realisasi::updateVerifikasi');
 
 $routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
+//monitoring realisasi
+$routes->post('/realisasi/monitoring/getdata', 'Realisasi\Realisasi::dataMonitoringRealisasi');
 
 
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');

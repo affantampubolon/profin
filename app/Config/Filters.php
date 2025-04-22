@@ -103,6 +103,7 @@ class Filters extends BaseFilters
                     'rencana/monitoring/*',
                     'realisasi/*',
                     'realisasi/verifikasi/*',
+                    'realisasi/monitoring/*',
                     'master/*',
                     'master/barang/*',
                     'master/filter/*',

@@ -36,6 +36,10 @@ https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- Map Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Chart JS -->
+<script src="
+https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js
+"></script>
 <!-- Bootstrap js-->
 <script src="<?= base_url(''); ?>riho/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
 <!-- feather icon js-->
@@ -79,6 +83,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js
 <script src="<?= base_url(''); ?>riho/assets/js/script.js"></script>
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/dashboard/dashboard.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/rencana-kunjungan/rencana-kunjungan.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/realisasi-kunjungan/realisasi-kunjungan.js"></script>
