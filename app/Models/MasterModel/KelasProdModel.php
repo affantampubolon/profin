@@ -25,7 +25,7 @@ class KelasProdModel extends Model
             ->where('u.username', $username)
             ->get();
 
-        return $query->getResult();
+        return $query->getRowArray();
     }
 
     /**
@@ -36,7 +36,6 @@ class KelasProdModel extends Model
      */
     public function getSubGrupBarang($grp_prod)
     {
-        if (!$grp_prod) return [];
         return $this->distinct()
             ->select('subgroup_id, subgroup_name')
             ->where('flg_used', 't')

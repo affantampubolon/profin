@@ -14,7 +14,10 @@ use App\Models\UserModel\ParamEmpModel;
 use App\Models\MenuModel\MenuModel;
 use App\Models\PipelineModel\PipelineModel;
 use App\Models\PipelineModel\PipelineDetModel;
+use App\Models\RencanaKunjModel\RencanaKunjModel;
+use App\Models\RealisasiKunjModel\RealisasiKunjModel;
 use App\Models\MasterModel\KelasProdModel;
+use App\Models\MasterModel\CabangModel;
 use App\Models\MasterModel\PelangganModel;
 use App\Models\MasterModel\SalesMarketingModel;
 use App\Models\MasterModel\SkalaProbabilitasModel;
@@ -65,8 +68,9 @@ abstract class BaseController extends Controller
     protected $menuTree;
 
     // Deklarasi model di BaseController
-    // kelas
+    // master
     protected $kelasProdModel;
+    protected $cabangModel;
     protected $pelangganModel;
     protected $probabilitasModel;
     protected $wilayahModel;
@@ -78,6 +82,8 @@ abstract class BaseController extends Controller
     // pipeline 
     protected $pipelineModel;
     protected $pipelineDetModel;
+    protected $rencanaKunjModel;
+    protected $realisasiKunjModel;
     // izin 
     protected $izinModel;
     // department
@@ -102,6 +108,7 @@ abstract class BaseController extends Controller
         // Deklarasi models
         //Master Models
         $this->kelasProdModel      = new KelasProdModel();
+        $this->cabangModel         = new CabangModel();
         $this->pelangganModel      = new PelangganModel();
         $this->probabilitasModel   = new SkalaProbabilitasModel();
         $this->wilayahModel        = new WilayahDetModel();
@@ -111,8 +118,14 @@ abstract class BaseController extends Controller
         $this->empModel         = new EmpModel();
         $this->paramEmpModel    = new ParamEmpModel();
         $this->menuModel        = new MenuModel();
+        //Pipeline
         $this->pipelineModel    = new PipelineModel();
         $this->pipelineDetModel = new PipelineDetModel();
+        //Rencana Kunjungan
+        $this->rencanaKunjModel = new RencanaKunjModel();
+        //Realisasi Kunjungan
+        $this->realisasiKunjModel = new RealisasiKunjModel();
+        //
         $this->izinModel        = new IzinModel();
         $this->DeptModel        = new DepartmentModel();
         // Ambil dan buat tree menu di BaseController

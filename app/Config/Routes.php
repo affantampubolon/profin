@@ -34,6 +34,8 @@ $routes->post('/master/barang/subgrup', 'Master\Master::getSubGrupBarang');
 $routes->post('/master/barang/kelas', 'Master\Master::getKelasBarang');
 $routes->post('/master/filter/subgrup', 'Master\Master::getFilterSubgrp');
 $routes->post('/master/filter/kelas', 'Master\Master::getFilterClass');
+$routes->get('/master/cabang', 'Master\Master::getMstCabang');
+$routes->post('/master/salesmarketing', 'Master\Master::getMstSalesMarketing');
 $routes->get('/master/pelanggancab', 'Master\Master::getMstPelanggan');
 $routes->get('/master/kategoripelanggan', 'Master\Master::getMstKategoriPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
@@ -58,6 +60,7 @@ $routes->post('/pipeline/temp/save', 'Pipeline\Pipeline::saveTemporerDetailPipel
 $routes->get('/pipeline/temp/getdata', 'Pipeline\Pipeline::getTemporerDetailPipeline');
 $routes->post('/pipeline/temp/delete', 'Pipeline\Pipeline::deleteTemporerDetailPipeline');
 $routes->post('/pipeline/temp/insert', 'Pipeline\Pipeline::insertFormPipeline');
+
 //draft pipeline
 $routes->post('/pipeline/draft/getdata', 'Pipeline\Pipeline::dataDraftPipeline');
 $routes->post('/pipeline/draft/update', 'Pipeline\Pipeline::updateDraftPipeline');
@@ -67,9 +70,33 @@ $routes->post('/pipeline/draft/delete', 'Pipeline\Pipeline::deleteDraftPipeline'
 $routes->post('/pipeline/verifikasi/getdata', 'Pipeline\Pipeline::dataVerifPipeline');
 $routes->post('/pipeline/verifikasi/update', 'Pipeline\Pipeline::updateVerifikasi');
 
+//monitoring pipeline
+$routes->post('/pipeline/monitoring/getdata', 'Pipeline\Pipeline::dataMonPipeline');
+
+//verifikasi rencana kunjungan
+$routes->get('/rencana/verifikasi', 'Rencana\Rencana::verifikasi');
+$routes->post('/rencana/verifikasi/getdata', 'Rencana\Rencana::dataVerifRencana');
+$routes->post('/rencana/verifikasi/getdetdata', 'Rencana\Rencana::dataVerifRencanaDet');
+$routes->post('/rencana/verifikasi/update', 'Rencana\Rencana::updateVerifikasi');
+$routes->post('/rencana/verifikasi/updateall', 'Rencana\Rencana::updateVerifikasiAll');
+
+
+$routes->get('/rencana/monitoring', 'Rencana\Rencana::monitoring');
+//monitoring rencana
+$routes->post('/rencana/monitoring/getdata', 'Rencana\Rencana::dataMonitoringRencana');
+$routes->post('/rencana/monitoring/getdetdata', 'Rencana\Rencana::dataMonitoringRencanaDet');
+
+//verifikasi realisasi kunjungan
+$routes->get('/realisasi/cabuser', 'Realisasi\Realisasi::getUserBranchSession');
+$routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');
+$routes->post('/realisasi/verifikasi/getdata', 'Realisasi\Realisasi::dataVerifRealisasi');
+$routes->post('/realisasi/verifikasi/update', 'Realisasi\Realisasi::updateVerifikasi');
+
+$routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
+//monitoring realisasi
+$routes->post('/realisasi/monitoring/getdata', 'Realisasi\Realisasi::dataMonitoringRealisasi');
+
+
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
 $routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
-$routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');
-$routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
-$routes->get('/rencana/verifikasi', 'Rencana\Rencana::verifikasi');
-$routes->get('/rencana/monitoring', 'Rencana\Rencana::monitoring');
+

@@ -36,4 +36,19 @@ class SalesMarketingModel extends Model
 
         return $query->getResult();
     }
+
+    public function getSalesMarketingByFilter($branch_id, $group_id)
+    {
+        $db = \Config\Database::connect();
+
+        $query = $db->table('mst_param_emp a')
+                    ->select('a.nik, f_tv_employee_name(a.nik) AS name')
+                    ->join('mst_department b', 'a.department_id = b.id', 'inner')
+                    ->where('a.branch_id', $branch_id)
+                    ->where('b.group_id', $group_id)
+                    ->where('a.flg_used', TRUE)
+                    ->whereIn('a.position_id', [14, 16]);
+
+        return $query->get()->getResultArray();
+    }
 }

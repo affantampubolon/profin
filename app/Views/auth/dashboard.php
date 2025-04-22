@@ -31,6 +31,35 @@
 <!-- Container-fluid starts-->
 <div class="container-fluid">
   <div class="row size-column">
+    <div class="col-xl-4 col-md-12 box-col-12">
+      <div class="card">
+        <div class="card-header sales-chart card-no-border">
+          <h4>% Pencapaian Cabang</h4>
+        </div>
+        <div class="card-body pt-0">
+          <canvas id="pencapaian_cab" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-md-12 box-col-12">
+      <div class="card">
+        <div class="card-header sales-chart card-no-border">
+          <h4>% Pencapaian Grp Produk</h4>
+        </div>
+        <div class="card-body pt-0">
+          <canvas id="pencapaian_grp_prod" height="100"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-md-12 box-col-12">
+      <div class="card">
+        <div class="card-header sales-chart card-no-border">
+          <h4>Revenue Growth</h4>
+        </div>
+        <div class="card-body pt-0">
+        </div>
+      </div>
+    </div>
     <div class="col-xl-8 col-md-12 box-col-12">
       <div class="card">
         <div class="card-header sales-chart card-no-border">

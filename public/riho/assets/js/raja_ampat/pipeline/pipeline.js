@@ -892,7 +892,10 @@ $(document).ready(function () {
       });
     });
   } else if (window.location.pathname === "/pipeline/persetujuan") {
-    //mendapatkan nilai
+    // Variabel global untuk tabel
+    let table;
+
+    // Mendapatkan nilai awal
     var tahun_acc = $("#tahunAccPipeline").val();
     var bulan_acc = $("#bulanAccPipeline").val();
     var sales_marketing = $("#salesMarketing").val();
@@ -900,7 +903,7 @@ $(document).ready(function () {
     var subgrp_prod_acc = $("#subgrupBarang").val();
     var kls_prod_acc = $("#kelasBarang").val();
 
-    //data pipeline yang akan diverifikasi
+    // Data pipeline yang akan diverifikasi
     tabel_verifikasi_pipeline(
       tahun_acc,
       bulan_acc,
@@ -962,8 +965,52 @@ $(document).ready(function () {
       console.log(`Value: ${selectedValue}, Text: ${selectedText}`);
     });
 
-    //PERUBAHAN FILTER DROPDOWN
-    //Tahun
+    // Fetch cabang
+    $.ajax({
+      url: url + "master/cabang",
+      method: "GET",
+      dataType: "json",
+      success: function (data) {
+        $("#cabangOps")
+          .empty()
+          .append('<option value="" selected>Pilih Cabang</option>');
+        data.forEach((cabang) => {
+          $("#cabangOps").append(
+            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          );
+        });
+      },
+      error: function () {
+        alert("Gagal memuat data cabang");
+      },
+    });
+
+    $("#cabangOps").on("change", function () {
+      const branchId = $(this).val();
+      console.log("Cabang terpilih: ", branchId); // Log Cabang terpilih
+      $("#salesMarketing")
+        .empty()
+        .append('<option value="" selected>Pilih Sales/Marketing</option>');
+
+      if (branchId) {
+        $.ajax({
+          url: url + "master/salesmarketing",
+          method: "POST",
+          data: { branch_id: branchId },
+          dataType: "json",
+          success: function (data) {
+            data.forEach((sales) => {
+              $("#salesMarketing").append(
+                `<option value="${sales.nik}">${sales.name}</option>`
+              );
+            });
+          },
+        });
+      }
+    });
+
+    // PERUBAHAN FILTER DROPDOWN
+    // Tahun
     $("#tahunAccPipeline").change(function () {
       var tahun_acc = $(this).val();
       var bulan_acc = $("#bulanAccPipeline").val();
@@ -982,7 +1029,7 @@ $(document).ready(function () {
       );
     });
 
-    //Bulan
+    // Bulan
     $("#bulanAccPipeline").change(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $(this).val();
@@ -1001,7 +1048,7 @@ $(document).ready(function () {
       );
     });
 
-    //Tim Sales Marketing
+    // Tim Sales Marketing
     $("#salesMarketing").change(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $("#bulanAccPipeline").val();
@@ -1010,7 +1057,6 @@ $(document).ready(function () {
       var subgrp_prod_acc = $("#subgrupBarang").val();
       var kls_prod_acc = $("#kelasBarang").val();
 
-      // panggil function
       console.log(
         "tahun = " +
           tahun_acc +
@@ -1030,14 +1076,13 @@ $(document).ready(function () {
       );
     });
 
-    //Grup Barang
-    // Update Option change grup barang
+    // Grup Barang
     $("#grupBarang").change(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $("#bulanAccPipeline").val();
       var sales_marketing = $("#salesMarketing").val();
       var grp_prod_acc = $(this).val();
-      // AJAX request --
+
       $.ajax({
         url: url + "master/filter/subgrup",
         method: "POST",
@@ -1045,11 +1090,9 @@ $(document).ready(function () {
           group_prod: grp_prod_acc,
         },
         success: function (data) {
-          // Add options
           $("#subgrupBarang").html(data);
           var subgrp_prod_acc = $("#subgrupBarang").val();
 
-          // empty options
           $("#kelasBarang").select2({
             placeholder: "Semua Kelas Grup",
             allowClear: true,
@@ -1059,7 +1102,6 @@ $(document).ready(function () {
 
           var kls_prod_acc = $("#kelasBarang").val();
 
-          // panggil function
           console.log("grup barang = " + grp_prod_acc);
           tabel_verifikasi_pipeline(
             tahun_acc,
@@ -1077,15 +1119,14 @@ $(document).ready(function () {
       });
     });
 
-    //SubGrup Barang
-    // Update Option change subgrup barang
+    // SubGrup Barang
     $("#subgrupBarang").change(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $("#bulanAccPipeline").val();
       var sales_marketing = $("#salesMarketing").val();
       var grp_prod_acc = $("#grupBarang").val();
       var subgrp_prod_acc = $(this).val();
-      // AJAX request --
+
       $.ajax({
         url: url + "master/filter/kelas",
         method: "POST",
@@ -1094,11 +1135,9 @@ $(document).ready(function () {
           subgroup_prod: subgrp_prod_acc,
         },
         success: function (data) {
-          // Add options
           $("#kelasBarang").html(data);
           var kls_prod_acc = $("#kelasBarang").val();
 
-          // panggil function
           console.log(
             "grup barang = " +
               grp_prod_acc +
@@ -1114,7 +1153,6 @@ $(document).ready(function () {
             kls_prod_acc
           );
         },
-
         error: function (xhr, status, error) {
           console.error("Error fetching class data:", error);
           alert("Gagal memuat data kelas.");
@@ -1122,8 +1160,7 @@ $(document).ready(function () {
       });
     });
 
-    //Kelas Barang
-    // Update Option change kelas barang
+    // Kelas Barang
     $("#kelasBarang").change(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $("#bulanAccPipeline").val();
@@ -1132,7 +1169,6 @@ $(document).ready(function () {
       var subgrp_prod_acc = $("#subgrupBarang").val();
       var kls_prod_acc = $(this).val();
 
-      // panggil function
       console.log(
         "grup barang = " +
           grp_prod_acc +
@@ -1160,7 +1196,9 @@ $(document).ready(function () {
       subgrp_prod_acc,
       kls_prod_acc
     ) {
-      var table; // Deklarasikan di luar AJAX agar bisa diakses oleh #selectAll
+      if (table) {
+        table.destroy(); // Hancurkan tabel lama jika ada
+      }
 
       $.ajax({
         type: "GET",
@@ -1210,24 +1248,58 @@ $(document).ready(function () {
             });
           }
 
-          // Kolom aksi
+          // Kolom "Setujui" dengan checkbox di header
           columns.push({
-            title: "Aksi",
+            title: "Setujui",
+            field: "flg_approve",
             hozAlign: "center",
             headerHozAlign: "center",
-            formatter: function (cell, formatterParams) {
+            titleFormatter: function (cell) {
+              var checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.id = "header-checkbox";
+
+              // Logika untuk memilih/membatalkan semua checkbox di baris
+              checkbox.addEventListener("click", function () {
+                let isChecked = this.checked;
+                table.getRows().forEach((row) => {
+                  let rowCheckbox = row
+                    .getElement()
+                    .querySelector(".row-checkbox");
+                  if (rowCheckbox) {
+                    rowCheckbox.checked = isChecked;
+                  }
+                });
+              });
+
+              return checkbox;
+            },
+            formatter: function (cell) {
+              let isApproved = cell.getValue();
               return `
-            <i class='fa fa-check approve-icon' style='color: green; cursor: pointer; margin-right: 5px;'></i>
-            <i class='fa fa-times reject-icon' style='color: red; cursor: pointer;'></i>
+            <input type="checkbox" class="row-checkbox" ${
+              isApproved ? "checked" : ""
+            } style="margin-right: 10px;">
+            <button class="btn btn-sm btn-danger reject-btn"><i class='fa fa-edit'></i></button>
           `;
             },
             cellClick: function (e, cell) {
-              let rowData = cell.getRow().getData();
-              let targetClass = e.target.classList;
+              let row = cell.getRow();
+              let rowData = row.getData();
+              let target = e.target;
 
-              if (targetClass.contains("approve-icon")) {
-                updateVerifPipeline(rowData.id, true, "", cell);
-              } else if (targetClass.contains("reject-icon")) {
+              // Jika checkbox diklik (persetujuan per baris)
+              if (target.classList.contains("row-checkbox")) {
+                let isApproved = target.checked;
+                if (isApproved) {
+                  updateVerifPipeline(rowData.id, true, "", row).then(() => {
+                    row.delete(); // Hapus baris setelah disetujui
+                  });
+                }
+              }
+
+              // Jika tombol "Alasan" diklik (penolakan per baris)
+              if (target.classList.contains("reject-btn")) {
                 $("#rejectModal").modal("show");
                 $("#reject_reason").val("");
 
@@ -1239,8 +1311,12 @@ $(document).ready(function () {
                       alert("Silakan isi alasan penolakan!");
                       return;
                     }
-                    updateVerifPipeline(rowData.id, false, reason, cell);
-                    $("#rejectModal").modal("hide");
+                    updateVerifPipeline(rowData.id, false, reason, row).then(
+                      () => {
+                        row.delete(); // Hapus baris setelah ditolak
+                        $("#rejectModal").modal("hide");
+                      }
+                    );
                   });
               }
             },
@@ -1261,7 +1337,6 @@ $(document).ready(function () {
             dataType: "json",
             success: function (data) {
               table = new Tabulator("#tabel_verifikasi_pipeline", {
-                // Gunakan var table
                 data: data,
                 height: "350px",
                 pagination: "local",
@@ -1271,64 +1346,99 @@ $(document).ready(function () {
                 columns: columns,
               });
 
-              // Tombol "Select All"
-              $("#selectAll")
-                .off("click")
-                .on("click", function () {
-                  let rows = table.getRows();
+              // Event listener untuk tombol "Simpan Data"
+              $("#saveApproveAll").on("click", function () {
+                let rowsToApprove = table
+                  .getRows()
+                  .filter(
+                    (row) =>
+                      row.getElement().querySelector(".row-checkbox").checked
+                  );
 
-                  rows.forEach((row) => {
-                    let rowData = row.getData();
-                    row.update({ flg_approve: true, reason_reject: "" });
-
-                    updateVerifPipeline(rowData.id, true, "", null, {
-                      onSuccess: () => row.delete(),
-                    });
+                if (rowsToApprove.length === 0) {
+                  Swal.fire({
+                    title: "Tidak ada data",
+                    text: "Tidak ada data yang dipilih untuk disetujui.",
+                    icon: "info",
+                    confirmButtonText: "OK",
                   });
+                  return;
+                }
+
+                Swal.fire({
+                  title: "Apakah Anda yakin?",
+                  text: "Data yang dipilih akan disetujui.",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Ya, setujui!",
+                  cancelButtonText: "Batal",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    let updatePromises = [];
+
+                    // Kumpulkan semua pembaruan tanpa menghapus baris
+                    rowsToApprove.forEach((row) => {
+                      let rowData = row.getData();
+                      updatePromises.push(
+                        updateVerifPipeline(rowData.id, true, "", row)
+                      );
+                    });
+
+                    Promise.all(updatePromises)
+                      .then(() => {
+                        Swal.fire({
+                          title: "Berhasil!",
+                          text: "Data yang dipilih telah disetujui.",
+                          icon: "success",
+                          confirmButtonText: "OK",
+                        }).then(() => {
+                          window.location.href = "/pipeline/persetujuan"; // Reload halaman
+                        });
+                      })
+                      .catch((error) => {
+                        console.error("Error:", error);
+                        Swal.fire({
+                          title: "Gagal!",
+                          text: "Terjadi kesalahan saat menyimpan data.",
+                          icon: "error",
+                          confirmButtonText: "OK",
+                        });
+                      });
+                  }
                 });
+              });
             },
           });
         },
       });
     }
 
-    // Fungsi AJAX untuk mengupdate verifikasi ke server dan menghapus baris dari tabel
-    function updateVerifPipeline(
-      id,
-      status,
-      reason,
-      cell = null,
-      callbacks = {}
-    ) {
-      $.ajax({
-        type: "POST",
-        url: url + "/pipeline/verifikasi/update",
-        data: { id: id, flg_approve: status, reason_reject: reason },
-        dataType: "json",
-        success: function (response) {
-          if (response.status === "success") {
-            let message = status
-              ? `Pipeline ID ${id} disetujui`
-              : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
-            toastr.success(message);
-
-            // Jika update dilakukan per baris, hapus barisnya
-            if (cell) {
-              cell.getRow().delete();
+    // Fungsi AJAX untuk mengupdate verifikasi ke server
+    function updateVerifPipeline(id, status, reason, row) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          type: "POST",
+          url: url + "/pipeline/verifikasi/update",
+          data: { id: id, flg_approve: status, reason_reject: reason },
+          dataType: "json",
+          success: function (response) {
+            if (response.status === "success") {
+              let message = status
+                ? `Pipeline ID ${id} disetujui`
+                : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
+              toastr.success(message);
+              resolve();
+            } else {
+              toastr.error("Gagal memperbarui data.");
+              reject();
             }
-
-            // Jika ada callback (misalnya dari Select All), jalankan
-            if (callbacks.onSuccess) {
-              callbacks.onSuccess();
-            }
-          } else {
-            toastr.error("Gagal memperbarui data.");
-          }
-        },
-        error: function (xhr) {
-          toastr.error("Terjadi kesalahan saat memperbarui data.");
-          console.error("Error:", xhr.responseText);
-        },
+          },
+          error: function (xhr) {
+            toastr.error("Terjadi kesalahan saat memperbarui data.");
+            console.error("Error:", xhr.responseText);
+            reject();
+          },
+        });
       });
     }
   } else if (window.location.pathname === "/pipeline/monitoring") {
@@ -1400,6 +1510,50 @@ $(document).ready(function () {
       const selectedValue = $(this).val(); // Mengambil value yang dipilih
       const selectedText = $("#bulanMonPipeline option:selected").text(); // Mengambil teks yang dipilih
       console.log(`Value: ${selectedValue}, Text: ${selectedText}`);
+    });
+
+    // Fetch cabang
+    $.ajax({
+      url: url + "master/cabang",
+      method: "GET",
+      dataType: "json",
+      success: function (data) {
+        $("#cabangOps")
+          .empty()
+          .append('<option value="" selected>Pilih Cabang</option>');
+        data.forEach((cabang) => {
+          $("#cabangOps").append(
+            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          );
+        });
+      },
+      error: function () {
+        alert("Gagal memuat data cabang");
+      },
+    });
+
+    $("#cabangOps").on("change", function () {
+      const branchId = $(this).val();
+      console.log("Cabang terpilih: ", branchId); // Log Cabang terpilih
+      $("#salesMarketing")
+        .empty()
+        .append('<option value="" selected>Pilih Sales/Marketing</option>');
+
+      if (branchId) {
+        $.ajax({
+          url: url + "master/salesmarketing",
+          method: "POST",
+          data: { branch_id: branchId },
+          dataType: "json",
+          success: function (data) {
+            data.forEach((sales) => {
+              $("#salesMarketing").append(
+                `<option value="${sales.nik}">${sales.name}</option>`
+              );
+            });
+          },
+        });
+      }
     });
 
     //PERUBAHAN FILTER DROPDOWN
@@ -1631,6 +1785,13 @@ $(document).ready(function () {
               formatter: "money",
               formatterParams: { decimal: ".", thousand: "," },
             },
+            {
+              title: "Realisasi Nilai (Rp)",
+              field: "real_value",
+              headerHozAlign: "center",
+              formatter: "money",
+              formatterParams: { decimal: ".", thousand: "," },
+            },
           ];
 
           // Tambahkan kolom sesuai group_id
@@ -1643,53 +1804,26 @@ $(document).ready(function () {
           }
 
           if (group_id === "02" || group_id === "05") {
-            columns.push({
-              title: "Probabilitas",
-              field: "probability",
-              headerHozAlign: "center",
-            });
-          }
-
-          // Kolom aksi
-          columns.push({
-            title: "Aksi",
-            hozAlign: "center",
-            headerHozAlign: "center",
-            formatter: function (cell, formatterParams) {
-              return `
-            <i class='fa fa-check approve-icon' style='color: green; cursor: pointer; margin-right: 5px;'></i>
-            <i class='fa fa-times reject-icon' style='color: red; cursor: pointer;'></i>
-          `;
-            },
-            cellClick: function (e, cell) {
-              let rowData = cell.getRow().getData();
-              let targetClass = e.target.classList;
-
-              if (targetClass.contains("approve-icon")) {
-                updateVerifPipeline(rowData.id, true, "", cell);
-              } else if (targetClass.contains("reject-icon")) {
-                $("#rejectModal").modal("show");
-                $("#reject_reason").val("");
-
-                $("#saveReject")
-                  .off("click")
-                  .on("click", function () {
-                    let reason = $("#reject_reason").val().trim();
-                    if (reason === "") {
-                      alert("Silakan isi alasan penolakan!");
-                      return;
-                    }
-                    updateVerifPipeline(rowData.id, false, reason, cell);
-                    $("#rejectModal").modal("hide");
-                  });
+            columns.push(
+              {
+                title: "Penyesuaian Nilai (Rp)",
+                field: "adj_value",
+                headerHozAlign: "center",
+                formatter: "money",
+                formatterParams: { decimal: ".", thousand: "," },
+              },
+              {
+                title: "Probabilitas",
+                field: "probability",
+                headerHozAlign: "center",
               }
-            },
-          });
+            );
+          }
 
           // Panggil API untuk mendapatkan data tabel
           $.ajax({
             type: "POST",
-            url: url + "/pipeline/verifikasi/getdata",
+            url: url + "/pipeline/monitoring/getdata",
             data: {
               thn: tahun_mon,
               bln: bulan_mon,
@@ -1710,22 +1844,6 @@ $(document).ready(function () {
                 layout: "fitColumns",
                 columns: columns,
               });
-
-              // Tombol "Select All"
-              $("#selectAll")
-                .off("click")
-                .on("click", function () {
-                  let rows = table.getRows();
-
-                  rows.forEach((row) => {
-                    let rowData = row.getData();
-                    row.update({ flg_approve: true, reason_reject: "" });
-
-                    updateVerifPipeline(rowData.id, true, "", null, {
-                      onSuccess: () => row.delete(),
-                    });
-                  });
-                });
             },
           });
         },
@@ -1733,43 +1851,43 @@ $(document).ready(function () {
     }
 
     // Fungsi AJAX untuk mengupdate verifikasi ke server dan menghapus baris dari tabel
-    function updateVerifPipeline(
-      id,
-      status,
-      reason,
-      cell = null,
-      callbacks = {}
-    ) {
-      $.ajax({
-        type: "POST",
-        url: url + "/pipeline/verifikasi/update",
-        data: { id: id, flg_approve: status, reason_reject: reason },
-        dataType: "json",
-        success: function (response) {
-          if (response.status === "success") {
-            let message = status
-              ? `Pipeline ID ${id} disetujui`
-              : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
-            toastr.success(message);
+    // function updateVerifPipeline(
+    //   id,
+    //   status,
+    //   reason,
+    //   cell = null,
+    //   callbacks = {}
+    // ) {
+    //   $.ajax({
+    //     type: "POST",
+    //     url: url + "/pipeline/verifikasi/update",
+    //     data: { id: id, flg_approve: status, reason_reject: reason },
+    //     dataType: "json",
+    //     success: function (response) {
+    //       if (response.status === "success") {
+    //         let message = status
+    //           ? `Pipeline ID ${id} disetujui`
+    //           : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
+    //         toastr.success(message);
 
-            // Jika update dilakukan per baris, hapus barisnya
-            if (cell) {
-              cell.getRow().delete();
-            }
+    //         // Jika update dilakukan per baris, hapus barisnya
+    //         if (cell) {
+    //           cell.getRow().delete();
+    //         }
 
-            // Jika ada callback (misalnya dari Select All), jalankan
-            if (callbacks.onSuccess) {
-              callbacks.onSuccess();
-            }
-          } else {
-            toastr.error("Gagal memperbarui data.");
-          }
-        },
-        error: function (xhr) {
-          toastr.error("Terjadi kesalahan saat memperbarui data.");
-          console.error("Error:", xhr.responseText);
-        },
-      });
-    }
+    //         // Jika ada callback (misalnya dari Select All), jalankan
+    //         if (callbacks.onSuccess) {
+    //           callbacks.onSuccess();
+    //         }
+    //       } else {
+    //         toastr.error("Gagal memperbarui data.");
+    //       }
+    //     },
+    //     error: function (xhr) {
+    //       toastr.error("Terjadi kesalahan saat memperbarui data.");
+    //       console.error("Error:", xhr.responseText);
+    //     },
+    //   });
+    // }
   }
 });
