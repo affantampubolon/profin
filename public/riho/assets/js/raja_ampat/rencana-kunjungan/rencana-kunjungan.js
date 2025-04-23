@@ -255,7 +255,7 @@ $(document).ready(function () {
             },
           ];
 
-          if (group_id === "02" || group_id === "05") {
+          if (group_id === "09" || group_id === "10") {
             columns.push({
               title: "User Pelanggan",
               field: "cust_user_name",
@@ -270,7 +270,10 @@ $(document).ready(function () {
               headerHozAlign: "center",
               hozAlign: "center",
               formatter: function (cell, formatterParams, onRendered) {
-                return `<i class="fa fa-search" style="cursor: pointer;"></i>`;
+                return `
+                <a class="badge rounded-circle p-2 badge-light text-dark" href="#">
+                  <i class="fa fa-search" style="cursor: pointer;"></i>
+                </a>`;
               },
               cellClick: function (e, cell) {
                 var rowData = cell.getRow().getData();
@@ -282,6 +285,7 @@ $(document).ready(function () {
                 );
               },
             },
+            // Dalam definisi kolom "Setujui"
             {
               title: "Setujui",
               field: "flg_approve",
@@ -309,55 +313,21 @@ $(document).ready(function () {
               formatter: function (cell) {
                 let isApproved = cell.getValue();
                 return `
-              <input type="checkbox" class="row-checkbox" ${
-                isApproved ? "checked" : ""
-              } style="margin-right: 10px;">
-              <button class="btn btn-sm btn-danger reject-btn"><i class='fa fa-edit'></i></button>
-            `;
+                  <input type="checkbox" class="row-checkbox" ${
+                    isApproved ? "checked" : ""
+                  } style="margin-right: 10px;">
+                  <button class="btn btn-sm btn-danger reject-btn"><i class='fa fa-edit'></i></button>
+                `;
               },
               cellClick: function (e, cell) {
-                let row = cell.getRow();
+                let row = cell.getRow(); // Dapatkan objek baris Tabulator
                 let rowData = row.getData();
                 let target = e.target;
-
-                if (target.classList.contains("row-checkbox")) {
-                  let isApproved = target.checked;
-                  if (isApproved) {
-                    updateVerifRencana(
-                      rowData.cust_id,
-                      rowData.nik,
-                      rowData.date,
-                      true,
-                      ""
-                    ).then(() => {
-                      row.delete();
-                    });
-                  }
-                }
 
                 if (target.classList.contains("reject-btn")) {
                   $("#rejectModal").modal("show");
                   $("#reject_reason").val("");
-
-                  $("#saveReject")
-                    .off("click")
-                    .on("click", function () {
-                      let reason = $("#reject_reason").val().trim();
-                      if (reason === "") {
-                        alert("Silakan isi alasan penolakan!");
-                        return;
-                      }
-                      updateVerifRencana(
-                        rowData.cust_id,
-                        rowData.nik,
-                        rowData.date,
-                        false,
-                        reason
-                      ).then(() => {
-                        row.delete();
-                        $("#rejectModal").modal("hide");
-                      });
-                    });
+                  $("#rejectModal").data("row", row); // Simpan objek baris
                 }
               },
             }
@@ -385,6 +355,7 @@ $(document).ready(function () {
                 columns: columns,
               });
 
+              // Event untuk tombol Simpan Data (Approve All)
               $("#saveApproveAll").on("click", function () {
                 let rowsToApprove = table
                   .getRows()
@@ -466,6 +437,40 @@ $(document).ready(function () {
                           confirmButtonText: "OK",
                         });
                       },
+                    });
+                  }
+                });
+              });
+
+              // Event untuk tombol Simpan di modal penolakan
+              $("#saveReject").on("click", function () {
+                let reason = $("#reject_reason").val().trim();
+                if (reason === "") {
+                  alert("Silakan isi alasan penolakan!");
+                  return;
+                }
+
+                let row = $("#rejectModal").data("row"); // Ambil objek baris
+                let rowData = row.getData();
+
+                Swal.fire({
+                  title: "Apakah Anda yakin?",
+                  text: "Data akan ditolak dengan alasan: " + reason,
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Ya, tolak!",
+                  cancelButtonText: "Batal",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    updateVerifRencana(
+                      rowData.cust_id,
+                      rowData.nik,
+                      rowData.date,
+                      false,
+                      reason
+                    ).then(() => {
+                      row.delete(); // Hapus baris
+                      $("#rejectModal").modal("hide"); // Tutup modal
                     });
                   }
                 });
@@ -879,7 +884,7 @@ $(document).ready(function () {
             },
           ];
 
-          if (group_id === "02" || group_id === "05") {
+          if (group_id === "09" || group_id === "10") {
             columns.push({
               title: "User Pelanggan",
               field: "cust_user_name",

@@ -6,7 +6,7 @@ $(document).ready(function () {
     // Mendapatkan nilai awal
     var tanggal_acc =
       $("#tanggalAccKunjungan").val() || new Date().toISOString().split("T")[0]; // Default ke tanggal hari ini jika kosong
-    var cabang = $("#cabangRealisasiOps").val();
+    var sales_marketing = $("#salesMarketing").val();
     var grp_prod_acc = $("#grupBarang").val();
     var subgrp_prod_acc = $("#subgrupBarang").val();
     var kls_prod_acc = $("#kelasBarang").val();
@@ -14,58 +14,61 @@ $(document).ready(function () {
     // Data kunjungan yang akan diverifikasi (dilepas dari komentar untuk memuat tabel awal)
     tabel_verifikasi_realisasi_kunjungan(
       tanggal_acc,
-      cabang,
+      sales_marketing,
       grp_prod_acc,
       subgrp_prod_acc,
       kls_prod_acc
     );
 
-    // Ambil branch_id dari API
+    // Fetch cabang
     $.ajax({
-      url: url + "/realisasi/cabuser",
+      url: url + "master/cabang",
       method: "GET",
       dataType: "json",
-      success: function (response) {
-        const branchId = response.branch_id;
-
-        // Inisialisasi Select2
-        $("#cabangRealisasiOps").select2();
-
-        // Fetch cabang hanya jika branch_id adalah '11'
-        if (branchId === "11") {
-          $.ajax({
-            url: url + "master/cabang",
-            method: "GET",
-            dataType: "json",
-            success: function (data) {
-              $("#cabangRealisasiOps")
-                .empty()
-                .append('<option value="" selected>Pilih Cabang</option>');
-              data.forEach((cabang) => {
-                $("#cabangRealisasiOps").append(
-                  `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
-                );
-              });
-              // Reinisialisasi Select2 setelah data diisi
-              $("#cabangRealisasiOps").select2();
-            },
-            error: function (xhr, status, error) {
-              console.error("Gagal memuat data cabang:", error);
-              alert("Gagal memuat data cabang");
-            },
-          });
-        }
+      success: function (data) {
+        $("#cabangRealisasiOps")
+          .empty()
+          .append('<option value="" selected>Pilih Cabang</option>');
+        data.forEach((cabang) => {
+          $("#cabangRealisasiOps").append(
+            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          );
+        });
       },
-      error: function (xhr, status, error) {
-        console.error("Gagal memuat session branch_id:", error);
+      error: function () {
+        alert("Gagal memuat data cabang");
       },
+    });
+
+    $("#cabangRealisasiOps").on("change", function () {
+      const branchId = $(this).val();
+      console.log("Cabang terpilih: ", branchId);
+      $("#salesMarketing")
+        .empty()
+        .append('<option value="" selected>Pilih Sales/Marketing</option>');
+
+      if (branchId) {
+        $.ajax({
+          url: url + "master/salesmarketing",
+          method: "POST",
+          data: { branch_id: branchId },
+          dataType: "json",
+          success: function (data) {
+            data.forEach((sales) => {
+              $("#salesMarketing").append(
+                `<option value="${sales.nik}">${sales.name}</option>`
+              );
+            });
+          },
+        });
+      }
     });
 
     // PERUBAHAN FILTER DROPDOWN
     // Tanggal
     $("#tanggalAccKunjungan").change(function () {
       var tanggal_acc = $(this).val();
-      var cabang = $("#cabangRealisasiOps").val();
+      var sales_marketing = $("#salesMarketing").val();
       var grp_prod_acc = $("#grupBarang").val();
       var subgrp_prod_acc = $("#subgrupBarang").val();
       var kls_prod_acc = $("#kelasBarang").val();
@@ -73,25 +76,30 @@ $(document).ready(function () {
       console.log("Tanggal dipilih: " + tanggal_acc); // Debugging
       tabel_verifikasi_realisasi_kunjungan(
         tanggal_acc,
-        cabang,
+        sales_marketing,
         grp_prod_acc,
         subgrp_prod_acc,
         kls_prod_acc
       );
     });
 
-    //cabang
-    $("#cabangRealisasiOps").on("change", function () {
+    //salesMarketing
+    $("#salesMarketing").on("change", function () {
       var tanggal_acc = $("#tanggalAccKunjungan").val();
-      var cabang = $(this).val();
+      var sales_marketing = $(this).val();
       var grp_prod_acc = $("#grupBarang").val();
       var subgrp_prod_acc = $("#subgrupBarang").val();
       var kls_prod_acc = $("#kelasBarang").val();
 
-      console.log("Tanggal dipilih: " + tanggal_acc + " cabang = " + cabang); // Debugging
+      console.log(
+        "Tanggal dipilih: " +
+          tanggal_acc +
+          " sales/marketing = " +
+          sales_marketing
+      ); // Debugging
       tabel_verifikasi_realisasi_kunjungan(
         tanggal_acc,
-        cabang,
+        sales_marketing,
         grp_prod_acc,
         subgrp_prod_acc,
         kls_prod_acc
@@ -101,7 +109,7 @@ $(document).ready(function () {
     // Grup Barang
     $("#grupBarang").change(function () {
       var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var cabang = $("#cabangRealisasiOps").val();
+      var sales_marketing = $("#salesMarketing").val();
       var grp_prod_acc = $(this).val();
 
       $.ajax({
@@ -126,14 +134,14 @@ $(document).ready(function () {
           console.log(
             "Tanggal dipilih: " +
               tanggal_acc +
-              " cabang = " +
-              cabang +
+              " sales/marketing = " +
+              sales_marketing +
               "grup barang = " +
               grp_prod_acc
           );
           tabel_verifikasi_realisasi_kunjungan(
             tanggal_acc,
-            cabang,
+            sales_marketing,
             grp_prod_acc,
             subgrp_prod_acc,
             kls_prod_acc
@@ -149,7 +157,7 @@ $(document).ready(function () {
     // SubGrup Barang
     $("#subgrupBarang").change(function () {
       var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var cabang = $("#cabangRealisasiOps").val();
+      var sales_marketing = $("#cabangRealisasiOps").val();
       var grp_prod_acc = $("#grupBarang").val();
       var subgrp_prod_acc = $(this).val();
 
@@ -167,8 +175,8 @@ $(document).ready(function () {
           console.log(
             "Tanggal dipilih: " +
               tanggal_acc +
-              " cabang = " +
-              cabang +
+              " sales/marketing = " +
+              sales_marketing +
               " grup barang = " +
               grp_prod_acc +
               " subgrup barang = " +
@@ -176,7 +184,7 @@ $(document).ready(function () {
           );
           tabel_verifikasi_realisasi_kunjungan(
             tanggal_acc,
-            cabang,
+            sales_marketing,
             grp_prod_acc,
             subgrp_prod_acc,
             kls_prod_acc
@@ -192,7 +200,7 @@ $(document).ready(function () {
     // Kelas Barang
     $("#kelasBarang").change(function () {
       var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var cabang = $("#cabangRealisasiOps").val(); // Tambah variabel yang hilang
+      var sales_marketing = $("#salesMarketing").val(); // Tambah variabel yang hilang
       var grp_prod_acc = $("#grupBarang").val();
       var subgrp_prod_acc = $("#subgrupBarang").val();
       var kls_prod_acc = $(this).val();
@@ -207,7 +215,7 @@ $(document).ready(function () {
       );
       tabel_verifikasi_realisasi_kunjungan(
         tanggal_acc,
-        cabang,
+        sales_marketing,
         grp_prod_acc,
         subgrp_prod_acc,
         kls_prod_acc
@@ -217,7 +225,7 @@ $(document).ready(function () {
     // Fungsi tabel_verifikasi_realisasi_kunjungan
     function tabel_verifikasi_realisasi_kunjungan(
       tanggal_acc,
-      cabang,
+      sales_marketing,
       grp_prod_acc,
       subgrp_prod_acc,
       kls_prod_acc
@@ -233,6 +241,8 @@ $(document).ready(function () {
         success: function (response) {
           let group_id = response.group_id;
           let columns = [
+            { title: "Tanggal", field: "date", visible: false },
+            { title: "Sales/Marketing", field: "nik", visible: false },
             {
               title: "Status",
               field: "status",
@@ -240,8 +250,7 @@ $(document).ready(function () {
               hozAlign: "center",
               formatter: function (cell, formatterParams) {
                 var value = cell.getValue();
-                console.log("Status value:", value); // Debugging: Log the value to ensure correctness
-
+                console.log("Status value:", value); // Debugging
                 if (value === "1") {
                   return "<i class='fa fa-circle' style='color:#578FCA'></i>";
                 } else if (value === "2") {
@@ -250,46 +259,28 @@ $(document).ready(function () {
               },
             },
             {
-              title: "Sales / Marketing",
-              field: "emp_name",
-              headerHozAlign: "center",
-            },
-            {
               title: "Pelanggan",
-              field: "cust_id", // Field utama bisa tetap salah satu dari keduanya
+              field: "cust_id",
               headerHozAlign: "center",
               formatter: function (cell, formatterParams, onRendered) {
-                // Ambil data dari baris
                 var rowData = cell.getRow().getData();
-                // Gabungkan cust_id dan cust_name
                 return rowData.cust_id + " - " + rowData.cust_name;
               },
             },
             {
-              title: "Kelas Barang",
-              field: "class_name",
+              title: "Total Nilai (Rp)",
+              field: "tot_value",
               headerHozAlign: "center",
-              formatter: function (cell, formatterParams, onRendered) {
-                // Ambil data dari baris
-                var rowData = cell.getRow().getData();
-                // Gabungkan cust_id dan cust_name
-                return (
-                  rowData.group_id +
-                  rowData.subgroup_id +
-                  rowData.class_id +
-                  " - " +
-                  rowData.class_name
-                );
+              hozAlign: "center",
+              formatter: "money",
+              formatterParams: {
+                decimal: ",",
+                thousand: ".",
               },
-            },
-            {
-              title: "Nilai",
-              field: "value",
-              headerHozAlign: "center",
             },
           ];
 
-          if (group_id === "02" || group_id === "05") {
+          if (group_id === "09" || group_id === "10") {
             columns.push({
               title: "Probabilitas",
               field: "probability",
@@ -306,23 +297,51 @@ $(document).ready(function () {
             {
               title: "Aksi",
               headerHozAlign: "center",
+              hozAlign: "center",
               formatter: function (cell, formatterParams, onRendered) {
                 var rowData = cell.getRow().getData();
-                return `<button class="btn btn-pill btn-outline btn-sm btn-primary map-btn" 
-                    data-lat="${rowData.latitude}" 
-                    data-lng="${rowData.longitude}" 
-                    data-cust-id="${rowData.cust_id}" 
-                    data-cust-name="${rowData.cust_name}">
+                return `
+              <a class="badge rounded-circle p-2 badge-light text-dark detail-btn" href="#">
+                <i class="fa fa-search" style="cursor: pointer;"></i>
+              </a>
+              <a class="badge rounded-circle p-2 badge-primary map-btn" href="#"
+                data-lat="${rowData.latitude}"
+                data-lng="${rowData.longitude}"
+                data-cust-id="${rowData.cust_id}"
+                data-cust-name="${rowData.cust_name}">
                 <i class="fa fa-location-arrow"></i>
-            </button>`;
+              </a>
+              <a class="badge rounded-circle p-2 badge-success feedback-btn" href="#">
+                <i class="fa fa-edit" style="cursor: pointer;"></i>
+              </a>`;
               },
               cellClick: function (e, cell) {
-                var button = cell.getElement().querySelector(".map-btn");
-                var lat = button.getAttribute("data-lat");
-                var lng = button.getAttribute("data-lng");
-                var custId = button.getAttribute("data-cust-id");
-                var custName = button.getAttribute("data-cust-name");
-                showMapModal(lat, lng, custId, custName);
+                var target = e.target.closest("a");
+                if (!target) return;
+
+                var row = cell.getRow();
+                var rowData = row.getData();
+
+                if (target.classList.contains("detail-btn")) {
+                  // Panggil fungsi untuk menampilkan detail
+                  showDetailModal(
+                    rowData.nik,
+                    rowData.date,
+                    rowData.cust_id,
+                    rowData.cust_name
+                  );
+                } else if (target.classList.contains("map-btn")) {
+                  var lat = target.getAttribute("data-lat");
+                  var lng = target.getAttribute("data-lng");
+                  var custId = target.getAttribute("data-cust-id");
+                  var custName = target.getAttribute("data-cust-name");
+                  showMapModal(lat, lng, custId, custName);
+                } else if (target.classList.contains("feedback-btn")) {
+                  $("#feedbackModal").modal("show");
+                  $("#feedbackInput").val("");
+                  $("#charCount").text("0/250");
+                  $("#feedbackModal").data("row", row);
+                }
               },
             }
           );
@@ -332,7 +351,7 @@ $(document).ready(function () {
             url: url + "/realisasi/verifikasi/getdata",
             data: {
               tanggal: tanggal_acc,
-              cabang: cabang,
+              sales_marketing: sales_marketing,
               grp_prod: grp_prod_acc,
               subgrp_prod: subgrp_prod_acc,
               klsgrp_prod: kls_prod_acc,
@@ -355,6 +374,154 @@ $(document).ready(function () {
     }
 
     let map; // Variabel global untuk menyimpan instance peta
+
+    // Fungsi untuk menampilkan modal dengan data detail
+    function showDetailModal(nik, date, cust_id, cust_name) {
+      // Log parameter untuk debugging
+      console.log("showDetailModal called with:", {
+        nik: nik,
+        date: date,
+        cust_id: cust_id,
+        cust_name: cust_name,
+      });
+
+      // Periksa apakah elemen kode_pelanggan dan nama_pelanggan ada
+      if ($("#kode_pelanggan").length === 0) {
+        console.error("Elemen #kode_pelanggan tidak ditemukan di DOM");
+      }
+      if ($("#nama_pelanggan").length === 0) {
+        console.error("Elemen #nama_pelanggan tidak ditemukan di DOM");
+      }
+
+      // Set kode_pelanggan dan nama_pelanggan di header modal
+      $("#kode_pelanggan").text(cust_id || "N/A"); // Gunakan fallback jika cust_id kosong
+      $("#nama_pelanggan").text(cust_name || "N/A");
+
+      // Log nilai yang diset untuk memastikan
+      console.log("Set kode_pelanggan:", $("#kode_pelanggan").text());
+      console.log("Set nama_pelanggan:", $("#nama_pelanggan").text());
+
+      // Ambil group_id dari endpoint /pipeline/groupuser
+      $.ajax({
+        type: "GET",
+        url: url + "/pipeline/groupuser",
+        dataType: "json",
+        success: function (response) {
+          let group_id = response.group_id;
+
+          // Definisikan kolom dasar untuk Tabulator
+          let columns = [
+            {
+              title: "Grup Produk",
+              field: "group_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.group_id + " - " + rowData.group_name;
+              },
+            },
+            {
+              title: "SubGrup Produk",
+              field: "subgroup_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.subgroup_id + " - " + rowData.subgroup_name;
+              },
+            },
+            {
+              title: "Kelas Produk",
+              field: "class_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.class_id + " - " + rowData.class_name;
+              },
+            },
+          ];
+
+          // Tambahkan kolom User Pelanggan jika group_id adalah '02' atau '05'
+          if (group_id === "02" || group_id === "05") {
+            columns.push(
+              {
+                title: "User Pelanggan",
+                field: "cust_user_name",
+                headerHozAlign: "center",
+              },
+              {
+                title: "Probabilitas %",
+                field: "probability",
+                headerHozAlign: "center",
+                hozAlign: "center",
+              }
+            );
+          }
+
+          columns.push({
+            title: "Nilai (Rp)",
+            field: "value",
+            headerHozAlign: "center",
+            hozAlign: "center",
+            formatter: "money",
+            formatterParams: {
+              decimal: ",",
+              thousand: ".",
+            },
+          });
+
+          // Ambil data detail
+          $.ajax({
+            type: "POST",
+            url: url + "realisasi/verifikasi/getdetdata",
+            data: {
+              sales_marketing: nik,
+              tanggal: date,
+              cust_id: cust_id,
+            },
+            dataType: "json",
+            success: function (data) {
+              // Sembunyikan tabel statis dan kosongkan tbody untuk keamanan
+              $("#detailTable").hide();
+              $("#detailTable tbody").empty();
+
+              if (data.length > 0) {
+                // Inisialisasi tabel Tabulator
+                var detailTable = new Tabulator(
+                  "#tabel_det_verifikasi_realisasi_kunjungan",
+                  {
+                    data: data,
+                    height: "250px",
+                    pagination: "local",
+                    paginationSize: 10,
+                    paginationSizeSelector: [5, 10, 20],
+                    layout: "fitColumns",
+                    columns: columns,
+                  }
+                );
+              } else {
+                // Tampilkan tabel statis dengan pesan "Tidak ada data"
+                $("#detailTable").show();
+                // Sesuaikan colspan berdasarkan jumlah kolom
+                let colspan = group_id === "02" || group_id === "05" ? 5 : 4;
+                $("#detailTable tbody").append(
+                  `<tr><td colspan='${colspan}'>Tidak ada data</td></tr>`
+                );
+              }
+
+              $("#detailModal").modal("show");
+            },
+            error: function (xhr, status, error) {
+              console.error("Error:", error);
+              alert("Terjadi kesalahan saat mengambil data detail.");
+            },
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error);
+          alert("Terjadi kesalahan saat mengambil group_id.");
+        },
+      });
+    }
 
     function showMapModal(lat, lng, custId, custName) {
       // Isi data pelanggan di modal
@@ -397,63 +564,69 @@ $(document).ready(function () {
       $("#charCount").text(textLength + "/250");
     });
 
-    // Event listener untuk tombol "Simpan" di modal
+    // Event listener untuk tombol "Simpan" di modal feedback
     $("#saveFeedback").on("click", function () {
       var feedback = $("#feedbackInput").val();
-      if (feedback.length < 50 || feedback.length > 250) {
-        alert("Feedback harus antara 50 dan 250 karakter.");
+      if (feedback.length < 25 || feedback.length > 250) {
+        alert("Feedback harus antara 25 dan 250 karakter.");
         return;
       }
 
-      // Ambil semua ID dari data tabel
-      var ids = table.getData().map((row) => row.id);
-      console.log("IDs to update:", ids); // Debugging
+      var row = $("#feedbackModal").data("row");
+      var rowData = row.getData();
 
-      if (!ids || ids.length === 0) {
-        Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          text: "Tidak ada data untuk diperbarui.",
-        });
-        return;
-      }
-
-      // Kirim request AJAX ke controller
-      $.ajax({
-        type: "POST",
-        url: url + "realisasi/verifikasi/update",
-        data: {
-          ids: ids,
-          flg_verify: "t", // Ubah ke string 't' untuk PostgreSQL
-          feedback: feedback,
-        },
-        dataType: "json",
-        success: function (response) {
-          console.log("Response:", response); // Debugging
-          if (response.status === "success") {
-            Swal.fire({
-              icon: "success",
-              title: "Sukses",
-              text: response.message,
-            });
-            $("#feedbackModal").modal("hide");
-            table.setData(); // Refresh tabel
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Gagal",
-              text: response.message,
-            });
-          }
-        },
-        error: function (xhr, status, error) {
-          console.error("AJAX Error:", status, error); // Debugging
-          Swal.fire({
-            icon: "error",
-            title: "Gagal",
-            text: "Terjadi kesalahan saat menyimpan data: " + error,
+      Swal.fire({
+        title: "Apakah Anda yakin menyimpan data?",
+        text: "Data akan disimpan dengan feedback",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, simpan!",
+        cancelButtonText: "Batal",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Kirim request AJAX ke controller untuk update
+          $.ajax({
+            type: "POST",
+            url: url + "/realisasi/verifikasi/update",
+            data: {
+              date: rowData.date,
+              nik: rowData.nik,
+              cust_id: rowData.cust_id,
+              flg_verify: "t",
+              feedback: feedback,
+            },
+            dataType: "json",
+            success: function (response) {
+              if (response.status === "success") {
+                Swal.fire({
+                  title: "Berhasil!",
+                  text: "Data telah disimpan.",
+                  icon: "success",
+                  confirmButtonText: "OK",
+                }).then(() => {
+                  row.delete(); // Hapus baris dari tabel
+                  $("#feedbackModal").modal("hide");
+                });
+              } else {
+                Swal.fire({
+                  title: "Gagal!",
+                  text: response.message,
+                  icon: "error",
+                  confirmButtonText: "OK",
+                });
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("AJAX Error:", status, error);
+              Swal.fire({
+                title: "Gagal!",
+                text: "Terjadi kesalahan saat menyimpan data.",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+            },
           });
-        },
+        }
       });
     });
   } else if (window.location.pathname === "/realisasi/monitoring") {
@@ -668,6 +841,7 @@ $(document).ready(function () {
               title: "Tanggal Realisasi",
               field: "date",
               headerHozAlign: "center",
+              hozAlign: "center",
               formatter: "datetime",
               formatterParams: {
                 inputFormat: "yyyy-MM-dd",
@@ -675,20 +849,33 @@ $(document).ready(function () {
               },
             },
             {
-              title: "Kelas Barang",
-              field: "class_name",
+              title: "Status",
+              field: "flg_visit",
               headerHozAlign: "center",
-              formatter: function (cell, formatterParams, onRendered) {
-                // Ambil data dari baris
-                var rowData = cell.getRow().getData();
-                // Gabungkan cust_id dan cust_name
-                return (
-                  rowData.group_id +
-                  rowData.subgroup_id +
-                  rowData.class_id +
-                  " - " +
-                  rowData.class_name
-                );
+              hozAlign: "center",
+              formatter: function (cell, formatterParams) {
+                var value = cell.getValue();
+                console.log("Status value:", value); // Debugging
+                if (value === "t") {
+                  return "<i class='fa fa-circle' style='color:#578FCA'></i>";
+                } else if (value === "f") {
+                  return "<i class='fa fa-circle' style='color:#FF5677'></i>";
+                }
+              },
+            },
+            {
+              title: "Non Route?",
+              field: "flg_non_route",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams) {
+                var value = cell.getValue();
+                console.log("Status value:", value); // Debugging
+                if (value === "t") {
+                  return "<i class='fa fa-check' style='color:#03A791'></i>";
+                } else if (value === "f") {
+                  return "<i class='fa fa-times' style='color:#FF5677'></i>";
+                }
               },
             },
             {
@@ -702,20 +889,80 @@ $(document).ready(function () {
                 return rowData.cust_id + " - " + rowData.cust_name;
               },
             },
+            {
+              title: "Total Nilai (Rp)",
+              field: "tot_value",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: "money",
+              formatterParams: {
+                decimal: ",",
+                thousand: ".",
+              },
+            },
           ];
 
-          if (group_id === "02" || group_id === "05") {
+          if (group_id === "09" || group_id === "10") {
             columns.push({
               title: "User Pelanggan",
               field: "cust_user_name",
               headerHozAlign: "center",
             });
           }
-          columns.push({
-            title: "Deskripsi",
-            field: "description",
-            headerHozAlign: "center",
-          });
+          columns.push(
+            {
+              title: "Deskripsi",
+              field: "description",
+              headerHozAlign: "center",
+            },
+            {
+              title: "Tinjauan Spv",
+              field: "feedback",
+              headerHozAlign: "center",
+            },
+            {
+              title: "Aksi",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return `
+              <a class="badge rounded-circle p-2 badge-light text-dark detail-btn" href="#">
+                <i class="fa fa-search" style="cursor: pointer;"></i>
+              </a>
+              <a class="badge rounded-circle p-2 badge-primary map-btn" href="#"
+                data-lat="${rowData.latitude}"
+                data-lng="${rowData.longitude}"
+                data-cust-id="${rowData.cust_id}"
+                data-cust-name="${rowData.cust_name}">
+                <i class="fa fa-location-arrow"></i>
+              </a>`;
+              },
+              cellClick: function (e, cell) {
+                var target = e.target.closest("a");
+                if (!target) return;
+
+                var row = cell.getRow();
+                var rowData = row.getData();
+
+                if (target.classList.contains("detail-btn")) {
+                  // Panggil fungsi untuk menampilkan detail
+                  showDetailModal(
+                    rowData.nik,
+                    rowData.date,
+                    rowData.cust_id,
+                    rowData.cust_name
+                  );
+                } else if (target.classList.contains("map-btn")) {
+                  var lat = target.getAttribute("data-lat");
+                  var lng = target.getAttribute("data-lng");
+                  var custId = target.getAttribute("data-cust-id");
+                  var custName = target.getAttribute("data-cust-name");
+                  showMapModal(lat, lng, custId, custName);
+                }
+              },
+            }
+          );
 
           // Panggil API untuk mendapatkan data tabel
           $.ajax({
@@ -744,6 +991,183 @@ $(document).ready(function () {
             },
           });
         },
+      });
+    }
+
+    // Fungsi untuk menampilkan modal dengan data detail
+    function showDetailModal(nik, date, cust_id, cust_name) {
+      // Log parameter untuk debugging
+      console.log("showDetailModal called with:", {
+        nik: nik,
+        date: date,
+        cust_id: cust_id,
+        cust_name: cust_name,
+      });
+
+      // Periksa apakah elemen kode_pelanggan dan nama_pelanggan ada
+      if ($("#kode_pelanggan").length === 0) {
+        console.error("Elemen #kode_pelanggan tidak ditemukan di DOM");
+      }
+      if ($("#nama_pelanggan").length === 0) {
+        console.error("Elemen #nama_pelanggan tidak ditemukan di DOM");
+      }
+
+      // Set kode_pelanggan dan nama_pelanggan di header modal
+      $("#kode_pelanggan").text(cust_id || "N/A"); // Gunakan fallback jika cust_id kosong
+      $("#nama_pelanggan").text(cust_name || "N/A");
+
+      // Log nilai yang diset untuk memastikan
+      console.log("Set kode_pelanggan:", $("#kode_pelanggan").text());
+      console.log("Set nama_pelanggan:", $("#nama_pelanggan").text());
+
+      // Ambil group_id dari endpoint /pipeline/groupuser
+      $.ajax({
+        type: "GET",
+        url: url + "/pipeline/groupuser",
+        dataType: "json",
+        success: function (response) {
+          let group_id = response.group_id;
+
+          // Definisikan kolom dasar untuk Tabulator
+          let columns = [
+            {
+              title: "Grup Produk",
+              field: "group_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.group_id + " - " + rowData.group_name;
+              },
+            },
+            {
+              title: "SubGrup Produk",
+              field: "subgroup_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.subgroup_id + " - " + rowData.subgroup_name;
+              },
+            },
+            {
+              title: "Kelas Produk",
+              field: "class_id",
+              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.class_id + " - " + rowData.class_name;
+              },
+            },
+          ];
+
+          // Tambahkan kolom User Pelanggan jika group_id adalah '02' atau '05'
+          if (group_id === "02" || group_id === "05") {
+            columns.push(
+              {
+                title: "User Pelanggan",
+                field: "cust_user_name",
+                headerHozAlign: "center",
+              },
+              {
+                title: "Probabilitas %",
+                field: "probability",
+                headerHozAlign: "center",
+                hozAlign: "center",
+              }
+            );
+          }
+
+          columns.push({
+            title: "Nilai (Rp)",
+            field: "value",
+            headerHozAlign: "center",
+            hozAlign: "center",
+            formatter: "money",
+            formatterParams: {
+              decimal: ",",
+              thousand: ".",
+            },
+          });
+
+          // Ambil data detail
+          $.ajax({
+            type: "POST",
+            url: url + "realisasi/monitoring/getdetdata",
+            data: {
+              sales_marketing: nik,
+              tanggal: date,
+              cust_id: cust_id,
+            },
+            dataType: "json",
+            success: function (data) {
+              // Sembunyikan tabel statis dan kosongkan tbody untuk keamanan
+              $("#detailTable").hide();
+              $("#detailTable tbody").empty();
+
+              if (data.length > 0) {
+                // Inisialisasi tabel Tabulator
+                var detailTable = new Tabulator(
+                  "#tabel_det_monitoring_realisasi_kunjungan",
+                  {
+                    data: data,
+                    height: "250px",
+                    pagination: "local",
+                    paginationSize: 10,
+                    paginationSizeSelector: [5, 10, 20],
+                    layout: "fitColumns",
+                    columns: columns,
+                  }
+                );
+              } else {
+                // Tampilkan tabel statis dengan pesan "Tidak ada data"
+                $("#detailTable").show();
+                // Sesuaikan colspan berdasarkan jumlah kolom
+                let colspan = group_id === "02" || group_id === "05" ? 5 : 4;
+                $("#detailTable tbody").append(
+                  `<tr><td colspan='${colspan}'>Tidak ada data</td></tr>`
+                );
+              }
+
+              $("#detailModal").modal("show");
+            },
+            error: function (xhr, status, error) {
+              console.error("Error:", error);
+              alert("Terjadi kesalahan saat mengambil data detail.");
+            },
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error);
+          alert("Terjadi kesalahan saat mengambil group_id.");
+        },
+      });
+    }
+
+    function showMapModal(lat, lng, custId, custName) {
+      // Isi data pelanggan di modal
+      $("#kode_pelanggan").text(custId);
+      $("#nama_pelanggan").text(custName);
+
+      // Tampilkan modal
+      $("#mapModal").modal("show");
+
+      // Inisialisasi peta setelah modal ditampilkan
+      $("#mapModal").on("shown.bs.modal", function () {
+        // Hapus peta lama jika ada
+        if (map) {
+          map.remove();
+        }
+
+        // Inisialisasi peta baru dengan koordinat
+        map = L.map("map").setView([lat, lng], 13);
+
+        // Tambahkan tile layer dari OpenStreetMap
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution:
+            '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+
+        // Tambahkan marker pada lokasi
+        L.marker([lat, lng]).addTo(map);
       });
     }
   }

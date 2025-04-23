@@ -90,11 +90,13 @@ $routes->post('/rencana/monitoring/getdetdata', 'Rencana\Rencana::dataMonitoring
 $routes->get('/realisasi/cabuser', 'Realisasi\Realisasi::getUserBranchSession');
 $routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');
 $routes->post('/realisasi/verifikasi/getdata', 'Realisasi\Realisasi::dataVerifRealisasi');
+$routes->post('/realisasi/verifikasi/getdetdata', 'Realisasi\Realisasi::dataVerifRealisasiDet');
 $routes->post('/realisasi/verifikasi/update', 'Realisasi\Realisasi::updateVerifikasi');
 
 $routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
 //monitoring realisasi
 $routes->post('/realisasi/monitoring/getdata', 'Realisasi\Realisasi::dataMonitoringRealisasi');
+$routes->post('/realisasi/monitoring/getdetdata', 'Realisasi\Realisasi::dataMonitoringRealisasiDet');
 
 
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');

@@ -36,62 +36,67 @@ class Realisasi extends BaseController
   public function dataVerifRealisasi()
   {
       //filter data verifikasi realisasi kunjungan
+      $nik = $this->request->getPost('sales_marketing');
       $tanggal = $this->request->getPost('tanggal');
-      $cabang = $this->request->getPost('cabang');
       $grp_id = $this->request->getPost('grp_prod');
       $subgrp_id = $this->request->getPost('subgrp_prod');
       $clsgrp_id = $this->request->getPost('klsgrp_prod');
 
-      $data = $this->realisasiKunjModel->getDataVerifikasiRealisasi($tanggal, $cabang, $grp_id, $subgrp_id, $clsgrp_id);
+      $data = $this->realisasiKunjModel->getDataVerifikasiRealisasi($nik, $tanggal, $grp_id, $subgrp_id, $clsgrp_id);
+      echo json_encode($data);
+  }
+
+  // Data detail verifikasi realisasi kunjungan
+  public function dataVerifRealisasiDet()
+  {
+      //filter data detail verifikasi realisasi kunjungan
+      $nik = $this->request->getPost('sales_marketing');
+      $tanggal = $this->request->getPost('tanggal');
+      $pelanggan = $this->request->getPost('cust_id');
+
+      $data = $this->realisasiKunjModel->getDataVerifikasiRealisasiDet($nik, $tanggal, $pelanggan);
       echo json_encode($data);
   }
 
   public function updateVerifikasi()
   {
       // Log request untuk debugging
-      log_message('debug', 'Request Data: ' . json_encode($this->request->getPost()));
+    log_message('debug', 'Request Data: ' . json_encode($this->request->getPost()));
 
-      $ids = $this->request->getPost('ids');
-      $flg_verify = $this->request->getPost('flg_verify');
-      $feedback = $this->request->getPost('feedback') ?? '';
+    $date = $this->request->getPost('date');
+    $nik = $this->request->getPost('nik');
+    $cust_id = $this->request->getPost('cust_id');
+    $flg_verify = $this->request->getPost('flg_verify');
+    $feedback = $this->request->getPost('feedback') ?? '';
 
-      // Validasi input
-      if (empty($ids) || !is_array($ids)) {
-          return $this->response->setJSON(['status' => 'error', 'message' => 'ID tidak valid atau kosong']);
-      }
+    // Validasi input
+    if (empty($date) || empty($nik) || empty($cust_id)) {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Parameter date, nik, atau cust_id kosong']);
+    }
 
-      $username = $this->session->get('username');
-      if (!$username) {
-          return $this->response->setJSON(['status' => 'error', 'message' => 'Session username tidak ditemukan']);
-      }
+    $username = $this->session->get('username');
+    if (!$username) {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Session username tidak ditemukan']);
+    }
 
-      // Sesuaikan flg_verify dengan tipe data di database (misalnya 't' untuk PostgreSQL)
-      $data = [
-          'flg_verify' => $flg_verify, // Sesuaikan dengan tipe data Anda
-          'feedback' => $feedback,
-          'user_update' => $username,
-          'update_date' => date('Y-m-d H:i:s'),
-          'user_verify' => $username,
-          'date_verify' => date('Y-m-d H:i:s')
-      ];
+    // Data yang akan diupdate
+    $data = [
+        'flg_verify' => $flg_verify,
+        'feedback' => $feedback,
+        'user_update' => $username,
+        'update_date' => date('Y-m-d H:i:s'),
+        'user_verify' => $username,
+        'date_verify' => date('Y-m-d H:i:s')
+    ];
 
-      $successCount = 0;
-      foreach ($ids as $id) {
-          try {
-              $update = $this->realisasiKunjModel->updateRealisasi($id, $data);
-              if ($update) {
-                  $successCount++;
-              }
-          } catch (\Exception $e) {
-              log_message('error', 'Update Error for ID ' . $id . ': ' . $e->getMessage());
-          }
-      }
+    // Panggil model untuk update berdasarkan kombinasi date, nik, cust_id
+    $update = $this->realisasiKunjModel->updateRealisasi($date, $nik, $cust_id, $data);
 
-      if ($successCount === count($ids)) {
-          return $this->response->setJSON(['status' => 'success', 'message' => 'Semua data kunjungan berhasil diverifikasi']);
-      } else {
-          return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui beberapa data']);
-      }
+    if ($update) {
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Data kunjungan berhasil diverifikasi']);
+    } else {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data']);
+    }
   }
 
   public function monitoring()
@@ -123,6 +128,18 @@ class Realisasi extends BaseController
       $clsgrp_id = $this->request->getPost('klsgrp_prod');
 
       $data = $this->realisasiKunjModel->getDataMonitoringRealisasi($nik, $tanggal_1, $tanggal_2, $grp_id, $subgrp_id, $clsgrp_id);
+      echo json_encode($data);
+  }
+
+  // Data detail monitoring realisasi kunjungan
+  public function dataMonitoringRealisasiDet()
+  {
+      //filter data detail monitoring realisasi kunjungan
+      $nik = $this->request->getPost('sales_marketing');
+      $tanggal = $this->request->getPost('tanggal');
+      $pelanggan = $this->request->getPost('cust_id');
+
+      $data = $this->realisasiKunjModel->getDataMonitoringRealisasiDet($nik, $tanggal, $pelanggan);
       echo json_encode($data);
   }
 }
