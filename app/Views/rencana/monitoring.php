@@ -120,7 +120,7 @@
                             </select>
                         </div>
                         <div class="col-xl-12 col-md-12 box-col-12">
-                            <p><b>Keterangan:</b> <i class='fa fa-circle' style='color:#578FCA'></i> Tidak <i class='fa fa-circle' style='color:#FF5677'></i> Ya</p>
+                            <p><b>Keterangan:</b> <i class='fa fa-check' style='color:#03A791'></i> Ya <i class='fa fa-times' style='color:#FF5677'></i> Tidak</p>
                              <div id="tabel_monitoring_rencana_kunjungan"></div>
                         </div>
                     </div>

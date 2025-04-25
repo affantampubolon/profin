@@ -838,10 +838,10 @@ $(document).ready(function () {
                 var value = cell.getValue();
                 console.log("Status value:", value); // Debugging: Log the value to ensure correctness
 
-                if (value === "f") {
-                  return "<i class='fa fa-circle' style='color:#578FCA'></i>";
-                } else if (value === "t") {
-                  return "<i class='fa fa-circle' style='color:#FF5677'></i>";
+                if (value === "t") {
+                  return "<i class='fa fa-check' style='color:#03A791'></i>";
+                } else if (value === "f") {
+                  return "<i class='fa fa-times' style='color:#FF5677'></i>";
                 }
               },
             },
@@ -853,10 +853,10 @@ $(document).ready(function () {
                 var value = cell.getValue();
                 console.log("Status value:", value); // Debugging: Log the value to ensure correctness
 
-                if (value === "f") {
-                  return "<i class='fa fa-circle' style='color:#578FCA'></i>";
-                } else if (value === "t") {
-                  return "<i class='fa fa-circle' style='color:#FF5677'></i>";
+                if (value === "t") {
+                  return "<i class='fa fa-check' style='color:#03A791'></i>";
+                } else if (value === "f") {
+                  return "<i class='fa fa-times' style='color:#FF5677'></i>";
                 }
               },
             },
@@ -904,7 +904,10 @@ $(document).ready(function () {
               headerHozAlign: "center",
               hozAlign: "center",
               formatter: function (cell, formatterParams, onRendered) {
-                return `<i class="fa fa-search" style="cursor: pointer;"></i>`;
+                return `
+                <a class="badge rounded-circle p-2 badge-light text-dark" href="#">
+                  <i class="fa fa-search" style="cursor: pointer;"></i>
+                </a>`;
               },
               cellClick: function (e, cell) {
                 var rowData = cell.getRow().getData();

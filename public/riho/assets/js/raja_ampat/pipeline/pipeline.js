@@ -199,14 +199,13 @@ $(document).ready(function () {
               headerHozAlign: "center",
             },
             {
-              title: "Kode Pelanggan",
+              title: "Pelanggan",
               field: "cust_id",
               headerHozAlign: "center",
-            },
-            {
-              title: "Nama Pelanggan",
-              field: "cust_name",
-              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.cust_id + " - " + rowData.cust_name;
+              },
             },
             {
               title: "Target Nilai (Rp)",
@@ -1213,21 +1212,21 @@ $(document).ready(function () {
               headerHozAlign: "center",
             },
             {
-              title: "Kode Pelanggan",
+              title: "Pelanggan",
               field: "cust_id",
               headerHozAlign: "center",
-            },
-            {
-              title: "Nama Pelanggan",
-              field: "cust_name",
-              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.cust_id + " - " + rowData.cust_name;
+              },
             },
             {
               title: "Target Nilai (Rp)",
               field: "target_value",
               headerHozAlign: "center",
+              hozAlign: "center",
               formatter: "money",
-              formatterParams: { decimal: ".", thousand: "," },
+              formatterParams: { decimal: ",", thousand: "." },
             },
           ];
 
@@ -1237,6 +1236,7 @@ $(document).ready(function () {
               title: "Frekuensi Kunjungan",
               field: "freq_visit",
               headerHozAlign: "center",
+              hozAlign: "center",
             });
           }
 
@@ -1245,6 +1245,7 @@ $(document).ready(function () {
               title: "Probabilitas",
               field: "probability",
               headerHozAlign: "center",
+              hozAlign: "center",
             });
           }
 
@@ -1288,37 +1289,13 @@ $(document).ready(function () {
               let rowData = row.getData();
               let target = e.target;
 
-              // Jika checkbox diklik (persetujuan per baris)
-              if (target.classList.contains("row-checkbox")) {
-                let isApproved = target.checked;
-                if (isApproved) {
-                  updateVerifPipeline(rowData.id, true, "", row).then(() => {
-                    row.delete(); // Hapus baris setelah disetujui
-                  });
-                }
-              }
-
-              // Jika tombol "Alasan" diklik (penolakan per baris)
+              // Jika tombol "Reject" diklik (penolakan per baris)
               if (target.classList.contains("reject-btn")) {
                 $("#rejectModal").modal("show");
                 $("#reject_reason").val("");
-
-                $("#saveReject")
-                  .off("click")
-                  .on("click", function () {
-                    let reason = $("#reject_reason").val().trim();
-                    if (reason === "") {
-                      alert("Silakan isi alasan penolakan!");
-                      return;
-                    }
-                    updateVerifPipeline(rowData.id, false, reason, row).then(
-                      () => {
-                        row.delete(); // Hapus baris setelah ditolak
-                        $("#rejectModal").modal("hide");
-                      }
-                    );
-                  });
+                $("#rejectModal").data("row", row); // Simpan objek baris untuk digunakan nanti
               }
+              // Tidak ada aksi saat checkbox diklik, hanya tandai untuk approve all
             },
           });
 
@@ -1346,7 +1323,7 @@ $(document).ready(function () {
                 columns: columns,
               });
 
-              // Event listener untuk tombol "Simpan Data"
+              // Event untuk tombol Simpan Data (Approve All)
               $("#saveApproveAll").on("click", function () {
                 let rowsToApprove = table
                   .getRows()
@@ -1376,7 +1353,6 @@ $(document).ready(function () {
                   if (result.isConfirmed) {
                     let updatePromises = [];
 
-                    // Kumpulkan semua pembaruan tanpa menghapus baris
                     rowsToApprove.forEach((row) => {
                       let rowData = row.getData();
                       updatePromises.push(
@@ -1386,13 +1362,14 @@ $(document).ready(function () {
 
                     Promise.all(updatePromises)
                       .then(() => {
+                        // Tampilkan notifikasi keseluruhan dan reload halaman
                         Swal.fire({
                           title: "Berhasil!",
                           text: "Data yang dipilih telah disetujui.",
                           icon: "success",
                           confirmButtonText: "OK",
                         }).then(() => {
-                          window.location.href = "/pipeline/persetujuan"; // Reload halaman
+                          window.location.href = "/pipeline/persetujuan";
                         });
                       })
                       .catch((error) => {
@@ -1405,6 +1382,37 @@ $(document).ready(function () {
                         });
                       });
                   }
+                });
+              });
+
+              // Event untuk tombol Simpan di modal penolakan
+              $("#saveReject").on("click", function () {
+                let reason = $("#reject_reason").val().trim();
+                if (reason === "") {
+                  alert("Silakan isi alasan penolakan!");
+                  return;
+                }
+
+                let row = $("#rejectModal").data("row");
+                let rowData = row.getData();
+
+                Swal.fire({
+                  title: "Apakah Anda yakin?",
+                  text: "Data akan ditolak dengan alasan: " + reason,
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Ya, tolak!",
+                  cancelButtonText: "Batal",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    updateVerifPipeline(rowData.id, false, reason, row).then(
+                      () => {
+                        row.delete(); // Hapus baris setelah ditolak
+                        $("#rejectModal").modal("hide");
+                      }
+                    );
+                  }
+                  // Jika dibatalkan, modal tetap terbuka dengan alasan yang sudah diisi
                 });
               });
             },
@@ -1423,10 +1431,11 @@ $(document).ready(function () {
           dataType: "json",
           success: function (response) {
             if (response.status === "success") {
-              let message = status
-                ? `Pipeline ID ${id} disetujui`
-                : `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
-              toastr.success(message);
+              // Hanya tampilkan Toastr untuk penolakan (status = false), bukan untuk persetujuan
+              if (!status) {
+                let message = `Pipeline ID ${id} ditolak dengan alasan: ${reason}`;
+                toastr.success(message);
+              }
               resolve();
             } else {
               toastr.error("Gagal memperbarui data.");
@@ -1764,33 +1773,44 @@ $(document).ready(function () {
           let group_id = response.group_id;
           let columns = [
             {
-              title: "Nama Kelas Barang",
+              title: "Kelas Produk",
               field: "class_name",
               headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return (
+                  rowData.subgroup_id +
+                  " - " +
+                  rowData.class_id +
+                  " - " +
+                  rowData.class_name
+                );
+              },
             },
             {
-              title: "Kode Pelanggan",
+              title: "Pelanggan",
               field: "cust_id",
               headerHozAlign: "center",
-            },
-            {
-              title: "Nama Pelanggan",
-              field: "cust_name",
-              headerHozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.cust_id + " - " + rowData.cust_name;
+              },
             },
             {
               title: "Target Nilai (Rp)",
               field: "target_value",
               headerHozAlign: "center",
+              hozAlign: "center",
               formatter: "money",
-              formatterParams: { decimal: ".", thousand: "," },
+              formatterParams: { decimal: ",", thousand: "." },
             },
             {
               title: "Realisasi Nilai (Rp)",
               field: "real_value",
               headerHozAlign: "center",
+              hozAlign: "center",
               formatter: "money",
-              formatterParams: { decimal: ".", thousand: "," },
+              formatterParams: { decimal: ",", thousand: "." },
             },
           ];
 
@@ -1800,6 +1820,7 @@ $(document).ready(function () {
               title: "Frekuensi Kunjungan",
               field: "freq_visit",
               headerHozAlign: "center",
+              hozAlign: "center",
             });
           }
 
@@ -1809,13 +1830,15 @@ $(document).ready(function () {
                 title: "Penyesuaian Nilai (Rp)",
                 field: "adj_value",
                 headerHozAlign: "center",
+                hozAlign: "center",
                 formatter: "money",
-                formatterParams: { decimal: ".", thousand: "," },
+                formatterParams: { decimal: ",", thousand: "." },
               },
               {
                 title: "Probabilitas",
                 field: "probability",
                 headerHozAlign: "center",
+                hozAlign: "center",
               }
             );
           }
