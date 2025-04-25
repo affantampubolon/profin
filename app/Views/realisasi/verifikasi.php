@@ -32,9 +32,9 @@
                     <h4>Persetujuan Realisasi Kunjungan</h4>
                     <div class="row g-3">
                         <div class="row g-3">
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for=""
-                                    >Tanggal</label
+                                    >Tanggal Realisasi</label
                                 >
                                 <div class="input-group flatpicker-calender">
                                   <input
@@ -45,11 +45,11 @@
                                   />
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-md-6">
+                            <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for=""
                                     >Cabang</label
                                 >
-                                <select id="cabangRealisasiOps" class="select2 form-control" name="cabang_realisasiops"
+                                <select id="cabangRealisasiOps" class="select2 form-control" name="cabang_rencanaops"
                                     <?= ($session->get('branch_id') <> '11') ? 'disabled' : ''; ?>>
                                     <?php if ($session->get('branch_id') <> '11'): ?>
                                         <!-- Jika bukan branch_id = 11 -->
@@ -59,6 +59,30 @@
                                     <?php else: ?>
                                         <!-- Jika branch_id = 11, tampilkan opsi dropdown biasa -->
                                         <option value="">Pilih Cabang</option>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                            <div class="col-xl-4 col-md-4">
+                                <label class="form-label" for=""
+                                    >Sales / Marketing  </label
+                                >
+                                <select id="salesMarketing" class="select2 form-control" name="sales_marketing"
+                                    <?= ($session->get('role_id') == '5') ? 'disabled' : ''; ?>>
+                                    <?php if ($session->get('role_id') == '5' && $session->get('branch_id') != '11'): ?>
+                                        <!-- Jika role_id = 5, set default ke username -->
+                                        <option value="<?= $session->get('username'); ?>" selected>
+                                            <?= $session->get('name'); ?>
+                                        </option>
+                                    <?php elseif ($session->get('role_id') != '5' && $session->get('branch_id') != '11'): ?>
+                                        <!-- Jika bukan role_id = 5, tampilkan opsi dropdown biasa -->
+                                        <option value="">Pilih Sales/Marketing</option>
+                                        <?php foreach ($data_salesmarketing as $salesmarketing): ?>
+                                            <option value="<?= $salesmarketing->nik; ?>">
+                                                <?= $salesmarketing->name ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    <?php elseif ($session->get('role_id') != '5' && $session->get('branch_id') == '11'): ?>
+                                        <option value="">Pilih Sales/Marketing</option>
                                     <?php endif; ?>
                                 </select>
                             </div>
@@ -93,11 +117,6 @@
                             <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
                                 <option value="">Pilih Kelas</option>
                             </select>
-                        </div>
-                        <div class="col-xl-12 col-md-12">
-                            <button id="feedback_spv" class="btn btn-pill btn-outline btn-success">
-                                <i class="fa fa-save"></i> Simpan Data
-                            </button>
                         </div>
                         <div class="col-xl-12 col-md-12 box-col-12">
                               <p><b>Keterangan:</b> <i class='fa fa-circle' style='color:#578FCA'></i> Terkunjungi <i class='fa fa-circle' style='color:#FF5677'></i> Tidak Terkunjungi</p>
@@ -159,7 +178,7 @@
         ></button>
       </div>
       <div class="modal-body">
-        <textarea id="feedbackInput" class="form-control" rows="5" placeholder="Masukkan feedback (minimal 50 karakter, maksimal 250 karakter)"></textarea>
+        <textarea id="feedbackInput" class="form-control" rows="5" placeholder="Masukkan feedback (minimal 25 karakter, maksimal 250 karakter)"></textarea>
         <p id="charCount" class="text-muted">0/250</p>
       </div>
       <div class="modal-footer">
@@ -168,5 +187,42 @@
     </div>
   </div>
 </div>
+    <div
+        class="modal fade"
+        id="detailModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-toggle-wrapper text-start dark-sign-up">
+                    <div class="modal-header justify-content-center border-0">
+                            <h5 class="justify-content-center border-0">
+                                Detail Realisasi Kunjungan
+                            </h5>
+                            <h5 class="justify-content-center" id="kode_pelanggan"></h5>
+                        <!-- <div class="row">
+                            <p class="justify-content-center border-0" id="kode_pelanggan"></p> <p>-</p> <p class="justify-content-center border-0" id="nama_pelanggan"></p>
+                        </div> -->
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                             <div id="tabel_det_verifikasi_realisasi_kunjungan"></div>
+                             <!-- Elemen table untuk kondisi data kosong -->
+                             <table id="detailTable" class="table table-bordered" style="display: none;">
+                              <tbody></tbody>
+                             </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->

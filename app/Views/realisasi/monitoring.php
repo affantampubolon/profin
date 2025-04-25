@@ -129,5 +129,68 @@
     </div>
 </div>
 <!-- Container-fluid Ends-->
+    <div
+    class="modal fade"
+    id="mapModal"
+    data-bs-backdrop="static"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="mapModal"
+    aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 id="kode_pelanggan"></h5>-<h5 id="nama_pelanggan"></h5>
+        <button
+          class="btn-close py-0"
+          type="button"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div id="map" style="height: 400px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div
+        class="modal fade"
+        id="detailModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="detailModalLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-toggle-wrapper text-start dark-sign-up">
+                    <div class="modal-header justify-content-center border-0">
+                            <h5 class="justify-content-center border-0">
+                                Detail Realisasi Kunjungan
+                            </h5>
+                            <h5 class="justify-content-center" id="kode_pelanggan"></h5>
+                        <!-- <div class="row">
+                            <p class="justify-content-center border-0" id="kode_pelanggan"></p> <p>-</p> <p class="justify-content-center border-0" id="nama_pelanggan"></p>
+                        </div> -->
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-xl-12 col-md-12 box-col-12">
+                             <div id="tabel_det_monitoring_realisasi_kunjungan"></div>
+                             <!-- Elemen table untuk kondisi data kosong -->
+                             <table id="detailTable" class="table table-bordered" style="display: none;">
+                              <tbody></tbody>
+                             </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->
