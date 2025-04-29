@@ -211,6 +211,11 @@ $(document).ready(function () {
               title: "Target Nilai (Rp)",
               field: "target_value",
               headerHozAlign: "center",
+              formatter: "money",
+              formatterParams: {
+                decimal: ",",
+                thousand: ".",
+              },
               editor: "input",
               cellEdited: function (cell) {
                 updateDraftPipeline(cell.getRow().getData());
@@ -234,14 +239,16 @@ $(document).ready(function () {
           // Tambahkan kolom "Probabilitas" jika group_id = "02" atau "05"
           if (group_id === "02" || group_id === "05") {
             columns.push({
-              title: "Probabilitas",
+              title: "Probabilitas (%)",
               field: "probability",
               editor: "list",
               editorParams: {
                 valuesURL: url + "/master/probabilitas", // Ambil data dari API
                 placeholderLoading: "Menunggu Data...",
                 itemFormatter: function (label, value, item, element) {
-                  return "<strong>" + value + " - " + label + "</strong>";
+                  return (
+                    "<strong>" + value + " % " + " - " + label + "</strong>"
+                  );
                 },
               },
               cellEdited: function (cell) {
@@ -251,13 +258,49 @@ $(document).ready(function () {
           }
 
           // Tambahkan kolom aksi
+          // Tambahkan kolom aksi dengan SweetAlert konfirmasi
           columns.push({
             title: "Aksi",
             hozAlign: "center",
             headerHozAlign: "center",
             formatter: "buttonCross",
             cellClick: function (e, cell) {
-              deleteDraftPipeline(cell.getRow());
+              // Tampilkan SweetAlert konfirmasi
+              Swal.fire({
+                title: "Konfirmasi",
+                text: "Apakah Anda yakin ingin menghapus data?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, hapus!",
+                cancelButtonText: "Batal",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  // Panggil fungsi deleteDraftPipeline jika dikonfirmasi
+                  deleteDraftPipeline(cell.getRow())
+                    .then(() => {
+                      // Tampilkan SweetAlert sukses
+                      Swal.fire({
+                        title: "Sukses",
+                        text: "Data berhasil terhapus",
+                        icon: "success",
+                        confirmButtonText: "OK",
+                      });
+                    })
+                    .catch((error) => {
+                      // Tampilkan SweetAlert error jika gagal
+                      Swal.fire({
+                        title: "Error",
+                        text:
+                          "Terjadi kesalahan saat menghapus data: " +
+                          error.message,
+                        icon: "error",
+                        confirmButtonText: "OK",
+                      });
+                    });
+                }
+              });
             },
           });
 
@@ -319,25 +362,27 @@ $(document).ready(function () {
 
     // Fungsi untuk menghapus data
     function deleteDraftPipeline(row) {
-      const data = row.getData();
-      fetch(url + "/pipeline/draft/delete", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: data.id }),
-      })
-        .then((res) => res.json())
-        .then((response) => {
-          if (response.status === "success") {
-            row.delete();
-            toastr.success(response.message || "Data berhasil dihapus.");
-          } else {
-            toastr.error(response.message);
-          }
+      return new Promise((resolve, reject) => {
+        const data = row.getData();
+        fetch(url + "/pipeline/draft/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: data.id }),
         })
-        .catch((error) => {
-          console.error("Error deleting data:", error);
-          toastr.error("Terjadi kesalahan saat menghapus data.");
-        });
+          .then((res) => res.json())
+          .then((response) => {
+            if (response.status === "success") {
+              row.delete(); // Hapus baris dari tabel
+              resolve(response); // Resolusi promise untuk SweetAlert sukses
+            } else {
+              reject(new Error(response.message || "Gagal menghapus data")); // Tolak promise untuk SweetAlert error
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting data:", error);
+            reject(error); // Tolak promise untuk SweetAlert error
+          });
+      });
     }
 
     // Form Upload
