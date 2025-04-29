@@ -24,6 +24,7 @@ class Realisasi extends BaseController
 
     $data = [
       'title' => "Verifikasi Realisasi Kunjungan",
+      'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
       'subgroup_barang' => $this->kelasProdModel->getSubGrupBarang($grp_prod),
       'validation' => $this->validation,
       'breadcrumb' => $this->breadcrumb,
