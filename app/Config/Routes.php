@@ -36,9 +36,11 @@ $routes->post('/master/filter/subgrup', 'Master\Master::getFilterSubgrp');
 $routes->post('/master/filter/kelas', 'Master\Master::getFilterClass');
 $routes->get('/master/cabang', 'Master\Master::getMstCabang');
 $routes->post('/master/salesmarketing', 'Master\Master::getMstSalesMarketing');
-$routes->get('/master/pelanggancab', 'Master\Master::getMstPelanggan');
+$routes->get('/master/pelanggan/datapelanggancab', 'Master\Master::getMstPelanggan');
 $routes->get('/master/kategoripelanggan', 'Master\Master::getMstKategoriPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
+$routes->get('/master/pelanggan/getdataregis', 'Master\Master::dataRegisPelanggan');
+$routes->post('/master/pelanggan/updateregispelanggan', 'Master\Master::updateVerifRegisPelanggan');
 $routes->get('/master/probabilitas', 'Master\Master::dataFilterProbabilitas');
 // Master Wilayah
 $routes->get('/master/area/provinsi', 'Master\Master::getMstAreaProvinsi');

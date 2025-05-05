@@ -651,7 +651,7 @@ $(document).ready(function () {
 
     // Fetch data pelanggan
     $.ajax({
-      url: url + "master/pelanggancab",
+      url: url + "master/pelanggan/datapelanggancab",
       method: "GET",
       dataType: "json",
       success: function (data) {

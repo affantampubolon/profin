@@ -105,6 +105,7 @@ class Filters extends BaseFilters
                     'realisasi/verifikasi/*',
                     'realisasi/monitoring/*',
                     'master/*',
+                    'master/pelanggan/*',
                     'master/barang/*',
                     'master/filter/*',
                     'master/area/*',

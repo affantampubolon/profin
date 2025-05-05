@@ -42,22 +42,28 @@
             <div class="card">
                 <div class="card-header card-no-border">
                     <h4>Formulir Registrasi Pelanggan</h4>
+                    <div class="col-xl-6 col-md-6">
+                        <label class="form-label" for=""
+                        >Pelanggan Baru</label
+                        >
+                        <select id="masterpelangganbaru" class="select2 form-control" name="master_pelanggan_baru"></select>
+                    </div>
                 </div>
                 <div class="card-body pt-0">
                     <form class="row g-3">
+                        <input type="hidden" id="idPelanggan" name="idPelanggan">
                         <div class="col-xl-12 col-md-12 box-col-12">
                             <p class="text-uppercase"><b>Identitas Pelanggan</b></p>
                             <div class="row p-2">
                                 <div class="col-xl-6 col-md-6">
                                     <label class="form-label" for=""
-                                    >Nama Pelanggan <span class="txt-danger f-w-600">*</span></label
+                                    >Nama Pelanggan</label
                                     >
                                     <input
                                     class="form-control"
                                     id="namaPelanggan"
                                     type="text"
-                                    placeholder="nama pelanggan"
-                                    required
+                                    disabled
                                     />
                                 </div>
                                 <div class="col-xl-6 col-md-6">
@@ -190,9 +196,15 @@
                             <div class="row p-2">
                                 <div class="col-xl-6 col-md-6">
                                     <label class="form-label" for=""
-                                    >Kategori Pelanggan <span class="txt-danger f-w-600">*</span></label
+                                    >Kategori Pelanggan</label
                                     >
-                                    <select id="kategoriPelanggan" class="select2 form-control" name="kategori_pelanggan"></select>
+                                    <input
+                                    class="form-control"
+                                    id="kategoriPelanggan"
+                                    type="text"
+                                    name="kategori_pelanggan"
+                                    disabled
+                                    />
                                 </div>
                             </div>
                             <!-- Form Apoteker -->

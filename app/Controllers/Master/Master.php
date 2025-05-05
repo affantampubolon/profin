@@ -64,9 +64,81 @@ class Master extends BaseController
     {
         $data = [
             'title' => "Registrasi pelanggan",
-            'breadcrumb' => $this->breadcrumb
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
         ];
         return view('master/regis_pelanggan', $data);
+    }
+
+    public function dataRegisPelanggan()
+    {
+        $cabang = session()->get('branch_id');
+
+        $data = $this->pelangganModel->getRegisPelanggan($cabang);
+        echo json_encode($data);
+    }
+
+    public function updateVerifRegisPelanggan()
+    {
+        // Log request untuk debugging
+        log_message('debug', 'Request Data: ' . json_encode($this->request->getPost()));
+
+        // Ambil data dari POST
+        $data = $this->request->getPost();
+        $id = $data['id'] ?? null;
+
+        // Validasi input
+        if (empty($id)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Parameter id kosong'
+            ]);
+        }
+
+        // Ambil username dari session
+        $username = $this->session->get('username');
+        if (!$username) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Session username tidak ditemukan'
+            ]);
+        }
+
+        // Hapus id dari data yang akan diupdate
+        unset($data['id']);
+
+        // Konversi string kosong ke NULL untuk kolom date
+        $dateFields = ['exp_date_sia', 'exp_date_sipa'];
+        foreach ($dateFields as $field) {
+            if (isset($data[$field]) && $data[$field] === '') {
+                $data[$field] = null;
+            }
+        }
+
+        // Konversi string kosong ke NULL untuk kolom numeric
+        $numericFields = ['plafond', 'payment_term'];
+        foreach ($numericFields as $field) {
+            if (isset($data[$field]) && $data[$field] === '') {
+                $data[$field] = null;
+            }
+        }
+
+        // Tambahkan user_update dan update_date
+        $data['user_update'] = $username;
+        $data['update_date'] = date('Y-m-d H:i:s');
+
+        // Update data di database
+        $result = $this->pelangganModel->updateVerifPelanggan($id, $data);
+
+        // Response JSON
+        if ($result) {
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengupdate data'
+            ]);
+        }
     }
 
     //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA SUBGROUP DAN CLASS DIAMBIL
