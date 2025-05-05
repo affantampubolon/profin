@@ -8,12 +8,42 @@ class PelangganModel extends Model
 {
     protected $table = 'mst_customer';
     protected $allowedFields = ['branch_id', 'cust_id', 'cust_name'];
+    protected $primaryKey = ['branch_id', 'id'];
 
     /**
      * Get distinct group_id and group_name where flg_used = 't'.
      * 
      * @return array
      */
+
+    //Registrasi Pelanggan
+    public function getRegisPelanggan($cabang)
+    {
+        $builder = $this->db->table('mst_customer')
+            ->select("
+                id,
+                branch_id,
+                req_no,
+                cust_name,
+                category_id,
+                f_tv_catcust_name(category_id) AS catcust_name,
+                f_tv_catcust_pharmacist(category_id) AS flg_pharmacist
+            ")
+            ->where('branch_id', $cabang)
+            ->where('req_no IS NOT NULL')
+            ->where('flg_noo', 't')
+            ->where('flg_verify_noo', 'f')
+            ->orderBy('id');
+
+        return $builder->get()->getResult();
+    }
+
+    public function updateVerifPelanggan($id, $data) {
+       return $this->db->table($this->table)
+                        ->where('id', $id)
+                        ->update($data);
+    }
+
     // Master Pelanggan
     public function getMstPelangganCab($username)
     {
