@@ -1,5 +1,179 @@
 $(document).ready(function () {
-  if (window.location.pathname == "/master/pelanggan/registrasi") {
+  if (window.location.pathname == "/master/pelanggan/index") {
+    data_mst_pelanggan();
+
+    // Custom filter editor untuk kolom flg_noo
+    var nooFilterEditor = function (
+      cell,
+      onRendered,
+      success,
+      cancel,
+      editorParams
+    ) {
+      var select = document.createElement("select");
+      select.style.padding = "4px";
+      select.style.width = "100%";
+      select.style.boxSizing = "border-box";
+
+      // Opsi dropdown
+      var options = [
+        { value: "all", label: "Semua" },
+        { value: "t", label: "Ya" },
+        { value: "f", label: "Tidak" },
+      ];
+
+      // Tambahkan opsi ke dropdown
+      options.forEach(function (option) {
+        var opt = document.createElement("option");
+        opt.value = option.value;
+        opt.text = option.label;
+        select.appendChild(opt);
+      });
+
+      // Set nilai awal (jika ada)
+      select.value = cell.getValue() || "all";
+
+      // Event handler untuk perubahan nilai
+      function buildValue() {
+        success(select.value);
+      }
+
+      // Trigger buildValue saat nilai berubah atau dropdown kehilangan fokus
+      select.addEventListener("change", buildValue);
+      select.addEventListener("blur", buildValue);
+
+      // Handle tombol Escape untuk membatalkan
+      select.addEventListener("keydown", function (e) {
+        if (e.keyCode == 27) {
+          cancel();
+        }
+      });
+
+      return select;
+    };
+
+    // Custom filter function untuk kolom flg_noo
+    function nooFilterFunction(headerValue, rowValue, rowData, filterParams) {
+      // headerValue: nilai filter yang dipilih ("all", "t", "f")
+      // rowValue: nilai flg_noo pada baris ("t", "f", atau null)
+      if (headerValue === "all") {
+        return true; // Tampilkan semua baris
+      }
+      return rowValue === headerValue; // Cocokkan nilai filter dengan nilai baris
+    }
+
+    function data_mst_pelanggan() {
+      $.ajax({
+        type: "POST",
+        url: url + "master/pelanggan/getdatamstpelanggan",
+        async: true,
+        data: {},
+        dataType: "json",
+
+        success: function (data) {
+          var table = new Tabulator("#tabel_master_pelanggan", {
+            data: data,
+            height: "350px",
+            pagination: "local",
+            paginationSize: 25,
+            paginationSizeSelector: [10, 25, 50],
+            layout: "fitColumns",
+            columns: [
+              {
+                title: "Noo?",
+                field: "flg_noo",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                headerFilter: nooFilterEditor,
+                headerFilterFunc: nooFilterFunction,
+                headerFilterLiveFilter: false, // Nonaktifkan filter langsung untuk dropdown
+                formatter: function (cell, formatterParams) {
+                  var value = cell.getValue();
+                  console.log("Flg value:", value); // Debugging: Log the value to ensure correctness
+
+                  if (value === "t") {
+                    return "<i class='fa fa-check' style='color:#03A791'></i>";
+                  } else if (value === "f") {
+                    return "<i class='fa fa-times' style='color:#FF5677'></i>";
+                  }
+                },
+              },
+              {
+                title: "Kode Pelanggan",
+                field: "cust_id",
+                headerHozAlign: "center",
+                hozAlign: "center",
+              },
+              {
+                title: "Nama Pelanggan",
+                field: "cust_name",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                headerFilter: "input",
+              },
+              {
+                title: "Kategori Pelanggan",
+                field: "catcust_name",
+                headerHozAlign: "center",
+                hozAlign: "center",
+              },
+              {
+                title: "Aksi",
+                field: "",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                formatter: function (cell, formatterParams, onRendered) {
+                  return `
+                <a class="badge rounded-circle p-2 badge-light text-dark" href="#">
+                  <i class="fa fa-search" style="cursor: pointer;"></i>
+                </a>`;
+                },
+                cellClick: function (e, cell) {
+                  var rowData = cell.getRow().getData();
+                  showDetailModal(rowData);
+                },
+              },
+            ],
+          });
+        },
+      });
+    }
+
+    function showDetailModal(rowData) {
+      $("#kode_pelanggan").text(rowData.cust_id || "-");
+      $("#nama_pelanggan").text(rowData.cust_name || "-");
+      $("#pelanggan").text(
+        rowData.cust_id && rowData.cust_name
+          ? `${rowData.cust_id} - ${rowData.cust_name}`
+          : "-"
+      );
+      $("#no_request").text(rowData.req_no || "-");
+      $("#nama_pemilik").text(rowData.owner_name || "-");
+      $("#email").text(rowData.email || "-");
+      $("#no_telp").text(rowData.phone_no || "-");
+      $("#ktp").text(rowData.id_card || "-");
+      $("#siup").text(rowData.siup || "-");
+      $("#alamat").text(rowData.address || "-");
+      $("#provinsi").text(rowData.province_name || "-");
+      $("#kota").text(rowData.city_name || "-");
+      $("#kecamatan").text(rowData.district_name || "-");
+      $("#kelurahan").text(rowData.subdistrict_name || "-");
+      $("#kode_pos").text(rowData.zip_code || "-");
+      $("#kategori_pelanggan").text(rowData.catcust_name || "-");
+      $("#nama_apoteker").text(rowData.pharmacist || "-");
+      $("#no_sipa").text(rowData.sipa || "-");
+      $("#no_sia").text(rowData.sia || "-");
+      $("#ed_sipa").text(rowData.exp_date_sipa || "-");
+      $("#ed_sia").text(rowData.exp_date_sia || "-");
+      $("#status_pajak").text(rowData.tax_status || "-");
+      $("#npwp").text(rowData.npwp || "-");
+      $("#nama_pajak").text(rowData.cust_name_tax || "-");
+      $("#alamat_pajak").text(rowData.address_tax || "-");
+      $("#kons_bangunan").text(rowData.construction_type || "-");
+      $("#hak_bangunan").text(rowData.status_building || "-");
+      $("#detailPelangganModal").modal("show");
+    }
+  } else if (window.location.pathname == "/master/pelanggan/registrasi") {
     // Fetch data pelanggan baru (bagian ini tetap sama)
     $.ajax({
       url: url + "master/pelanggan/getdataregis",
