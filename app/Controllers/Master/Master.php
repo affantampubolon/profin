@@ -58,6 +58,25 @@ class Master extends BaseController
     }
 
     //MASTER PELANGGAN
+    // Function Index -> halaman Pelanggan
+    public function indexMstPelanggan()
+    {
+        $data = [
+            'title' => "Master pelanggan",
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('master/pelanggan', $data);
+    }
+
+    //data master pelanggan
+    public function dataMstPelanggan()
+    {
+        $cabang = session()->get('branch_id');
+
+        $data = $this->pelangganModel->getDataMstPelanggan($cabang);
+        echo json_encode($data);
+    }
 
     // Function Index -> halaman Registrasi Pelanggan
     public function indexRegisPelanggan()

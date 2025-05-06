@@ -16,6 +16,51 @@ class PelangganModel extends Model
      * @return array
      */
 
+    //Master Pelanggan
+    public function getDataMstPelanggan($cabang)
+    {
+        $builder = $this->db->table('mst_customer')
+            ->select("
+                id,
+                branch_id,
+                cust_id,
+                req_no,
+                cust_name,
+                category_id,
+                f_tv_catcust_name(category_id) AS catcust_name,
+                address,
+                f_tv_province_name(province_id) AS province_name,
+                f_tv_city_name(province_id,city_id) AS city_name,
+                f_tv_district_name(province_id,city_id,district_id) AS district_name,
+                f_tv_subdistrict_name(province_id,city_id,district_id,subdistrict_id) AS subdistrict_name,
+                zip_code,
+                email,
+                phone_no,
+                tax_status,
+                npwp,
+                siup,
+                cust_name_tax,
+                address_tax,
+                id_card,
+                plafond,
+                payment_term,
+                construction_type,
+                status_building,
+                owner_name,
+                pharmacist,
+                sipa,
+                sia,
+                exp_date_sia,
+                exp_date_sipa,
+                flg_noo,
+                f_tv_catcust_pharmacist(category_id) AS flg_pharmacist
+            ")
+            ->where('branch_id', $cabang)
+            ->orderBy('id');
+
+        return $builder->get()->getResult();
+    }
+    
     //Registrasi Pelanggan
     public function getRegisPelanggan($cabang)
     {

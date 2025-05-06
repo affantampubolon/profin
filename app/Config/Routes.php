@@ -38,6 +38,8 @@ $routes->get('/master/cabang', 'Master\Master::getMstCabang');
 $routes->post('/master/salesmarketing', 'Master\Master::getMstSalesMarketing');
 $routes->get('/master/pelanggan/datapelanggancab', 'Master\Master::getMstPelanggan');
 $routes->get('/master/kategoripelanggan', 'Master\Master::getMstKategoriPelanggan');
+$routes->get('/master/pelanggan/index', 'Master\Master::indexMstPelanggan');
+$routes->post('/master/pelanggan/getdatamstpelanggan', 'Master\Master::dataMstPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
 $routes->get('/master/pelanggan/getdataregis', 'Master\Master::dataRegisPelanggan');
 $routes->post('/master/pelanggan/updateregispelanggan', 'Master\Master::updateVerifRegisPelanggan');
