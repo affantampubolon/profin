@@ -38,11 +38,21 @@ $routes->get('/master/cabang', 'Master\Master::getMstCabang');
 $routes->post('/master/salesmarketing', 'Master\Master::getMstSalesMarketing');
 $routes->get('/master/pelanggan/datapelanggancab', 'Master\Master::getMstPelanggan');
 $routes->get('/master/kategoripelanggan', 'Master\Master::getMstKategoriPelanggan');
+//PELANGGAN
 $routes->get('/master/pelanggan/index', 'Master\Master::indexMstPelanggan');
 $routes->post('/master/pelanggan/getdatamstpelanggan', 'Master\Master::dataMstPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
 $routes->get('/master/pelanggan/getdataregis', 'Master\Master::dataRegisPelanggan');
 $routes->post('/master/pelanggan/updateregispelanggan', 'Master\Master::updateVerifRegisPelanggan');
+//USER PELANGGAN
+$routes->get('/master/userpelanggan/index', 'Master\Master::indexUserPelanggan');
+$routes->post('/master/userpelanggan/getdatamstuserpelanggan', 'Master\Master::dataMstUserPelanggan');
+$routes->get('/master/userpelanggan/getdatamstposuserpelanggan', 'Master\Master::dataMstPosUserPelanggan');
+$routes->post('/master/userpelanggan/updateuserpelanggan', 'Master\Master::updateUserPelanggan');
+//KELAS PRODUK
+$routes->get('/master/kelasproduk/index', 'Master\Master::indexMstKlsProduk');
+$routes->post('/master/kelasproduk/getdatamstklsproduk', 'Master\Master::dataMstKlsProduk');
+//PROBABILITAS
 $routes->get('/master/probabilitas', 'Master\Master::dataFilterProbabilitas');
 // Master Wilayah
 $routes->get('/master/area/provinsi', 'Master\Master::getMstAreaProvinsi');

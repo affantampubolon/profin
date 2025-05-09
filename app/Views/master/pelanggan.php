@@ -44,6 +44,23 @@
                     <h4>Master Pelanggan</h4>
                     <div class="row g-3">
                         <div class="row g-3">
+                            <div class="col-xl-6 col-md-6">
+                                <label class="form-label" for=""
+                                    >Cabang</label
+                                >
+                                <select id="cabangpelanggan" class="select2 form-control" name="cabang_pelanggan"
+                                    <?= ($session->get('branch_id') <> '11') ? 'disabled' : ''; ?>>
+                                    <?php if ($session->get('branch_id') <> '11'): ?>
+                                        <!-- Jika bukan branch_id = 11 -->
+                                        <option value="<?= $session->get('branch_id'); ?>" selected>
+                                            <?= $session->get('branch_id'); ?> - <?= $session->get('branch_name'); ?>
+                                        </option>
+                                    <?php else: ?>
+                                        <!-- Jika branch_id = 11, tampilkan opsi dropdown biasa -->
+                                        <option value="">Pilih Cabang</option>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <div id="tabel_master_pelanggan"></div>
                             </div>

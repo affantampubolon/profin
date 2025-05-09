@@ -83,7 +83,8 @@ class PelangganModel extends Model
         return $builder->get()->getResult();
     }
 
-    public function updateVerifPelanggan($id, $data) {
+    public function updateVerifPelanggan($id, $data) 
+    {
        return $this->db->table($this->table)
                         ->where('id', $id)
                         ->update($data);
@@ -114,5 +115,45 @@ class PelangganModel extends Model
             ->orderBy('category_id')
             ->get()
             ->getResultArray();
+    }
+
+    //User Pelanggan (PIC)
+    //Master Pelanggan
+    public function getDataMstUserPelanggan($cabang)
+    {
+        $builder = $this->db->table('mst_cust_user a')
+            ->select("
+                a.id,
+                a.cust_id,
+                b.cust_name,
+                a.user_cat,
+                f_tv_cust_position_name(a.user_cat) AS position_name,
+                a.name,
+                a.no_phone,
+                a.flg_used
+            ")
+            ->join('mst_customer b', 'a.cust_id = b.cust_id', 'inner')
+            ->where('b.branch_id', $cabang)
+            ->orderBy('a.id');
+
+            return $builder->get()->getResult();
+    }
+
+    // Master Posisi User Pelanggan
+    public function getMstPosUserPelanggan()
+    {
+        return $this->db->table('mst_cust_user_position')
+            ->select('id, category_id, name')
+            ->where('flg_used', 't')
+            ->orderBy('id')
+            ->get()
+            ->getResultArray();
+    }
+
+    public function updateUserPelanggan($id, $data)
+    {
+        return $this->db->table('mst_cust_user')
+                        ->where('id', $id)
+                        ->update($data);
     }
 }

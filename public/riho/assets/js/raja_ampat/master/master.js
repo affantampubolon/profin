@@ -1,6 +1,44 @@
 $(document).ready(function () {
   if (window.location.pathname == "/master/pelanggan/index") {
-    data_mst_pelanggan();
+    // data_mst_pelanggan();
+
+    // Fetch cabang
+    $.ajax({
+      url: url + "master/cabang",
+      method: "GET",
+      dataType: "json",
+      success: function (data) {
+        $("#cabangpelanggan")
+          .empty()
+          .append('<option value="" selected>Pilih Cabang</option>');
+        data.forEach((cabang) => {
+          $("#cabangpelanggan").append(
+            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          );
+        });
+      },
+      error: function () {
+        alert("Gagal memuat data cabang");
+      },
+    });
+
+    // Fungsi untuk mendapatkan semua nilai filter saat ini
+    function getFilterValues() {
+      var cabang = $("#cabangpelanggan").val();
+      return {
+        cabang,
+      };
+    }
+
+    // Panggil fungsi awal untuk menampilkan data
+    var initialFilters = getFilterValues();
+    data_mst_pelanggan(initialFilters.cabang);
+
+    // Event handler untuk Sales/Marketing
+    $("#cabangpelanggan").change(function () {
+      var filters = getFilterValues();
+      data_mst_pelanggan(filters.cabang);
+    });
 
     // Custom filter editor untuk kolom flg_noo
     var nooFilterEditor = function (
@@ -62,12 +100,14 @@ $(document).ready(function () {
       return rowValue === headerValue; // Cocokkan nilai filter dengan nilai baris
     }
 
-    function data_mst_pelanggan() {
+    function data_mst_pelanggan(cabang) {
       $.ajax({
         type: "POST",
         url: url + "master/pelanggan/getdatamstpelanggan",
         async: true,
-        data: {},
+        data: {
+          branch_id: cabang,
+        },
         dataType: "json",
 
         success: function (data) {
@@ -108,14 +148,12 @@ $(document).ready(function () {
                 title: "Nama Pelanggan",
                 field: "cust_name",
                 headerHozAlign: "center",
-                hozAlign: "center",
                 headerFilter: "input",
               },
               {
                 title: "Kategori Pelanggan",
                 field: "catcust_name",
                 headerHozAlign: "center",
-                hozAlign: "center",
               },
               {
                 title: "Aksi",
@@ -541,5 +579,550 @@ $(document).ready(function () {
         }
       });
     });
+  } else if (window.location.pathname == "/master/userpelanggan/index") {
+    // Pastikan roleId tersedia (disisipkan dari view)
+    var roleId = window.roleId || "0"; // Fallback ke '0' jika tidak ada
+
+    // Variabel untuk menyimpan data jabatan
+    let jabatanData = [];
+
+    // Fungsi untuk memuat data jabatan
+    function loadJabatanData() {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          url: url + "master/userpelanggan/getdatamstposuserpelanggan",
+          method: "GET",
+          dataType: "json",
+          success: function (data) {
+            console.log("Jabatan Data:", data); // Debugging
+            jabatanData = data;
+            resolve(data);
+          },
+          error: function (xhr, status, error) {
+            console.error("Error fetching jabatan data:", error);
+            Swal.fire({
+              title: "Error",
+              text: "Gagal memuat data posisi / jabatan",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+            reject(error);
+          },
+        });
+      });
+    }
+
+    // Fetch cabang
+    $.ajax({
+      url: url + "master/cabang",
+      method: "GET",
+      dataType: "json",
+      success: function (data) {
+        $("#cabanguserpelanggan")
+          .empty()
+          .append('<option value="" selected>Pilih Cabang</option>');
+        data.forEach((cabang) => {
+          $("#cabanguserpelanggan").append(
+            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          );
+        });
+      },
+      error: function () {
+        Swal.fire({
+          title: "Error",
+          text: "Gagal memuat data cabang",
+          icon: "error",
+          confirmButtonText: "OK",
+        });
+      },
+    });
+
+    // Inisialisasi Select2 untuk dropdown
+    $(document).ready(function () {
+      $("#posisiUserPelanggan").select2({
+        placeholder: "Pilih Jabatan / Posisi",
+        allowClear: true,
+      });
+      $("#statusUser").select2({
+        placeholder: "Pilih Status",
+        allowClear: true,
+      });
+    });
+
+    // Fungsi untuk mengisi dropdown posisi
+    function populatePosisiDropdown(selectedValue) {
+      $("#posisiUserPelanggan")
+        .empty()
+        .append('<option value="" selected>Pilih Jabatan / Posisi</option>');
+
+      if (jabatanData.length > 0) {
+        jabatanData.forEach((userjabatan) => {
+          $("#posisiUserPelanggan").append(
+            `<option value="${userjabatan.id}">${userjabatan.name}</option>`
+          );
+        });
+      } else {
+        console.warn("Jabatan data kosong");
+      }
+
+      // Set nilai yang dipilih
+      $("#posisiUserPelanggan")
+        .val(selectedValue || "")
+        .trigger("change");
+    }
+
+    // Muat data jabatan saat halaman dimuat
+    loadJabatanData().catch((error) => {
+      console.error("Failed to load jabatan data on page load:", error);
+    });
+
+    // Fungsi untuk mendapatkan semua nilai filter saat ini
+    function getFilterValues() {
+      var cabang = $("#cabanguserpelanggan").val();
+      return {
+        cabang,
+      };
+    }
+
+    // Panggil fungsi awal untuk menampilkan data
+    var initialFilters = getFilterValues();
+    data_mst_user_pelanggan(initialFilters.cabang);
+
+    // Event handler untuk Cabang
+    $("#cabanguserpelanggan").change(function () {
+      var filters = getFilterValues();
+      data_mst_user_pelanggan(filters.cabang);
+    });
+
+    // Custom filter editor untuk kolom flg_used
+    var statusFilterEditor = function (
+      cell,
+      onRendered,
+      success,
+      cancel,
+      editorParams
+    ) {
+      var select = document.createElement("select");
+      select.style.padding = "4px";
+      select.style.width = "100%";
+      select.style.boxSizing = "border-box";
+
+      var options = [
+        { value: "all", label: "Semua" },
+        { value: "t", label: "Aktif" },
+        { value: "f", label: "Tidak Aktif" },
+      ];
+
+      options.forEach(function (option) {
+        var opt = document.createElement("option");
+        opt.value = option.value;
+        opt.text = option.label;
+        select.appendChild(opt);
+      });
+
+      select.value = cell.getValue() || "all";
+
+      function buildValue() {
+        success(select.value);
+      }
+
+      select.addEventListener("change", buildValue);
+      select.addEventListener("blur", buildValue);
+      select.addEventListener("keydown", function (e) {
+        if (e.keyCode == 27) {
+          cancel();
+        }
+      });
+
+      return select;
+    };
+
+    // Custom filter function untuk kolom flg_used
+    function statusFilterFunction(
+      headerValue,
+      rowValue,
+      rowData,
+      filterParams
+    ) {
+      if (headerValue === "all") {
+        return true;
+      }
+      return rowValue === headerValue;
+    }
+
+    function data_mst_user_pelanggan(cabang) {
+      $.ajax({
+        type: "POST",
+        url: url + "master/userpelanggan/getdatamstuserpelanggan",
+        async: true,
+        data: {
+          branch_id: cabang,
+        },
+        dataType: "json",
+        success: function (data) {
+          var columns = [
+            {
+              title: "Status",
+              field: "flg_used",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              headerFilter: statusFilterEditor,
+              headerFilterFunc: statusFilterFunction,
+              headerFilterLiveFilter: false,
+              formatter: function (cell, formatterParams) {
+                var value = cell.getValue();
+                console.log("Status:", value);
+
+                if (value === "t") {
+                  return "<i class='fa fa-check' style='color:#03A791'></i>";
+                } else if (value === "f") {
+                  return "<i class='fa fa-times' style='color:#FF5677'></i>";
+                }
+                return "";
+              },
+            },
+            {
+              title: "Pelanggan",
+              field: "cust_name",
+              headerHozAlign: "center",
+              hozAlign: "left",
+              headerFilter: "input",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return (
+                  (rowData.cust_id || "-") + " - " + (rowData.cust_name || "-")
+                );
+              },
+            },
+            {
+              title: "Nama",
+              field: "name",
+              headerHozAlign: "center",
+              hozAlign: "left",
+              headerFilter: "input",
+            },
+            {
+              title: "Jabatan",
+              field: "user_cat",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                var rowData = cell.getRow().getData();
+                return rowData.position_name || "-";
+              },
+            },
+            {
+              title: "No. Hp",
+              field: "no_phone",
+              headerHozAlign: "center",
+              hozAlign: "center",
+            },
+          ];
+
+          if (roleId === "1" || roleId === "2") {
+            columns.push({
+              title: "Aksi",
+              field: "",
+              headerHozAlign: "center",
+              hozAlign: "center",
+              formatter: function (cell, formatterParams, onRendered) {
+                return `
+                                <a class="badge rounded-circle p-2 badge-light text-dark" href="#">
+                                    <i class="fa fa-search" style="cursor: pointer;"></i>
+                                </a>`;
+              },
+              cellClick: function (e, cell) {
+                var rowData = cell.getRow().getData();
+                showUpdateModal(rowData);
+              },
+            });
+          }
+
+          var table = new Tabulator("#tabel_master_user_pelanggan", {
+            data: data,
+            height: "350px",
+            pagination: "local",
+            paginationSize: 25,
+            paginationSizeSelector: [10, 25, 50],
+            layout: "fitColumns",
+            columns: columns,
+          });
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching master user pelanggan data:", error);
+          Swal.fire({
+            title: "Error",
+            text: "Gagal memuat data master user pelanggan.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+        },
+      });
+    }
+
+    // Fungsi untuk menampilkan modal dengan data user pelanggan
+    function showUpdateModal(rowData) {
+      console.log("Modal Row Data:", rowData); // Debugging
+
+      // Simpan ID untuk update
+      $("#updateUserPelangganModal").data("id", rowData.id);
+
+      // Isi teks pelanggan
+      $("#pelanggan").text(
+        rowData.cust_id && rowData.cust_name
+          ? `${rowData.cust_id} - ${rowData.cust_name}`
+          : "-"
+      );
+
+      // Isi form input
+      $("#namaUser").val(rowData.name || "");
+      $("#noTelp").val(rowData.no_phone || "");
+
+      // Isi dropdown posisi
+      populatePosisiDropdown(rowData.user_cat);
+
+      // Isi dropdown status
+      $("#statusUser")
+        .val(rowData.flg_used === "t" ? "true" : "false")
+        .trigger("change");
+
+      // Tampilkan modal
+      $("#updateUserPelangganModal").modal("show");
+    }
+
+    // Fungsi AJAX untuk mengupdate data user pelanggan
+    function updateUserPelanggan(id, name, user_cat, no_phone, flg_used) {
+      return new Promise((resolve, reject) => {
+        $.ajax({
+          type: "POST",
+          url: url + "master/userpelanggan/updateuserpelanggan",
+          data: {
+            id: id,
+            name: name,
+            user_cat: user_cat,
+            no_phone: no_phone,
+            flg_used: flg_used,
+          },
+          dataType: "json",
+          success: function (response) {
+            if (response.success) {
+              Swal.fire({
+                title: "Sukses",
+                text: "Data user pelanggan berhasil diperbarui.",
+                icon: "success",
+                confirmButtonText: "OK",
+              }).then(() => {
+                // Reload halaman
+                window.location.reload();
+              });
+              resolve();
+            } else {
+              Swal.fire({
+                title: "Error",
+                text: response.message || "Gagal memperbarui data.",
+                icon: "error",
+                confirmButtonText: "OK",
+              });
+              reject();
+            }
+          },
+          error: function (xhr) {
+            Swal.fire({
+              title: "Error",
+              text: "Terjadi kesalahan saat memperbarui data.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+            console.error("Error:", xhr.responseText);
+            reject();
+          },
+        });
+      });
+    }
+
+    // Event handler untuk tombol Simpan
+    $("#saveUpdate").on("click", function () {
+      Swal.fire({
+        title: "Konfirmasi",
+        text: "Apakah Anda yakin memperbarui data?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya",
+        cancelButtonText: "Batal",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Ambil data dari form
+          var id = $("#updateUserPelangganModal").data("id");
+          var name = $("#namaUser").val();
+          var user_cat = $("#posisiUserPelanggan").val();
+          var no_phone = $("#noTelp").val();
+          var flg_used = $("#statusUser").val() === "true" ? "t" : "f";
+
+          // Validasi sederhana
+          if (!id) {
+            Swal.fire({
+              title: "Error",
+              text: "ID tidak ditemukan.",
+              icon: "error",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+
+          // Panggil fungsi update
+          updateUserPelanggan(id, name, user_cat, no_phone, flg_used);
+        }
+      });
+    });
+  } else if (window.location.pathname == "/master/kelasproduk/index") {
+    data_kls_produk();
+
+    // Custom filter editor untuk kolom flg_used
+    var statusFilterEditor = function (
+      cell,
+      onRendered,
+      success,
+      cancel,
+      editorParams
+    ) {
+      var select = document.createElement("select");
+      select.style.padding = "4px";
+      select.style.width = "100%";
+      select.style.boxSizing = "border-box";
+
+      // Opsi dropdown
+      var options = [
+        { value: "all", label: "Semua" },
+        { value: "t", label: "Ya" },
+        { value: "f", label: "Tidak" },
+      ];
+
+      // Tambahkan opsi ke dropdown
+      options.forEach(function (option) {
+        var opt = document.createElement("option");
+        opt.value = option.value;
+        opt.text = option.label;
+        select.appendChild(opt);
+      });
+
+      // Set nilai awal (jika ada)
+      select.value = cell.getValue() || "all";
+
+      // Event handler untuk perubahan nilai
+      function buildValue() {
+        success(select.value);
+      }
+
+      // Trigger buildValue saat nilai berubah atau dropdown kehilangan fokus
+      select.addEventListener("change", buildValue);
+      select.addEventListener("blur", buildValue);
+
+      // Handle tombol Escape untuk membatalkan
+      select.addEventListener("keydown", function (e) {
+        if (e.keyCode == 27) {
+          cancel();
+        }
+      });
+
+      return select;
+    };
+
+    // Custom filter function untuk kolom flg_used
+    function statusFilterFunction(
+      headerValue,
+      rowValue,
+      rowData,
+      filterParams
+    ) {
+      // headerValue: nilai filter yang dipilih ("all", "t", "f")
+      // rowValue: nilai flg_noo pada baris ("t", "f", atau null)
+      if (headerValue === "all") {
+        return true; // Tampilkan semua baris
+      }
+      return rowValue === headerValue; // Cocokkan nilai filter dengan nilai baris
+    }
+
+    function data_kls_produk() {
+      $.ajax({
+        type: "POST",
+        url: url + "master/kelasproduk/getdatamstklsproduk",
+        async: true,
+        data: {},
+        dataType: "json",
+
+        success: function (data) {
+          var table = new Tabulator("#tabel_master_kls_produk", {
+            data: data,
+            height: "350px",
+            pagination: "local",
+            paginationSize: 25,
+            paginationSizeSelector: [10, 25, 50],
+            layout: "fitColumns",
+            columns: [
+              {
+                title: "Status",
+                field: "flg_used",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                headerFilter: statusFilterEditor,
+                headerFilterFunc: statusFilterFunction,
+                headerFilterLiveFilter: false, // Nonaktifkan filter langsung untuk dropdown
+                formatter: function (cell, formatterParams) {
+                  var value = cell.getValue();
+                  console.log("Flg value:", value); // Debugging: Log the value to ensure correctness
+
+                  if (value === "t") {
+                    return "<i class='fa fa-check' style='color:#03A791'></i>";
+                  } else if (value === "f") {
+                    return "<i class='fa fa-times' style='color:#FF5677'></i>";
+                  }
+                },
+              },
+              {
+                title: "Grup Produk",
+                field: "group_name",
+                headerHozAlign: "center",
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return (
+                    (rowData.group_id || "-") +
+                    " - " +
+                    (rowData.group_name || "-")
+                  );
+                },
+              },
+              {
+                title: "Sub Grup Produk",
+                field: "subgroup_name",
+                headerHozAlign: "center",
+                headerFilter: "input",
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return (
+                    (rowData.subgroup_id || "-") +
+                    " - " +
+                    (rowData.subgroup_name || "-")
+                  );
+                },
+              },
+              {
+                title: "Kelas Grup Produk",
+                field: "class_name",
+                headerHozAlign: "center",
+                headerFilter: "input",
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return (
+                    (rowData.class_id || "-") +
+                    " - " +
+                    (rowData.class_name || "-")
+                  );
+                },
+              },
+            ],
+          });
+        },
+      });
+    }
   }
 });

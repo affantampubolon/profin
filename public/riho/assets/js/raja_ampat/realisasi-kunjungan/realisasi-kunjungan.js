@@ -157,7 +157,7 @@ $(document).ready(function () {
     // SubGrup Barang
     $("#subgrupBarang").change(function () {
       var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var sales_marketing = $("#cabangRealisasiOps").val();
+      var sales_marketing = $("#salesMarketing").val();
       var grp_prod_acc = $("#grupBarang").val();
       var subgrp_prod_acc = $(this).val();
 
