@@ -14,6 +14,10 @@
 <script type="text/javascript">
   var url = "<?= site_url(); ?>";
 </script>
+<script>
+    // Sisipkan role_id dari session
+    var roleId = '<?php echo session()->get('role_id') ?? '0'; ?>';
+</script>
 <!-- latest jquery-->
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>
 <!-- Tabulator table -->

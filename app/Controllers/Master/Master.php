@@ -72,7 +72,7 @@ class Master extends BaseController
     //data master pelanggan
     public function dataMstPelanggan()
     {
-        $cabang = session()->get('branch_id');
+        $cabang = $this->request->getPost('branch_id');
 
         $data = $this->pelangganModel->getDataMstPelanggan($cabang);
         echo json_encode($data);
@@ -158,6 +158,122 @@ class Master extends BaseController
                 'message' => 'Gagal mengupdate data'
             ]);
         }
+    }
+
+    //USER PELANGGAN
+    // Function Index -> halaman Master User Pelanggan
+    public function indexUserPelanggan()
+    {
+        $data = [
+            'title' => "User pelanggan",
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('master/user_pelanggan', $data);
+    }
+
+    //data master user pelanggan
+    public function dataMstUserPelanggan()
+    {
+        $cabang = $this->request->getPost('branch_id');
+
+        $data = $this->pelangganModel->getDataMstUserPelanggan($cabang);
+        echo json_encode($data);
+    }
+
+    //data master posisi user pelanggan
+    public function dataMstPosUserPelanggan()
+    {
+        
+        $data = $this->pelangganModel->getMstPosUserPelanggan();
+        echo json_encode($data);
+    }
+
+    public function updateUserPelanggan()
+    {
+        // Log request untuk debugging
+        log_message('debug', 'Update Request Data: ' . json_encode($this->request->getPost()));
+
+        // Ambil data dari POST
+        $data = $this->request->getPost();
+        $id = $data['id'] ?? null;
+
+        // Validasi input
+        if (empty($id)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Parameter id kosong'
+            ], 400);
+        }
+
+        // Ambil username dari session
+        $username = $this->session->get('username');
+        if (!$username) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Session username tidak ditemukan'
+            ], 401);
+        }
+
+        // Validasi role_id
+        $roleId = $this->session->get('role_id');
+        if (!in_array($roleId, ['1', '2'])) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Akses ditolak'
+            ], 403);
+        }
+
+        // Hapus id dari data yang akan diupdate
+        unset($data['id']);
+
+        // Konversi string kosong ke NULL untuk kolom tertentu
+        $nullableFields = ['name', 'user_cat', 'no_phone'];
+        foreach ($nullableFields as $field) {
+            if (isset($data[$field]) && $data[$field] === '') {
+                $data[$field] = null;
+            }
+        }
+
+        // Tambahkan user_update dan update_date
+        $data['user_update'] = $username;
+        $data['update_date'] = date('Y-m-d H:i:s');
+
+        // Update data di database
+        $result = $this->pelangganModel->updateUserPelanggan($id, $data);
+
+        // Response JSON
+        if ($result) {
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengupdate data'
+            ], 500);
+        }
+    }
+
+
+    //KELAS PRODUK
+    //MASTER KELAS PRODUK
+    // Function Index -> halaman Kelas Produk
+    public function indexMstKlsProduk()
+    {
+        $data = [
+            'title' => "Master kelas produk",
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('master/kelas_produk', $data);
+    }
+
+    //data master kelas produk
+    public function dataMstKlsProduk()
+    {
+        $grupprod = session()->get('group_id');
+
+        $data = $this->kelasProdModel->getDataMstKlsProd($grupprod);
+        echo json_encode($data);
     }
 
     //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA SUBGROUP DAN CLASS DIAMBIL

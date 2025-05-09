@@ -120,12 +120,13 @@ class RealisasiKunjModel extends Model
             ->where('a.date >=', $tanggal_1)
             ->where('a.date <=', $tanggal_2)
             ->where('a.group_id', $grp_id)
+            ->where('a.subgroup_id', $subgrp_id)
             ->orderBy('a.cust_id, a.date');
 
-            // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
-            if (!empty($subgrp_id)) {
-                $builder->where('a.subgroup_id', $subgrp_id);
-            }
+            // // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
+            // if (!empty($subgrp_id)) {
+            //     $builder->where('a.subgroup_id', $subgrp_id);
+            // }
 
             // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
             if (!empty($clsgrp_id)) {

@@ -9,6 +9,26 @@ class KelasProdModel extends Model
     protected $table = 'mst_prod_class';
     protected $allowedFields = ['group_id', 'subgroup_id', 'class_id', 'group_name', 'subgroup_name', 'class_name'];
 
+    //Master Kelas Produk
+    public function getDataMstKlsProd($grupprod)
+    {
+        $builder = $this->db->table('mst_prod_class')
+            ->select("
+                id,
+                group_id,
+                subgroup_id,
+                class_id,
+                group_name,
+                subgroup_name,
+                class_name,
+                flg_used
+            ")
+            ->where('group_id', $grupprod)
+            ->orderBy('id');
+
+        return $builder->get()->getResult();
+    }
+
     /**
      * Get distinct group_id and group_name where flg_used = 't'.
      * 
