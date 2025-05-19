@@ -107,12 +107,18 @@ $routes->post('/realisasi/verifikasi/getdata', 'Realisasi\Realisasi::dataVerifRe
 $routes->post('/realisasi/verifikasi/getdetdata', 'Realisasi\Realisasi::dataVerifRealisasiDet');
 $routes->post('/realisasi/verifikasi/update', 'Realisasi\Realisasi::updateVerifikasi');
 
-$routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
 //monitoring realisasi
+$routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
+
 $routes->post('/realisasi/monitoring/getdata', 'Realisasi\Realisasi::dataMonitoringRealisasi');
 $routes->post('/realisasi/monitoring/getdetdata', 'Realisasi\Realisasi::dataMonitoringRealisasiDet');
 
-
+//izin
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
 $routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
+
+//pelaporan
+$routes->get('/pelaporan/aktivitas_kunj', 'Pelaporan\Pelaporan::aktvitasKunj');
+$routes->post('/pelaporan/aktivitas_kunj/data_aktivitas', 'Pelaporan\Pelaporan::dataAktivitasKunj');
+$routes->post('/pelaporan/aktivitas_kunj/data_distribusi_prod', 'Pelaporan\Pelaporan::dataDistribusiProd');
 

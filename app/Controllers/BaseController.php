@@ -24,6 +24,7 @@ use App\Models\MasterModel\SkalaProbabilitasModel;
 use App\Models\IzinModel\IzinModel;
 use App\Models\MasterModel\DepartmentModel;
 use App\Models\MasterModel\WilayahDetModel;
+use App\Models\PelaporanModel\PelaporanModel;
 
 /**
  * Class BaseController
@@ -89,6 +90,9 @@ abstract class BaseController extends Controller
     // department
     protected $DeptModel;
 
+    //pelaporan
+    protected $pelaporanModel;
+
     protected $breadcrumb;
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -125,8 +129,11 @@ abstract class BaseController extends Controller
         $this->rencanaKunjModel = new RencanaKunjModel();
         //Realisasi Kunjungan
         $this->realisasiKunjModel = new RealisasiKunjModel();
+        //Pelaporan
+        $this->pelaporanModel = new PelaporanModel();
         //
         $this->izinModel        = new IzinModel();
+        
         $this->DeptModel        = new DepartmentModel();
         // Ambil dan buat tree menu di BaseController
         $this->loadMenu();

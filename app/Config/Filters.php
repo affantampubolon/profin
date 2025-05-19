@@ -112,6 +112,8 @@ class Filters extends BaseFilters
                     'master/filter/*',
                     'master/area/*',
                     'izin/*',
+                    'pelaporan/*',
+                    'pelaporan/aktivitas_kunj/*',
                 ],
             ],
         ],
