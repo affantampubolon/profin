@@ -89,6 +89,11 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-xl-12 col-md-12 box-col-12">
+                                <p style="margin: 5px;"><b>Pelanggan:</b> <i class='fa fa-circle' style='color:#27548A'></i> Sudah Ada <i class='fa fa-circle' style='color:#129990'></i> NOO</p>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-xl-12 col-md-12 box-col-12">
                                 <div id="map" style="z-index: 1;"></div>
                             </div>
                         </div>
@@ -100,12 +105,12 @@
         <div class="col-xl-12 col-md-12 box-col-12">
             <div class="card">
                 <div class="card-header card-no-border">
-                    <h4>Distribusi Produk</h4>
+                    <h4>Distribusi Produk Tahun <?= date('Y'); ?></h4>
                 </div>
                 <div class="card-body pt-0">
                         <div class="row g-3">
                             <div class="col-xl-12 col-md-12 box-col-12">
-                                <div id="table_detail_prod"></div>
+                                <div id="table_distribusi_prod"></div>
                             </div>
                         </div>
                 </div>

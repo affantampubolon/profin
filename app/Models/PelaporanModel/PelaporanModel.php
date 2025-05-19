@@ -26,10 +26,12 @@ class PelaporanModel extends Model
     public function getDataDistribusiProd($cabang, $nik, $pelanggan)
     {
         $builder = $this->db->table('vw_report_distribution_prod')
-            ->select('date, branch_id, branch_name, nik, emp_name, group_id, group_name, subgroup_id, subgroup_name, class_id, class_name, cust_id, cust_name, tot_real_value, tot_target_value, flg_non_route, flg_visit')
+            ->select('month, date, branch_id, branch_name, nik, emp_name, group_id, group_name, subgroup_id, subgroup_name, class_id, class_name, cust_id, cust_name, tot_real_value, tot_target_value, prs_value, flg_non_route, flg_visit')
             ->where('branch_id', $cabang)
             ->where('nik', $nik)
-            ->where('cust_id', $pelanggan);
+            ->where('cust_id', $pelanggan)
+            ->where("TO_CHAR(date, 'YYYY') = TO_CHAR(CURRENT_DATE, 'YYYY')", NULL, FALSE)
+            ->orderBy('month, date, nik, group_id, subgroup_id, class_id, cust_id');
 
             return $builder->get()->getResult();
     }
