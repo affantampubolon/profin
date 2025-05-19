@@ -44,6 +44,7 @@ https://cdn.jsdelivr.net/npm/luxon@3.5.0/build/global/luxon.min.js
 <script src="
 https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js
 "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.4/leaflet.awesome-markers.js"></script>
 <!-- Bootstrap js-->
 <script src="<?= base_url(''); ?>riho/assets/js/bootstrap/bootstrap.bundle.min.js"></script>
 <!-- feather icon js-->
@@ -92,6 +93,7 @@ https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/rencana-kunjungan/rencana-kunjungan.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/realisasi-kunjungan/realisasi-kunjungan.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/master/master.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pelaporan/pelaporan.js"></script>
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script> -->
 <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
 <script>
