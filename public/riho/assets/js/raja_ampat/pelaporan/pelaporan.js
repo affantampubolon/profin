@@ -5,10 +5,39 @@ $(document).ready(function () {
     let aktivitasData = [];
     let map;
 
-    // Panggil data dan render saat branch/sales berubah
+    // Inisialisasi tanggal awal
+    let currentDate = new Date().toJSON().slice(0, 10);
+
+    // Deklarasi elemen filter
+    const $rentangTanggal = $("#rentangTanggalReport");
     const $cabang = $("#cabangaktivitaskunj");
     const $sales = $("#salesMarketing");
 
+    // Inisialisasi DateRangePicker
+    $rentangTanggal.daterangepicker({
+      startDate: currentDate,
+      endDate: currentDate,
+      locale: {
+        format: "YYYY-MM-DD",
+      },
+    });
+
+    // Fungsi untuk mendapatkan semua nilai filter saat ini
+    function getFilterValues() {
+      var dates = $rentangTanggal.data("daterangepicker");
+      var tgl_1 = dates.startDate.format("YYYY-MM-DD");
+      var tgl_2 = dates.endDate.format("YYYY-MM-DD");
+      var cabang = $cabang.val();
+      var salesMarketing = $sales.val();
+      return {
+        tgl_1,
+        tgl_2,
+        cabang,
+        salesMarketing,
+      };
+    }
+
+    // Fetch cabang
     $.getJSON(url + "master/cabang", (branches) => {
       $cabang
         .empty()
@@ -20,6 +49,7 @@ $(document).ready(function () {
         );
     });
 
+    // Event handler untuk cabang
     $cabang.on("change", function () {
       const cab = this.value;
       $sales.empty().append('<option value="">Pilih Sales</option>');
@@ -35,15 +65,45 @@ $(document).ready(function () {
           "json"
         );
       }
-      data_aktivitas_sales(cab, $sales.val());
+      var filters = getFilterValues();
+      data_aktivitas_sales(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.salesMarketing
+      );
     });
 
+    // Event handler untuk sales/marketing
     $sales.on("change", function () {
-      data_aktivitas_sales($cabang.val(), this.value);
+      var filters = getFilterValues();
+      data_aktivitas_sales(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.salesMarketing
+      );
+    });
+
+    // Event handler untuk DateRangePicker
+    $rentangTanggal.on("apply.daterangepicker", function (ev, picker) {
+      var filters = getFilterValues();
+      data_aktivitas_sales(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.salesMarketing
+      );
     });
 
     // Muat sekali di awal
-    data_aktivitas_sales($cabang.val(), $sales.val());
+    var initialFilters = getFilterValues();
+    data_aktivitas_sales(
+      initialFilters.tgl_1,
+      initialFilters.tgl_2,
+      initialFilters.cabang,
+      initialFilters.salesMarketing
+    );
 
     // Inisialisasi peta sekali saja
     function initMap() {
@@ -106,20 +166,26 @@ $(document).ready(function () {
 
         // Event click untuk menampilkan tabel
         marker.on("click", function () {
+          const date = loc.date;
           const branch_id = loc.branch_id;
           const nik = loc.nik;
           const cust_id = loc.cust_id;
-          data_ditribusi_prod(branch_id, nik, cust_id);
+          data_ditribusi_prod(date, branch_id, nik, cust_id);
         });
       });
     }
 
     // Ambil data & update peta
-    function data_aktivitas_sales(cabang, salesMarketing) {
+    function data_aktivitas_sales(tgl_1, tgl_2, cabang, salesMarketing) {
       return $.ajax({
         type: "POST",
         url: url + "pelaporan/aktivitas_kunj/data_aktivitas",
-        data: { cabang, sales_marketing: salesMarketing },
+        data: {
+          tanggal_1: tgl_1,
+          tanggal_2: tgl_2,
+          cabang: cabang,
+          sales_marketing: salesMarketing,
+        },
         dataType: "json",
         success: function (data) {
           aktivitasData = data;
@@ -127,89 +193,20 @@ $(document).ready(function () {
         },
         error: function (xhr, status, err) {
           console.error("Error fetching aktivitas:", err);
+          aktivitasData = [];
+          renderMap();
         },
       });
     }
 
-    // Fungsi untuk mengubah data flat menjadi nested tree structure
-    function buildTreeData(data) {
-      const tree = [];
-      const monthMap = new Map();
-      const dateMap = new Map();
-      const nikMap = new Map();
-      const custMap = new Map();
-
-      data.forEach((item) => {
-        const monthKey = item.month;
-        const dateKey = `${monthKey}-${item.date}`;
-        const nikKey = `${dateKey}-${item.nik}`;
-        const custKey = `${nikKey}-${item.cust_id}`;
-
-        // Level 1: Month
-        if (!monthMap.has(monthKey)) {
-          const monthNode = { month: item.month, _children: [] };
-          monthMap.set(monthKey, monthNode);
-          tree.push(monthNode);
-        }
-        const monthNode = monthMap.get(monthKey);
-
-        // Level 2: Date
-        if (!dateMap.has(dateKey)) {
-          const dateNode = { date: item.date, _children: [] };
-          dateMap.set(dateKey, dateNode);
-          monthNode._children.push(dateNode);
-        }
-        const dateNode = dateMap.get(dateKey);
-
-        // Level 3: NIK (Sales/Marketing)
-        if (!nikMap.has(nikKey)) {
-          const nikNode = {
-            nik: item.nik,
-            emp_name: item.emp_name,
-            _children: [],
-          };
-          nikMap.set(nikKey, nikNode);
-          dateNode._children.push(nikNode);
-        }
-        const nikNode = nikMap.get(nikKey);
-
-        // Level 4: Cust ID (Pelanggan)
-        if (!custMap.has(custKey)) {
-          const custNode = {
-            cust_id: item.cust_id,
-            cust_name: item.cust_name,
-            _children: [],
-          };
-          custMap.set(custKey, custNode);
-          nikNode._children.push(custNode);
-        }
-        const custNode = custMap.get(custKey);
-
-        // Detail data sebagai children dari cust_id
-        const detail = {
-          class_id: item.class_id,
-          class_name: item.class_name,
-          tot_real_value: item.tot_real_value,
-          tot_target_value: item.tot_target_value,
-          prs_value: item.prs_value,
-          flg_non_route: item.flg_non_route,
-          flg_visit: item.flg_visit,
-          group_id: item.group_id,
-          subgroup_id: item.subgroup_id,
-        };
-        custNode._children.push(detail);
-      });
-
-      return tree;
-    }
-
-    // Fungsi untuk menampilkan tabel distribusi produk dalam tree structure
-    function data_ditribusi_prod(branch_id, nik, cust_id) {
+    // Fungsi untuk menampilkan tabel distribusi produk
+    function data_ditribusi_prod(date, branch_id, nik, cust_id) {
       $.ajax({
         type: "POST",
         url: url + "pelaporan/aktivitas_kunj/data_distribusi_prod",
         async: true,
         data: {
+          tanggal: date,
           cabang: branch_id,
           sales_marketing: nik,
           pelanggan: cust_id,
@@ -221,76 +218,80 @@ $(document).ready(function () {
             return item.cust_id === cust_id;
           });
 
-          // Transformasi data flat ke nested tree structure
-          var treeData = buildTreeData(filteredData);
+          // Fungsi untuk menghitung jumlah unik nik
+          function getUniqueNikCount(data) {
+            let nikSet = new Set(data.map((item) => item.nik));
+            return nikSet.size;
+          }
 
-          // Inisialisasi Tabulator dengan tree structure
+          // Fungsi untuk menghitung jumlah unik class_id
+          function getUniqueClassIdCount(data) {
+            let classIdSet = new Set(data.map((item) => item.class_id));
+            return classIdSet.size;
+          }
+
+          // Inisialisasi Tabulator
           var table = new Tabulator("#table_distribusi_prod", {
-            data: treeData,
-            dataTree: true, // Aktifkan Tree Structure
-            dataTreeStartExpanded: true, // Expand tree di awal
+            data: filteredData,
             movableColumns: true,
             layout: "fitColumns",
             height: "500px",
             responsiveLayout: "collapse",
             pagination: "local",
             paginationSize: 50,
-            paginationSizeSelector: [20, 50, 75],
-            columns: [
-              {
-                title: "Bulan",
-                field: "month",
-                width: 100,
-                headerHozAlign: "center",
-                hozAlign: "center",
+            paginationSizeSelector: [20, 50, 70],
+            groupBy: ["date", "emp_name"], // Mengelompokkan berdasarkan date dan emp_name
+            groupStartOpen: [true, false], // Grup date terbuka, grup emp_name tertutup
+            groupHeader: [
+              function (value, count, data) {
+                // Grup header untuk date
+                let uniqueNikCount = getUniqueNikCount(data);
+                return `${value} - <span style="color:#27548A">Jumlah Sales / Marketing: ${uniqueNikCount}</span>`;
               },
+              function (value, count, data) {
+                // Grup header untuk emp_name
+                let uniqueClassIdCount = getUniqueClassIdCount(data);
+                return `${value} - <span style="color:#27548A">Jumlah Barang: ${uniqueClassIdCount}</span>`;
+              },
+            ],
+            columns: [
               {
                 title: "Tanggal",
                 field: "date",
-                width: 120,
                 headerHozAlign: "center",
                 hozAlign: "center",
+                visible: false, // Sembunyikan kolom date di baris data
               },
               {
                 title: "Sales / Marketing",
                 field: "emp_name",
-                width: 150,
                 headerHozAlign: "center",
-                formatter: function (cell) {
-                  var rowData = cell.getRow().getData();
-                  return rowData.nik
-                    ? rowData.nik + " - " + rowData.emp_name
-                    : "";
-                },
+                visible: false, // Sembunyikan kolom emp_name di baris data
               },
               {
                 title: "Pelanggan",
                 field: "cust_name",
-                width: 150,
                 headerHozAlign: "center",
                 formatter: function (cell) {
                   var rowData = cell.getRow().getData();
-                  return rowData.cust_id
-                    ? rowData.cust_id + " - " + rowData.cust_name
-                    : "";
+                  return rowData.cust_id + " - " + rowData.cust_name;
                 },
               },
               {
                 title: "Kelas Barang",
                 field: "class_name",
-                width: 150,
                 headerHozAlign: "center",
                 formatter: function (cell) {
                   var rowData = cell.getRow().getData();
-                  return rowData.class_id
-                    ? rowData.group_id +
-                        "-" +
-                        rowData.subgroup_id +
-                        "-" +
-                        rowData.class_id +
-                        " " +
-                        rowData.class_name
-                    : "";
+                  return (
+                    rowData.group_id +
+                    "-" +
+                    rowData.subgroup_id +
+                    "-" +
+                    rowData.class_id +
+                    " " +
+                    rowData.class_name
+                  );
                 },
               },
               {

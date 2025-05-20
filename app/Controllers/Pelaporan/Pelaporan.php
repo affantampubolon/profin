@@ -29,10 +29,12 @@ class Pelaporan extends BaseController
     public function dataAktivitasKunj()
     {
         //filter data verifikasi rencana kunjungan
+        $tanggal_1 = $this->request->getPost('tanggal_1');
+        $tanggal_2 = $this->request->getPost('tanggal_2');
         $cabang = $this->request->getPost('cabang');
         $nik = $this->request->getPost('sales_marketing');
 
-        $data = $this->pelaporanModel->getDataAktivitasSales($cabang, $nik);
+        $data = $this->pelaporanModel->getDataAktivitasSales($tanggal_1, $tanggal_2, $cabang, $nik);
         echo json_encode($data);
     }
 
@@ -40,11 +42,12 @@ class Pelaporan extends BaseController
     public function dataDistribusiProd()
     {
         //filter data verifikasi rencana kunjungan
+        $tgl = $this->request->getPost('tanggal');
         $cabang = $this->request->getPost('cabang');
         $nik = $this->request->getPost('sales_marketing');
         $pelanggan = $this->request->getPost('pelanggan');
 
-        $data = $this->pelaporanModel->getDataDistribusiProd($cabang, $nik, $pelanggan);
+        $data = $this->pelaporanModel->getDataDistribusiProd($tgl, $cabang, $nik, $pelanggan);
         echo json_encode($data);
     }
 }

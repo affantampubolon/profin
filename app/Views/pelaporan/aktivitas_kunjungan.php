@@ -47,6 +47,22 @@
                         <div class="row g-3">
                             <div class="col-xl-6 col-md-6">
                                 <label class="form-label" for=""
+                                    >Tanggal</label
+                                >
+                                <div class="form-group">
+                                  <input
+                                    class="form-control"
+                                    name="rentang_tgl_report"
+                                    id="rentangTanggalReport"
+                                    type="text"
+                                    value="<?php echo date("Y-m-d"); ?>"
+                                  />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-xl-6 col-md-6">
+                                <label class="form-label" for=""
                                     >Cabang</label
                                 >
                                 <select id="cabangaktivitaskunj" class="select2 form-control" name="cabang_rencanaops"
@@ -89,7 +105,7 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-xl-12 col-md-12 box-col-12">
-                                <p style="margin: 5px;"><b>Pelanggan:</b> <i class='fa fa-circle' style='color:#27548A'></i> Sudah Ada <i class='fa fa-circle' style='color:#129990'></i> NOO</p>
+                                <p style="margin: 5px;"><b>Pelanggan:</b> <i class='fa fa-circle' style='color:#27548A'></i> Existing <i class='fa fa-circle' style='color:#129990'></i> NOO</p>
                             </div>
                         </div>
                         <div class="row g-3">
