@@ -114,6 +114,7 @@ class Filters extends BaseFilters
                     'izin/*',
                     'pelaporan/*',
                     'pelaporan/aktivitas_kunj/*',
+                    'pelaporan/distribusi_prod/*',
                 ],
             ],
         ],

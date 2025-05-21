@@ -15,8 +15,10 @@
   var url = "<?= site_url(); ?>";
 </script>
 <script>
-    // Sisipkan role_id dari session
-    var roleId = '<?php echo session()->get('role_id') ?? '0'; ?>';
+  // Sisipkan role_id, branch_id, branch_name dari session
+  var roleId = '<?php echo session()->get('role_id') ?? '0'; ?>';
+  var branchId = '<?php echo $session->get('branch_id'); ?>';
+  var branchName = '<?php echo $session->get('branch_name'); ?>';
 </script>
 <!-- latest jquery-->
 <script src="<?= base_url(''); ?>riho/assets/js/jquery.min.js"></script>

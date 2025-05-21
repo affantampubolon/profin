@@ -39,11 +39,8 @@ class Realisasi extends BaseController
       //filter data verifikasi realisasi kunjungan
       $nik = $this->request->getPost('sales_marketing');
       $tanggal = $this->request->getPost('tanggal');
-      $grp_id = $this->request->getPost('grp_prod');
-      $subgrp_id = $this->request->getPost('subgrp_prod');
-      $clsgrp_id = $this->request->getPost('klsgrp_prod');
 
-      $data = $this->realisasiKunjModel->getDataVerifikasiRealisasi($nik, $tanggal, $grp_id, $subgrp_id, $clsgrp_id);
+      $data = $this->realisasiKunjModel->getDataVerifikasiRealisasi($nik, $tanggal);
       echo json_encode($data);
   }
 
@@ -124,11 +121,8 @@ class Realisasi extends BaseController
       $nik = $this->request->getPost('sales_marketing');
       $tanggal_1 = $this->request->getPost('tanggal_1');
       $tanggal_2 = $this->request->getPost('tanggal_2');
-      $grp_id = $this->request->getPost('grp_prod');
-      $subgrp_id = $this->request->getPost('subgrp_prod');
-      $clsgrp_id = $this->request->getPost('klsgrp_prod');
 
-      $data = $this->realisasiKunjModel->getDataMonitoringRealisasi($nik, $tanggal_1, $tanggal_2, $grp_id, $subgrp_id, $clsgrp_id);
+      $data = $this->realisasiKunjModel->getDataMonitoringRealisasi($nik, $tanggal_1, $tanggal_2);
       echo json_encode($data);
   }
 

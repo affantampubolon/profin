@@ -7,7 +7,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-6">
-                <h4>Aktivitas Kunjungan</h4>
+                <h4>Distribusi Produk</h4>
             </div>
             <div class="col-6">
                 <ol class="breadcrumb">
@@ -41,7 +41,7 @@
         <div class="col-xl-12 col-md-12 box-col-12">
             <div class="card">
                 <div class="card-header card-no-border">
-                    <h4>Monitoring Aktivitas Kunjungan</h4>
+                    <h4>Monitoring Distribusi Produk</h4>
                 </div>
                 <div class="card-body pt-0">
                         <div class="row g-3">
@@ -52,20 +52,18 @@
                                 <div class="form-group">
                                   <input
                                     class="form-control"
-                                    name="rentang_tgl_report"
-                                    id="rentangTanggalReport"
+                                    name="rentang_tgl_distribusi"
+                                    id="rentangTanggalDistribusi"
                                     type="text"
                                     value="<?php echo date("Y-m-d"); ?>"
                                   />
                                 </div>
                             </div>
-                        </div>
-                        <div class="row g-3">
                             <div class="col-xl-6 col-md-6">
                                 <label class="form-label" for=""
                                     >Cabang</label
                                 >
-                                <select id="cabangaktivitaskunj" class="select2 form-control" name="cabang_rencanaops"
+                                <select id="cabangdistprod" class="select2 form-control" name="cabang_dist_prod"
                                     <?= ($session->get('branch_id') <> '11') ? 'disabled' : ''; ?>>
                                     <?php if ($session->get('branch_id') <> '11'): ?>
                                         <!-- Jika bukan branch_id = 11 -->
@@ -78,28 +76,32 @@
                                     <?php endif; ?>
                                 </select>
                             </div>
-                            <div class="col-xl-6 col-md-6">
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for=""
-                                    >Sales / Marketing  </label
+                                    >Grup Barang</label
                                 >
-                                <select id="salesMarketing" class="select2 form-control" name="sales_marketing"
-                                    <?= ($session->get('role_id') == '5') ? 'disabled' : ''; ?>>
-                                    <?php if ($session->get('role_id') == '5' && $session->get('branch_id') != '11'): ?>
-                                        <!-- Jika role_id = 5, set default ke username -->
-                                        <option value="<?= $session->get('username'); ?>" selected>
-                                            <?= $session->get('name'); ?>
+                                <select id="grupBarang" class="select2 form-control" name="grup_barang">
+                                    <?php foreach ($group_barang as $groupbarang): ?>
+                                        <option value="<?= $groupbarang['group_id']; ?>"> 
+                                            <?= $groupbarang['group_id'] ?> - <?= $groupbarang['group_name'] ?>
                                         </option>
-                                    <?php elseif ($session->get('role_id') != '5' && $session->get('branch_id') != '11'): ?>
-                                        <!-- Jika bukan role_id = 5, tampilkan opsi dropdown biasa -->
-                                        <option value="">Pilih Sales/Marketing</option>
-                                        <?php foreach ($data_salesmarketing as $salesmarketing): ?>
-                                            <option value="<?= $salesmarketing->nik; ?>">
-                                                <?= $salesmarketing->name ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php elseif ($session->get('role_id') != '5' && $session->get('branch_id') == '11'): ?>
-                                        <option value="">Pilih Sales/Marketing</option>
-                                    <?php endif; ?>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="col-xl-4 col-md-4">
+                                <label class="form-label" for=""
+                                    >Subgrup Barang</label
+                                >
+                                <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
+                                </select>
+                            </div>
+                            <div class="col-xl-4 col-md-4">
+                                <label class="form-label" for=""
+                                    >Kelas Barang</label
+                                >
+                                <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
                                 </select>
                             </div>
                         </div>
@@ -111,22 +113,6 @@
                         <div class="row g-3">
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <div id="map" style="z-index: 1;"></div>
-                            </div>
-                        </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row size-column">
-        <div class="col-xl-12 col-md-12 box-col-12">
-            <div class="card">
-                <div class="card-header card-no-border">
-                    <h4>Distribusi Produk Tahun <?= date('Y'); ?></h4>
-                </div>
-                <div class="card-body pt-0">
-                        <div class="row g-3">
-                            <div class="col-xl-12 col-md-12 box-col-12">
-                                <div id="table_distribusi_prod"></div>
                             </div>
                         </div>
                 </div>

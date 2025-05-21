@@ -42,9 +42,6 @@
             <div class="card">
                 <div class="card-header card-no-border">
                     <h4>Pembuatan Pipeline</h4>
-                    <pre>
-                        <?= print_r(session()->get(), true); ?>
-                    </pre>
                 </div>
                 <div class="card-body pt-0">
                     <div class="row">
@@ -93,34 +90,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-xl-4 col-md-4 box-col-12">
-                            <div class="select-box">
-                                <div class="options-container">
-                                    <div class="selection-option">
-                                        <input
-                                            class="radio"
-                                            id="year"
-                                            name="year"
-                                            value="<?= date('Y'); ?>" />
-                                        <label class="mb-0" for="year"><?= date('Y'); ?></label>
-                                    </div>
-                                    <div class="selection-option">
-                                        <input
-                                            class="radio"
-                                            id="year"
-                                            name="year"
-                                            value="<?= date('Y') + 1; ?>" />
-                                        <label class="mb-0" for="year"><?= date('Y') + 1; ?></label>
-                                    </div>
-                                </div>
-                                <div class="selected-box">Tahun</div>
-                                <div class="search-box">
-                                    <input type="text" placeholder="Mulai Mengetik..." />
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -141,30 +110,6 @@
                         <div class="col-xl-6 col-md-6 box-col-6">
                             <label class="form-label" for="">Bulan</label>
                             <select id="bulanPipelineDet" class="select2 form-control" name="bulan_pipeline_det"></select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for="">Grup Barang</label>
-                            <select id="grupBarang" class="select2 form-control" name="grup_barang" disabled>
-                                <option value="<?= $session->get('group_id'); ?>" selected>
-                                    <?= $session->get('group_id'); ?> - <?= $session->get('group_name'); ?>
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for="">Subgrup Barang</label>
-                            <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
-                                <?php foreach ($subgroup_barang as $subgroupbarang): ?>
-                                    <option value="<?= $subgroupbarang['subgroup_id']; ?>"> 
-                                        <?= $subgroupbarang['subgroup_id'] ?> - <?= $subgroupbarang['subgroup_name'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for="">Kelas Barang</label>
-                            <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
-                                <option value="">Pilih Kelas</option>
-                            </select>
                         </div>
                     </div>
                 </div>

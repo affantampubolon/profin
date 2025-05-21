@@ -63,7 +63,6 @@ class KelasProdModel extends Model
             ->orderBy('subgroup_id')
             ->findAll();
     }
-
     /**
      * Get distinct class_id and class_name where flg_used = 't', group_id = [$group_prod], and subgroup_id = [$subgroup_prod].
      * 
@@ -83,7 +82,43 @@ class KelasProdModel extends Model
             ->findAll();
     }
 
-    //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA SUBGROUP DAN CLASS DIAMBIL
+    //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA GROUP, SUBGROUP DAN CLASS DIAMBIL
+    //Filter Dropdown Group
+    public function getFilterGrupBarang()
+    {
+        // Ambil data dari mst_prod_class
+        $data = $this->db->table('mst_prod_class')
+            ->distinct()
+            ->select('group_id, group_name')
+            ->where('flg_used', 't')
+            ->get()
+            ->getResultArray();
+
+        // Tambahkan baris statis
+        $data[] = [
+            'group_id' => null,
+            'group_name' => 'SEMUA GRUP'
+        ];
+
+        // Urutkan data: group_id IS NULL diutamakan, lalu group_id ASC
+        usort($data, function ($a, $b) {
+            // Prioritaskan group_id yang null
+            $aIsNull = is_null($a['group_id']);
+            $bIsNull = is_null($b['group_id']);
+
+            if ($aIsNull && !$bIsNull) {
+                return -1; // a diutamakan (group_id null)
+            } elseif (!$aIsNull && $bIsNull) {
+                return 1; // b diutamakan (group_id null)
+            } else {
+                // Jika keduanya null atau tidak null, urutkan berdasarkan group_id
+                return ($a['group_id'] ?? '') <=> ($b['group_id'] ?? '');
+            }
+        });
+
+        return $data;
+    }
+
     //Filter Dropdown Subgroup
     /**
     * Get distinct subgroup_id dan subgroup_name dari tabel mst_prod_subgrp dengan opsi default "ALL SUBGROUP".
@@ -93,14 +128,38 @@ class KelasProdModel extends Model
     */
     public function getFilterMstprodsubgrp($group_prod) 
     {
-        $query = "SELECT subgroup_id, subgroup_name
-                    FROM (SELECT DISTINCT a.subgroup_id, a.subgroup_name
-                        FROM mst_prod_class a
-						WHERE group_id = '" . $group_prod . "'
-						UNION ALL
-						SELECT NULL,'Semua Subgrup') b 
-				  ORDER BY subgroup_id IS NOT NULL, subgroup_id ASC";
-        return $this->db->query($query);
+        $builder = $this->db->table('mst_prod_class')
+            ->distinct()
+            ->select('subgroup_id, subgroup_name')
+            ->where('flg_used', 't');
+
+        // Hanya filter berdasarkan group_prod jika tidak null atau kosong
+        if (!is_null($group_prod) && $group_prod !== '') {
+            $builder->where('group_id', $group_prod);
+        }
+
+        $data = $builder->get()->getResultArray();
+
+        // Tambahkan baris statis
+        $data[] = [
+            'subgroup_id' => null,
+            'subgroup_name' => 'SEMUA SUBGRUP'
+        ];
+
+        // Urutkan data: subgroup_id IS NULL diutamakan, lalu subgroup_id ASC
+        usort($data, function ($a, $b) {
+            $aIsNull = is_null($a['subgroup_id']);
+            $bIsNull = is_null($b['subgroup_id']);
+            if ($aIsNull && !$bIsNull) {
+                return -1; // SEMUA SUBGRUP di awal
+            } elseif (!$aIsNull && $bIsNull) {
+                return 1;
+            } else {
+                return ($a['subgroup_id'] ?? '') <=> ($b['subgroup_id'] ?? '');
+            }
+        });
+
+        return $data;
     }
 
 
@@ -114,15 +173,42 @@ class KelasProdModel extends Model
     */
     public function getFilterMstclass($group_prod, $subgroup_prod) 
     {
-        $query = "SELECT class_id, class_name
-                  FROM (SELECT DISTINCT a.class_id, a.class_name
-                        FROM mst_prod_class a
-                        WHERE group_id = '" . $group_prod . "'
-                        AND subgroup_id = '" . $subgroup_prod . "'
-							UNION ALL
-							SELECT NULL,'Semua Kelas') b
-				  ORDER BY class_id IS NOT NULL, class_id ASC";
-        return $this->db->query($query);
-    }
+        $builder = $this->db->table('mst_prod_class')
+            ->distinct()
+            ->select('class_id, class_name')
+            ->where('flg_used', 't');
 
+        // Hanya filter berdasarkan group_prod jika tidak null atau kosong
+        if (!is_null($group_prod) && $group_prod !== '') {
+            $builder->where('group_id', $group_prod);
+        }
+
+        // Hanya filter berdasarkan subgroup_prod jika tidak null atau kosong
+        if (!is_null($subgroup_prod) && $subgroup_prod !== '') {
+            $builder->where('subgroup_id', $subgroup_prod);
+        }
+
+        $data = $builder->get()->getResultArray();
+
+        // Tambahkan baris statis
+        $data[] = [
+            'class_id' => null,
+            'class_name' => 'SEMUA KELAS'
+        ];
+
+        // Urutkan data: class_id IS NULL diutamakan, lalu class_id ASC
+        usort($data, function ($a, $b) {
+            $aIsNull = is_null($a['class_id']);
+            $bIsNull = is_null($b['class_id']);
+            if ($aIsNull && !$bIsNull) {
+                return -1; // SEMUA KELAS di awal
+            } elseif (!$aIsNull && $bIsNull) {
+                return 1;
+            } else {
+                return ($a['class_id'] ?? '') <=> ($b['class_id'] ?? '');
+            }
+        });
+
+        return $data;
+    }
 }

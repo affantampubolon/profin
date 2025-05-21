@@ -38,4 +38,33 @@ class PelaporanModel extends Model
 
             return $builder->get()->getResult();
     }
+
+    public function getDataDistribusiProdLoc($tanggal_1, $tanggal_2, $cabang, $grupprod, $subgrupprod, $klsgrupprod)
+    {
+        $builder = $this->db->table('vw_report_distribution_prod_loc')
+            ->select('date, branch_id, branch_name, nik, emp_name, group_id, group_name, subgroup_id, subgroup_name, class_id, class_name, cust_id, cust_name, tot_real_value, tot_target_value, latitude, longitude, flg_non_route, flg_visit, flg_noo')
+            ->where('date >=', $tanggal_1)
+            ->where('date <=', $tanggal_2);
+            // Kondisi untuk branch_id (jika tidak kosong, tambahkan filter)
+            if (!empty($cabang)) {
+                $builder->where('branch_id', $cabang);
+            }
+
+            // Kondisi untuk grup (jika tidak kosong, tambahkan filter)
+            if (!empty($grupprod)) {
+                $builder->where('group_id', $grupprod);
+            }
+
+            // Kondisi untuk subgrup (jika tidak kosong, tambahkan filter)
+            if (!empty($subgrupprod)) {
+                $builder->where('subgroup_id', $subgrupprod);
+            }
+
+            // Kondisi untuk kelas (jika tidak kosong, tambahkan filter)
+            if (!empty($klsgrupprod)) {
+                $builder->where('class_id', $klsgrupprod);
+            }
+
+            return $builder->get()->getResult();
+    }
 }

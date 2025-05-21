@@ -88,38 +88,8 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Grup Barang</label
-                            >
-                            <select id="grupBarang" class="select2 form-control" name="grup_barang" disabled>
-                                <option value="">Pilih Grup</option>
-                                <option value="<?= $session->get('group_id'); ?>" selected>
-                                    <?= $session->get('group_id'); ?> - <?= $session->get('group_name'); ?>
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Subgrup Barang</label
-                            >
-                            <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
-                                <?php foreach ($subgroup_barang as $subgroupbarang): ?>
-                                    <option value="<?= $subgroupbarang['subgroup_id']; ?>"> 
-                                        <?= $subgroupbarang['subgroup_id'] ?> - <?= $subgroupbarang['subgroup_name'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Kelas Barang</label
-                            >
-                            <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
-                                <option value="">Pilih Kelas</option>
-                            </select>
-                        </div>
                         <div class="col-xl-12 col-md-12 box-col-12">
+                            <p><b>Keterangan:</b> <i class='fa fa-check' style='color:#03A791'></i> Ya <i class='fa fa-times' style='color:#FF5677'></i> Tidak</p>
                              <div id="tabel_monitoring_realisasi_kunjungan"></div>
                         </div>
                     </div>
@@ -183,6 +153,43 @@
                              <table id="detailTable" class="table table-bordered" style="display: none;">
                               <tbody></tbody>
                              </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal data photo kunjungan -->
+    <div
+        class="modal fade"
+        id="fotoKunjModal"
+        data-bs-backdrop="static"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="fotoKunjModalLabel"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-toggle-wrapper text-start dark-sign-up">
+                    <div class="modal-header justify-content-center border-0">
+                        <h5 class="justify-content-center border-0">
+                            Foto Realisasi
+                        </h5>
+                        <div class="row">
+                            <p class="justify-content-center border-0" id="kode_pelanggan"></p>
+                            <p>-</p>
+                            <p class="justify-content-center border-0" id="nama_pelanggan"></p>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-xl-12 col-md-12 box-col-12 text-center">
+                            <!-- Elemen untuk menampilkan foto -->
+                            <img id="foto_realisasi" src="" alt="Foto Realisasi" class="img-fluid" style="max-width: 100%; max-height: 400px;" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

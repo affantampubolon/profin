@@ -7,38 +7,32 @@ $(document).ready(function () {
     var tanggal_acc =
       $("#tanggalAccKunjungan").val() || new Date().toISOString().split("T")[0]; // Default ke tanggal hari ini jika kosong
     var sales_marketing = $("#salesMarketing").val();
-    var grp_prod_acc = $("#grupBarang").val();
-    var subgrp_prod_acc = $("#subgrupBarang").val();
-    var kls_prod_acc = $("#kelasBarang").val();
 
     // Data kunjungan yang akan diverifikasi (dilepas dari komentar untuk memuat tabel awal)
-    tabel_verifikasi_rencana_kunjungan(
-      tanggal_acc,
-      sales_marketing,
-      grp_prod_acc,
-      subgrp_prod_acc,
-      kls_prod_acc
-    );
+    tabel_verifikasi_rencana_kunjungan(tanggal_acc, sales_marketing);
 
-    // Fetch cabang
-    $.ajax({
-      url: url + "master/cabang",
-      method: "GET",
-      dataType: "json",
-      success: function (data) {
-        $("#cabangRencanaOps")
+    // Fetch cabang berdasarkan session branch_id
+    if (branchId !== "11") {
+      // Jika branch_id bukan '11', tampilkan hanya cabang dari session dan disable dropdown
+      $("#cabangOps")
+        .empty()
+        .append(
+          `<option value="${branchId}" selected>${branchId} - ${branchName}</option>`
+        )
+        .prop("disabled", true); // Nonaktifkan dropdown
+    } else {
+      // Jika branch_id adalah '11', ambil semua cabang dari API
+      $.getJSON(url + "master/cabang", (branches) => {
+        $("#cabangOps")
           .empty()
-          .append('<option value="" selected>Pilih Cabang</option>');
-        data.forEach((cabang) => {
-          $("#cabangRencanaOps").append(
-            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          .append('<option value="">Pilih Cabang</option>')
+          .append(
+            branches.map(
+              (b) => `<option value="${b.branch_id}">${b.branch_name}</option>`
+            )
           );
-        });
-      },
-      error: function () {
-        alert("Gagal memuat data cabang");
-      },
-    });
+      });
+    }
 
     $("#cabangRencanaOps").on("change", function () {
       const branchId = $(this).val();
@@ -69,153 +63,24 @@ $(document).ready(function () {
     $("#tanggalAccKunjungan").change(function () {
       var tanggal_acc = $(this).val();
       var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $("#kelasBarang").val();
 
       console.log("Tanggal dipilih: " + tanggal_acc); // Debugging
-      tabel_verifikasi_rencana_kunjungan(
-        tanggal_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
+      tabel_verifikasi_rencana_kunjungan(tanggal_acc, sales_marketing);
     });
 
     // Tim Sales Marketing
     $("#salesMarketing").change(function () {
       var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
       var sales_marketing = $(this).val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $("#kelasBarang").val();
 
       console.log(
         "tanggal = " + tanggal_acc + " sales/marketing = " + sales_marketing
       );
-      tabel_verifikasi_rencana_kunjungan(
-        tanggal_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
-    });
-
-    // Grup Barang
-    $("#grupBarang").change(function () {
-      var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $(this).val();
-
-      $.ajax({
-        url: url + "master/filter/subgrup",
-        method: "POST",
-        data: {
-          group_prod: grp_prod_acc,
-        },
-        success: function (data) {
-          $("#subgrupBarang").html(data);
-          var subgrp_prod_acc = $("#subgrupBarang").val();
-
-          $("#kelasBarang").select2({
-            placeholder: "Semua Kelas Grup",
-            allowClear: true,
-            closeOnSelect: false,
-          });
-          $("#kelasBarang").empty();
-
-          var kls_prod_acc = $("#kelasBarang").val();
-
-          console.log("grup barang = " + grp_prod_acc);
-          tabel_verifikasi_rencana_kunjungan(
-            tanggal_acc,
-            sales_marketing,
-            grp_prod_acc,
-            subgrp_prod_acc,
-            kls_prod_acc
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching subgroup data:", error);
-          alert("Gagal memuat data subgroup.");
-        },
-      });
-    });
-
-    // SubGrup Barang
-    $("#subgrupBarang").change(function () {
-      var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $(this).val();
-
-      $.ajax({
-        url: url + "master/filter/kelas",
-        method: "POST",
-        data: {
-          group_prod: grp_prod_acc,
-          subgroup_prod: subgrp_prod_acc,
-        },
-        success: function (data) {
-          $("#kelasBarang").html(data);
-          var kls_prod_acc = $("#kelasBarang").val();
-
-          console.log(
-            "grup barang = " +
-              grp_prod_acc +
-              " subgrup barang = " +
-              subgrp_prod_acc
-          );
-          tabel_verifikasi_rencana_kunjungan(
-            tanggal_acc,
-            sales_marketing,
-            grp_prod_acc,
-            subgrp_prod_acc,
-            kls_prod_acc
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching class data:", error);
-          alert("Gagal memuat data kelas.");
-        },
-      });
-    });
-
-    // Kelas Barang
-    $("#kelasBarang").change(function () {
-      var tanggal_acc = $("#tanggalAccKunjungan").val(); // Perbaiki ID
-      var sales_marketing = $("#salesMarketing").val(); // Tambah variabel yang hilang
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $(this).val();
-
-      console.log(
-        "grup barang = " +
-          grp_prod_acc +
-          " subgrup barang = " +
-          subgrp_prod_acc +
-          " kelas barang = " +
-          kls_prod_acc
-      );
-      tabel_verifikasi_rencana_kunjungan(
-        tanggal_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
+      tabel_verifikasi_rencana_kunjungan(tanggal_acc, sales_marketing);
     });
 
     // Fungsi tabel_verifikasi_rencana_kunjungan
-    function tabel_verifikasi_rencana_kunjungan(
-      tanggal_acc,
-      sales_marketing,
-      grp_prod_acc,
-      subgrp_prod_acc,
-      kls_prod_acc
-    ) {
+    function tabel_verifikasi_rencana_kunjungan(tanggal_acc, sales_marketing) {
       if (table) {
         table.destroy();
       }
@@ -339,9 +204,6 @@ $(document).ready(function () {
             data: {
               tanggal: tanggal_acc,
               sales_marketing: sales_marketing,
-              grp_prod: grp_prod_acc,
-              subgrp_prod: subgrp_prod_acc,
-              klsgrp_prod: kls_prod_acc,
             },
             dataType: "json",
             success: function (data) {
@@ -642,16 +504,10 @@ $(document).ready(function () {
       var tgl_1 = dates.startDate.format("YYYY-MM-DD");
       var tgl_2 = dates.endDate.format("YYYY-MM-DD");
       var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_mon = $("#grupBarang").val();
-      var subgrp_prod_mon = $("#subgrupBarang").val();
-      var kls_prod_mon = $("#kelasBarang").val();
       return {
         tgl_1,
         tgl_2,
         sales_marketing,
-        grp_prod_mon,
-        subgrp_prod_mon,
-        kls_prod_mon,
       };
     }
 
@@ -660,31 +516,31 @@ $(document).ready(function () {
     tabel_monitoring_rencana_kunjungan(
       initialFilters.tgl_1,
       initialFilters.tgl_2,
-      initialFilters.sales_marketing,
-      initialFilters.grp_prod_mon,
-      initialFilters.subgrp_prod_mon,
-      initialFilters.kls_prod_mon
+      initialFilters.sales_marketing
     );
 
-    // Fetch cabang
-    $.ajax({
-      url: url + "master/cabang",
-      method: "GET",
-      dataType: "json",
-      success: function (data) {
-        $("#cabangRencanaOps")
+    // Fetch cabang berdasarkan session branch_id
+    if (branchId !== "11") {
+      // Jika branch_id bukan '11', tampilkan hanya cabang dari session dan disable dropdown
+      $("#cabangOps")
+        .empty()
+        .append(
+          `<option value="${branchId}" selected>${branchId} - ${branchName}</option>`
+        )
+        .prop("disabled", true); // Nonaktifkan dropdown
+    } else {
+      // Jika branch_id adalah '11', ambil semua cabang dari API
+      $.getJSON(url + "master/cabang", (branches) => {
+        $("#cabangOps")
           .empty()
-          .append('<option value="" selected>Pilih Cabang</option>');
-        data.forEach((cabang) => {
-          $("#cabangRencanaOps").append(
-            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          .append('<option value="">Pilih Cabang</option>')
+          .append(
+            branches.map(
+              (b) => `<option value="${b.branch_id}">${b.branch_name}</option>`
+            )
           );
-        });
-      },
-      error: function () {
-        alert("Gagal memuat data cabang");
-      },
-    });
+      });
+    }
 
     // Event handler untuk cabang
     $("#cabangRencanaOps").on("change", function () {
@@ -717,10 +573,7 @@ $(document).ready(function () {
       tabel_monitoring_rencana_kunjungan(
         filters.tgl_1,
         filters.tgl_2,
-        filters.sales_marketing,
-        filters.grp_prod_mon,
-        filters.subgrp_prod_mon,
-        filters.kls_prod_mon
+        filters.sales_marketing
       );
     });
 
@@ -730,98 +583,12 @@ $(document).ready(function () {
       tabel_monitoring_rencana_kunjungan(
         filters.tgl_1,
         filters.tgl_2,
-        filters.sales_marketing,
-        filters.grp_prod_mon,
-        filters.subgrp_prod_mon,
-        filters.kls_prod_mon
-      );
-    });
-
-    // Event handler untuk Grup Barang
-    $("#grupBarang").change(function () {
-      var filters = getFilterValues();
-      $.ajax({
-        url: url + "master/filter/subgrup",
-        method: "POST",
-        data: { group_prod: filters.grp_prod_mon },
-        success: function (data) {
-          $("#subgrupBarang").html(data);
-          $("#kelasBarang")
-            .select2({
-              placeholder: "Semua Kelas Grup",
-              allowClear: true,
-              closeOnSelect: false,
-            })
-            .empty();
-
-          var updatedFilters = getFilterValues();
-          tabel_monitoring_rencana_kunjungan(
-            updatedFilters.tgl_1,
-            updatedFilters.tgl_2,
-            updatedFilters.sales_marketing,
-            updatedFilters.grp_prod_mon,
-            updatedFilters.subgrp_prod_mon,
-            updatedFilters.kls_prod_mon
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching subgroup data:", error);
-          alert("Gagal memuat data subgroup.");
-        },
-      });
-    });
-
-    // Event handler untuk SubGrup Barang
-    $("#subgrupBarang").change(function () {
-      var filters = getFilterValues();
-      $.ajax({
-        url: url + "master/filter/kelas",
-        method: "POST",
-        data: {
-          group_prod: filters.grp_prod_mon,
-          subgroup_prod: filters.subgrp_prod_mon,
-        },
-        success: function (data) {
-          $("#kelasBarang").html(data);
-          var updatedFilters = getFilterValues();
-          tabel_monitoring_rencana_kunjungan(
-            updatedFilters.tgl_1,
-            updatedFilters.tgl_2,
-            updatedFilters.sales_marketing,
-            updatedFilters.grp_prod_mon,
-            updatedFilters.subgrp_prod_mon,
-            updatedFilters.kls_prod_mon
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching class data:", error);
-          alert("Gagal memuat data kelas.");
-        },
-      });
-    });
-
-    // Event handler untuk Kelas Barang
-    $("#kelasBarang").change(function () {
-      var filters = getFilterValues();
-      tabel_monitoring_rencana_kunjungan(
-        filters.tgl_1,
-        filters.tgl_2,
-        filters.sales_marketing,
-        filters.grp_prod_mon,
-        filters.subgrp_prod_mon,
-        filters.kls_prod_mon
+        filters.sales_marketing
       );
     });
 
     // Inisialisasi tabel monitoring Rencana Kunjungan
-    function tabel_monitoring_rencana_kunjungan(
-      tgl_1,
-      tgl_2,
-      sales_marketing,
-      grp_prod_mon,
-      subgrp_prod_mon,
-      kls_prod_mon
-    ) {
+    function tabel_monitoring_rencana_kunjungan(tgl_1, tgl_2, sales_marketing) {
       $.ajax({
         type: "GET",
         url: url + "/pipeline/groupuser", // Ambil group_id dari server
@@ -833,11 +600,11 @@ $(document).ready(function () {
             {
               title: "Non route?",
               field: "flg_non_route",
+              headerHozAlign: "center",
               hozAlign: "center",
               formatter: function (cell, formatterParams) {
                 var value = cell.getValue();
                 console.log("Status value:", value); // Debugging: Log the value to ensure correctness
-
                 if (value === "t") {
                   return "<i class='fa fa-check' style='color:#03A791'></i>";
                 } else if (value === "f") {
@@ -848,6 +615,7 @@ $(document).ready(function () {
             {
               title: "Absen?",
               field: "flg_absence",
+              headerHozAlign: "center",
               hozAlign: "center",
               formatter: function (cell, formatterParams) {
                 var value = cell.getValue();
@@ -929,9 +697,6 @@ $(document).ready(function () {
               tanggal_1: tgl_1,
               tanggal_2: tgl_2,
               sales_marketing: sales_marketing,
-              grp_prod: grp_prod_mon,
-              subgrp_prod: subgrp_prod_mon,
-              klsgrp_prod: kls_prod_mon,
             },
             dataType: "json",
             success: function (data) {

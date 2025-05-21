@@ -144,7 +144,7 @@ $(document).ready(function () {
       // Tambahkan marker baru dengan warna berdasarkan flg_noo
       aktivitasData.forEach((loc) => {
         const isNoo = loc.flg_noo === true || loc.flg_noo === "true";
-        const color = isNoo ? "#129990" : "#27548A";
+        const color = isNoo ? "#129990" : "#483AA0";
 
         const marker = L.circleMarker([loc.latitude, loc.longitude], {
           radius: 6,
@@ -358,5 +358,311 @@ $(document).ready(function () {
 
     // Sembunyikan tabel saat halaman dimuat
     $("#table_distribusi_prod").hide();
+  } else if (window.location.pathname === "/pelaporan/distribusi_prod") {
+    const MAP_ID = "map"; // Pastikan <div id="map"> ada di view
+
+    let distribusiProdLocData = [];
+    let map;
+
+    // Inisialisasi tanggal awal
+    let currentDate = new Date().toJSON().slice(0, 10);
+
+    // Deklarasi elemen filter
+    const $rentangTanggal = $("#rentangTanggalDistribusi");
+    const $cabang = $("#cabangdistprod");
+    const $groupId = $("#grupBarang");
+    const $subgroupId = $("#subgrupBarang");
+    const $classId = $("#kelasBarang");
+
+    // Inisialisasi Select2 untuk semua dropdown
+    $groupId.select2({
+      placeholder: "SEMUA GRUP",
+      allowClear: true,
+      closeOnSelect: false,
+    });
+
+    $subgroupId.select2({
+      placeholder: "SEMUA SUBGRUP",
+      allowClear: true,
+      closeOnSelect: false,
+    });
+
+    $classId.select2({
+      placeholder: "SEMUA KELAS",
+      allowClear: true,
+      closeOnSelect: false,
+    });
+
+    // Inisialisasi DateRangePicker
+    $rentangTanggal.daterangepicker({
+      startDate: currentDate,
+      endDate: currentDate,
+      locale: {
+        format: "YYYY-MM-DD",
+      },
+    });
+
+    // Fungsi untuk mendapatkan semua nilai filter saat ini
+    function getFilterValues() {
+      var dates = $rentangTanggal.data("daterangepicker");
+      var tgl_1 = dates.startDate.format("YYYY-MM-DD");
+      var tgl_2 = dates.endDate.format("YYYY-MM-DD");
+      var cabang = $cabang.val();
+      var grup_barang = $groupId.val();
+      var subgrup_barang = $subgroupId.val();
+      var kelas_barang = $classId.val();
+      return {
+        tgl_1,
+        tgl_2,
+        cabang,
+        grup_barang,
+        subgrup_barang,
+        kelas_barang,
+      };
+    }
+
+    // Fungsi untuk memuat subgroup berdasarkan group_id
+    function loadSubgroups(groupId) {
+      $.ajax({
+        url: url + "master/filter/subgrup",
+        method: "POST",
+        data: { group_prod: groupId },
+        success: function (data) {
+          $subgroupId.html(data).val(null).trigger("change"); // Set default ke SEMUA SUBGRUP
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching subgroup data:", error);
+          $subgroupId.html('<option value="">Gagal memuat subgroup</option>');
+        },
+      });
+    }
+
+    // Fungsi untuk memuat class berdasarkan group_id dan subgroup_id
+    function loadClasses(groupId, subgroupId) {
+      $.ajax({
+        url: url + "master/filter/kelas",
+        method: "POST",
+        data: {
+          group_prod: groupId,
+          subgroup_prod: subgroupId,
+        },
+        success: function (data) {
+          $classId.html(data).val(null).trigger("change"); // Set default ke SEMUA KELAS
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching class data:", error);
+          $classId.html('<option value="">Gagal memuat kelas</option>');
+        },
+      });
+    }
+
+    // Fetch cabang berdasarkan session branch_id
+    if (branchId !== "11") {
+      // Jika branch_id bukan '11', tampilkan hanya cabang dari session dan disable dropdown
+      $cabang
+        .empty()
+        .append(
+          `<option value="${branchId}" selected>${branchId} - ${branchName}</option>`
+        );
+      $cabang.select2(); // Inisialisasi Select2 untuk cabang
+    } else {
+      // Jika branch_id adalah '11', ambil semua cabang dari API
+      $.getJSON(url + "master/cabang", (branches) => {
+        $cabang
+          .empty()
+          .append('<option value="">Pilih Cabang</option>')
+          .append(
+            branches.map(
+              (b) => `<option value="${b.branch_id}">${b.branch_name}</option>`
+            )
+          );
+        $cabang.select2(); // Inisialisasi Select2 untuk cabang
+      });
+    }
+
+    // Muat subgroup dan class secara default saat halaman dimuat
+    loadSubgroups(null); // Memuat SEMUA SUBGRUP
+    loadClasses(null, null); // Memuat SEMUA KELAS
+
+    // Event handler untuk DateRangePicker
+    $rentangTanggal.on("apply.daterangepicker", function (ev, picker) {
+      var filters = getFilterValues();
+      data_distribusi_prod(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.grup_barang,
+        filters.subgrup_barang,
+        filters.kelas_barang
+      );
+    });
+
+    // Event handler untuk cabang
+    $cabang.on("change", function () {
+      var filters = getFilterValues();
+      data_distribusi_prod(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.grup_barang,
+        filters.subgrup_barang,
+        filters.kelas_barang
+      );
+    });
+
+    // Event handler untuk Grup Barang
+    $groupId.on("change", function () {
+      var groupId = $(this).val();
+      loadSubgroups(groupId); // Memuat subgroup berdasarkan group_id
+      var filters = getFilterValues();
+      data_distribusi_prod(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.grup_barang,
+        filters.subgrup_barang,
+        filters.kelas_barang
+      );
+    });
+
+    // Event handler untuk Subgrup Barang
+    $subgroupId.on("change", function () {
+      var groupId = $groupId.val();
+      var subgroupId = $(this).val();
+      loadClasses(groupId, subgroupId); // Memuat class berdasarkan group_id dan subgroup_id
+      var filters = getFilterValues();
+      data_distribusi_prod(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.grup_barang,
+        filters.subgrup_barang,
+        filters.kelas_barang
+      );
+    });
+
+    // Event handler untuk Class Barang
+    $classId.on("change", function () {
+      var filters = getFilterValues();
+      data_distribusi_prod(
+        filters.tgl_1,
+        filters.tgl_2,
+        filters.cabang,
+        filters.grup_barang,
+        filters.subgrup_barang,
+        filters.kelas_barang
+      );
+    });
+
+    // Panggil data_distribusi_prod dengan nilai default saat halaman dimuat
+    var filters = getFilterValues();
+    data_distribusi_prod(
+      filters.tgl_1,
+      filters.tgl_2,
+      filters.cabang,
+      filters.grup_barang,
+      filters.subgrup_barang,
+      filters.kelas_barang
+    );
+
+    // Inisialisasi peta sekali saja
+    function initMap() {
+      const el = document.getElementById(MAP_ID);
+      el.style.height = "350px";
+      el.style.margin = "5px";
+
+      map = L.map(MAP_ID, {
+        center: [-2.5, 117.6],
+        zoom: 10,
+        maxZoom: 19,
+      });
+
+      const indonesiaBounds = [
+        [-10.5, 95.0],
+        [6.5, 141.0],
+      ];
+      map.setMaxBounds(indonesiaBounds).fitBounds(indonesiaBounds);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '© <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }).addTo(map);
+    }
+
+    // Render / refresh marker
+    function renderMap() {
+      if (!map) initMap();
+
+      // Hapus marker & popup lama
+      map.eachLayer((layer) => {
+        if (layer instanceof L.CircleMarker || layer instanceof L.Popup) {
+          map.removeLayer(layer);
+        }
+      });
+
+      // Tambahkan marker baru dengan warna berdasarkan flg_noo
+      distribusiProdLocData.forEach((loc) => {
+        const isNoo = loc.flg_noo === true || loc.flg_noo === "true";
+        const color = isNoo ? "#129990" : "#483AA0";
+
+        const marker = L.circleMarker([loc.latitude, loc.longitude], {
+          radius: 6,
+          fillColor: color,
+          color: color,
+          weight: 1,
+          fillOpacity: 1,
+        })
+          .addTo(map)
+          .bindPopup(
+            "<b>Pelanggan: </b>" +
+              loc.cust_name +
+              "<br>" +
+              "<b>Sales / Marketing: </b>" +
+              loc.emp_name
+          );
+
+        // Event hover untuk menampilkan popup
+        marker.on("mouseover", function () {
+          this.openPopup();
+        });
+        marker.on("mouseout", function () {
+          this.closePopup();
+        });
+      });
+    }
+
+    // Ambil data & update peta
+    function data_distribusi_prod(
+      tgl_1,
+      tgl_2,
+      cabang,
+      grup_barang,
+      subgrup_barang,
+      kelas_barang
+    ) {
+      return $.ajax({
+        type: "POST",
+        url: url + "pelaporan/distribusi_prod/data_distribusi_prod_loc",
+        data: {
+          tanggal_1: tgl_1,
+          tanggal_2: tgl_2,
+          cabang: cabang,
+          grp_prod: grup_barang,
+          subgrp_prod: subgrup_barang,
+          klsgrp_prod: kelas_barang,
+        },
+        dataType: "json",
+        success: function (data) {
+          distribusiProdLocData = data;
+          renderMap();
+        },
+        error: function (xhr, status, err) {
+          console.error("Error fetching distribusi:", err);
+          distribusiProdLocData = [];
+          renderMap();
+        },
+      });
+    }
   }
 });

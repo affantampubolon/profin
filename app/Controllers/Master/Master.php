@@ -280,26 +280,24 @@ class Master extends BaseController
     // Function untuk mendapatkan Subgroup Barang berdasarkan Group Product
     public function getFilterSubgrp()
     {
-        // $data = $this->builder->where('group_id', $this->request->getPost('group'))->get()->getResult();
-        $data = $this->kelasProdModel->getFilterMstprodsubgrp($this->request->getPost('group_prod'))->getResult();
-        // echo '<option selected value="">Pilih SubGroup Product</option>';
+        $data = $this->kelasProdModel->getFilterMstprodsubgrp($this->request->getPost('group_prod'));
         foreach ($data as $row) {
-            echo '<option value="' . $row->subgroup_id . '">' . $row->subgroup_id . ' - ' . $row->subgroup_name . '</option>';
+            $label = $row['subgroup_id'] !== null ? $row['subgroup_id'] . ' - ' . $row['subgroup_name'] : $row['subgroup_name'];
+            echo '<option value="' . $row['subgroup_id'] . '">' . $label . '</option>';
         }
-        // echo json_encode($data);
     }
 
     // Function untuk mendapatkan Class Barang berdasarkan Group dan Subgroup Barang
     public function getFilterClass()
     {
-        // $data = $this->builder2->where('subgroup_id', $this->request->getPost('subgroup'))->where('group_id', $this->request->getPost('group_id'))->get()->getResult();
-        $data = $this->kelasProdModel->getFilterMstclass($this->request->getPost('group_prod'), $this->request->getPost('subgroup_prod'))->getResult();
-        // echo '<option selected value="">Pilih Class Product</option>';
+        $data = $this->kelasProdModel->getFilterMstclass(
+            $this->request->getPost('group_prod'),
+            $this->request->getPost('subgroup_prod')
+        );
         foreach ($data as $row) {
-            echo '<option value="' . $row->class_id . '"> ' . $row->class_id . ' - ' . $row->class_name . '</option>';
+            $label = $row['class_id'] !== null ? $row['class_id'] . ' - ' . $row['class_name'] : $row['class_name'];
+            echo '<option value="' . $row['class_id'] . '">' . $label . '</option>';
         }
-
-        // echo json_encode($data);
     }
 
     // Function untuk mendapatkan Data Unit/Cabang

@@ -11,7 +11,7 @@ class PipelineDetModel extends Model
     protected $allowedFields = ['id_ref', 'cust_id', 'freq_visit', 'target_value', 'probability', 'user_update', 'update_date', 'flg_approve', 'user_approve', 'date_approve', 'reason_reject'];
 
     //data draft pipeline
-    public function getDataPipelineDet($username, $tahun, $bulan, $group_id, $subgroup_id, $class_id)
+    public function getDataPipelineDet($username, $tahun, $bulan)
     {
         $query =    "SELECT a.year, a.month, a.nik, a.group_id, a.subgroup_id, a.class_id, f_tv_class_name(a.group_id, a.subgroup_id, a.class_id) class_name,
                     b.id, b.id_ref, b.cust_id, f_tv_customer_name(b.cust_id) AS cust_name, 
@@ -20,10 +20,7 @@ class PipelineDetModel extends Model
 	                    WHERE a.id = b.id_ref
 	                    AND a.nik = '" . $username . "'
                     AND a.year = '" . $tahun . "'
-                    AND a.month = '" . $bulan . "'
-                    AND a.group_id = '" . $group_id . "'
-                    AND a.subgroup_id = CASE WHEN '" . $subgroup_id . "' = '' THEN a.subgroup_id ELSE '" . $subgroup_id . "' END
-	                    AND a.class_id = CASE WHEN '" . $class_id . "' = '' THEN a.class_id ELSE '" . $class_id . "' END	
+                    AND a.month = '" . $bulan . "'	
                     AND b.flg_approve IS NULL
                         ";
         return $this->db->query($query)->getResult();
@@ -47,7 +44,7 @@ class PipelineDetModel extends Model
 
     
     //data monitoring pipeline
-    public function getDataPipelineMonitoring($nik, $tahun, $bulan, $grp_id, $subgrp_id, $clsgrp_id)
+    public function getDataPipelineMonitoring($nik, $tahun, $bulan)
     {
         $builder = $this->db->table('trn_pipeline a')
             ->select("
@@ -72,19 +69,8 @@ class PipelineDetModel extends Model
             ->where('a.nik', $nik)
             ->where('a.year', $tahun)
             ->where('a.month', $bulan)
-            ->where('a.group_id', $grp_id)
             ->where('b.flg_approve', 't')
             ->orderBy('b.id, a.class_id');
-
-            // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
-            if ($subgrp_id !== '') {
-                $builder->where('a.subgroup_id', $subgrp_id);
-            }
-
-            // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
-            if ($clsgrp_id !== '') {
-                $builder->where('a.class_id', $clsgrp_id);
-            }
 
             return $builder->get()->getResult();
     }

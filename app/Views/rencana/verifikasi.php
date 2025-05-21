@@ -87,37 +87,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Grup Barang</label
-                            >
-                            <select id="grupBarang" class="select2 form-control" name="grup_barang" disabled>
-                                <option value="">Pilih Grup</option>
-                                <option value="<?= $session->get('group_id'); ?>" selected>
-                                    <?= $session->get('group_id'); ?> - <?= $session->get('group_name'); ?>
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Subgrup Barang</label
-                            >
-                            <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
-                                <?php foreach ($subgroup_barang as $subgroupbarang): ?>
-                                    <option value="<?= $subgroupbarang['subgroup_id']; ?>"> 
-                                        <?= $subgroupbarang['subgroup_id'] ?> - <?= $subgroupbarang['subgroup_name'] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-xl-4 col-md-4">
-                            <label class="form-label" for=""
-                                >Kelas Barang</label
-                            >
-                            <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
-                                <option value="">Pilih Kelas</option>
-                            </select>
-                        </div>
                         <div class="col-xl-12 col-md-12">
                             <button id="saveApproveAll" class="btn btn-pill btn-outline btn-success">
                                 <i class="fa fa-check-circle-o"></i> Simpan Data

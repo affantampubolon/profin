@@ -395,11 +395,8 @@ class Pipeline extends BaseController
         //filter data draft pipeline
         $tahun = $this->request->getPost('thn');
         $bulan = $this->request->getPost('bln');
-        $group_id = $this->request->getPost('grp_prod');
-        $subgroup_id = $this->request->getPost('subgrp_prod');
-        $class_id = $this->request->getPost('clsgrp_prod');
 
-        $data = $this->pipelineDetModel->getDataPipelineDet($username, $tahun, $bulan, $group_id, $subgroup_id, $class_id);
+        $data = $this->pipelineDetModel->getDataPipelineDet($username, $tahun, $bulan);
         echo json_encode($data);
     }
 
@@ -469,11 +466,8 @@ class Pipeline extends BaseController
         $username = $this->request->getPost('sales_marketing');
         $tahun = $this->request->getPost('thn');
         $bulan = $this->request->getPost('bln');
-        $group_id = $this->request->getPost('grp_prod');
-        $subgroup_id = $this->request->getPost('subgrp_prod');
-        $class_id = $this->request->getPost('klsgrp_prod');
 
-        $data = $this->pipelineDetModel->getDataPipelineDet($username, $tahun, $bulan, $group_id, $subgroup_id, $class_id);
+        $data = $this->pipelineDetModel->getDataPipelineDet($username, $tahun, $bulan);
         echo json_encode($data);
     }
 
@@ -533,11 +527,8 @@ class Pipeline extends BaseController
         $nik = $this->request->getPost('sales_marketing');
         $tahun = $this->request->getPost('thn');
         $bulan = $this->request->getPost('bln');
-        $grp_id = $this->request->getPost('grp_prod');
-        $subgrp_id = $this->request->getPost('subgrp_prod');
-        $clsgrp_id = $this->request->getPost('klsgrp_prod');
 
-        $data = $this->pipelineDetModel->getDataPipelineMonitoring($nik, $tahun, $bulan, $grp_id, $subgrp_id, $clsgrp_id);
+        $data = $this->pipelineDetModel->getDataPipelineMonitoring($nik, $tahun, $bulan);
         echo json_encode($data);
     }
 }

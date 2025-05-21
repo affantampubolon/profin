@@ -2691,6 +2691,13 @@ table tbody .border-bottom-warning td {
 }
 
 /*======= Table styling css ends  ======= */
+
+/*======= Table tabulator styling css start  ======= */
+/* Mengatur warna latar belakang untuk sel kolom dengan kelas highlight-column */ 
+.tabulator .tabulator-row .tabulator-cell.highlight-column {
+  background-color: #FFFBDE !important;
+}
+
 /*======= Svg stroke css start  ======= */
 .stroke-primary {
   stroke: #006666 !important;

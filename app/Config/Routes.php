@@ -122,3 +122,6 @@ $routes->get('/pelaporan/aktivitas_kunj', 'Pelaporan\Pelaporan::aktvitasKunj');
 $routes->post('/pelaporan/aktivitas_kunj/data_aktivitas', 'Pelaporan\Pelaporan::dataAktivitasKunj');
 $routes->post('/pelaporan/aktivitas_kunj/data_distribusi_prod', 'Pelaporan\Pelaporan::dataDistribusiProd');
 
+$routes->get('/pelaporan/distribusi_prod', 'Pelaporan\Pelaporan::distribusiProd');
+$routes->post('/pelaporan/distribusi_prod/data_distribusi_prod_loc', 'Pelaporan\Pelaporan::dataDistribusiProdLoc');
+

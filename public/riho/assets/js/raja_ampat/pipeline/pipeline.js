@@ -3,12 +3,9 @@ $(document).ready(function () {
     //mendapatkan nilai
     var tahun = $("#tahunPipelineDet").val();
     var bulan = $("#bulanPipelineDet").val();
-    var grp_prod = $("#grupBarang").val();
-    var subgrp_prod = $("#subgrupBarang").val();
-    var kls_prod = $("#kelasBarang").val();
 
     //data draft pipeline
-    tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
+    tabel_draft_pipeline(tahun, bulan);
 
     //FUNGSI DROPDOWN BULAN
     // Nama bulan dalam bahasa Indonesia
@@ -68,124 +65,20 @@ $(document).ready(function () {
     $("#tahunPipelineDet").change(function () {
       var tahun = $(this).val();
       var bulan = $("#bulanPipelineDet").val();
-      var grp_prod = $("#grupBarang").val();
-      var subgrp_prod = $("#subgrupBarang").val();
-      var kls_prod = $("#kelasBarang").val();
 
-      tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
+      tabel_draft_pipeline(tahun, bulan);
     });
 
     //Bulan
     $("#bulanPipelineDet").change(function () {
       var tahun = $("#tahunPipelineDet").val();
       var bulan = $(this).val();
-      var grp_prod = $("#grupBarang").val();
-      var subgrp_prod = $("#subgrupBarang").val();
-      var kls_prod = $("#kelasBarang").val();
 
-      tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
-    });
-
-    //Grup Barang
-    // Update Option change grup barang
-    $("#grupBarang").change(function () {
-      var tahun = $("#tahunPipelineDet").val();
-      var bulan = $("#bulanPipelineDet").val();
-      var grp_prod = $(this).val();
-      // AJAX request --
-      $.ajax({
-        url: url + "master/filter/subgrup",
-        method: "POST",
-        data: {
-          grp_prod: grp_prod,
-        },
-        success: function (data) {
-          // Add options
-          $("#subgrupBarang").html(data);
-          var subgrp_prod = $("#subgrupBarang").val();
-
-          // empty options
-          $("#kelasBarang").select2({
-            placeholder: "Semua Kelas Grup",
-            allowClear: true,
-            closeOnSelect: false,
-          });
-          $("#kelasBarang").empty();
-
-          var kls_prod = $("#kelasBarang").val();
-
-          // panggil function
-          console.log("grup barang = " + grp_prod);
-          tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
-        },
-      });
-    });
-
-    //SubGrup Barang
-    // Update Option change subgrup barang
-    $("#subgrupBarang").change(function () {
-      var tahun = $("#tahunPipelineDet").val();
-      var bulan = $("#bulanPipelineDet").val();
-      var grp_prod = $("#grupBarang").val();
-      var subgrp_prod = $(this).val();
-      // AJAX request --
-      $.ajax({
-        url: url + "master/filter/kelas",
-        method: "POST",
-        data: {
-          grp_prod: grp_prod,
-          subgrp_prod: subgrp_prod,
-        },
-        success: function (data) {
-          // Add options
-          $("#kelasBarang").html(data);
-          var kls_prod = $("#kelasBarang").val();
-
-          // panggil function
-          console.log(
-            "grup barang = " + grp_prod + "subgrup barang = " + subgrp_prod
-          );
-          tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
-        },
-
-        // error: function (xhr, status, error) {
-        //   console.error("Error:", error);
-        //   alert(
-        //     "Terjadi kesalahan saat memuat Sub Grup Barang: " + xhr.responseText
-        //   );
-        // },
-      });
-    });
-
-    //Kelas Barang
-    // Update Option change subgrup barang
-    $("#kelasBarang").change(function () {
-      var tahun = $("#tahunPipelineDet").val();
-      var bulan = $("#bulanPipelineDet").val();
-      var grp_prod = $("#grupBarang").val();
-      var subgrp_prod = $("#subgrupBarang").val();
-      var kls_prod = $(this).val();
-
-      // panggil function
-      console.log(
-        "grup barang = " +
-          grp_prod +
-          "subgrup barang = " +
-          subgrp_prod +
-          "kelas barang = " +
-          kls_prod
-      );
-      tabel_draft_pipeline(tahun, bulan, grp_prod, subgrp_prod, kls_prod);
+      tabel_draft_pipeline(tahun, bulan);
     });
 
     // Inisialisasi tabel Draft Pipeline
-    function tabel_draft_pipeline(
-      tahun,
-      bulan,
-      grp_prod,
-      subgrp_prod,
-      kls_prod
-    ) {
+    function tabel_draft_pipeline(tahun, bulan) {
       $.ajax({
         type: "GET",
         url: url + "/pipeline/groupuser", // Ambil group_id dari server
@@ -211,6 +104,7 @@ $(document).ready(function () {
               title: "Target Nilai (Rp)",
               field: "target_value",
               headerHozAlign: "center",
+              hozAlign: "right",
               formatter: "money",
               formatterParams: {
                 decimal: ",",
@@ -220,6 +114,7 @@ $(document).ready(function () {
               cellEdited: function (cell) {
                 updateDraftPipeline(cell.getRow().getData());
               },
+              cssClass: "highlight-column",
             },
           ];
 
@@ -229,10 +124,12 @@ $(document).ready(function () {
               title: "Frekuensi Kunjungan",
               field: "freq_visit",
               headerHozAlign: "center",
+              hozAlign: "center",
               editor: "input",
               cellEdited: function (cell) {
                 updateDraftPipeline(cell.getRow().getData());
               },
+              cssClass: "highlight-column",
             });
           }
 
@@ -241,6 +138,8 @@ $(document).ready(function () {
             columns.push({
               title: "Probabilitas (%)",
               field: "probability",
+              headerHozAlign: "center",
+              hozAlign: "center",
               editor: "list",
               editorParams: {
                 valuesURL: url + "/master/probabilitas", // Ambil data dari API
@@ -254,6 +153,7 @@ $(document).ready(function () {
               cellEdited: function (cell) {
                 updateDraftPipeline(cell.getRow().getData());
               },
+              cssClass: "highlight-column",
             });
           }
 
@@ -311,9 +211,6 @@ $(document).ready(function () {
             data: {
               thn: tahun,
               bln: bulan,
-              grp_prod: grp_prod,
-              subgrp_prod: subgrp_prod,
-              clsgrp_prod: kls_prod,
             },
             dataType: "json",
             success: function (data) {
@@ -321,8 +218,8 @@ $(document).ready(function () {
                 data: data,
                 height: "350px",
                 pagination: "local",
-                paginationSize: 25,
-                paginationSizeSelector: [10, 25, 50],
+                paginationSize: 50,
+                paginationSizeSelector: [25, 50, 75],
                 layout: "fitColumns",
                 columns: columns, // Gunakan kolom yang sudah difilter
               });
@@ -943,19 +840,9 @@ $(document).ready(function () {
     var tahun_acc = $("#tahunAccPipeline").val();
     var bulan_acc = $("#bulanAccPipeline").val();
     var sales_marketing = $("#salesMarketing").val();
-    var grp_prod_acc = $("#grupBarang").val();
-    var subgrp_prod_acc = $("#subgrupBarang").val();
-    var kls_prod_acc = $("#kelasBarang").val();
 
     // Data pipeline yang akan diverifikasi
-    tabel_verifikasi_pipeline(
-      tahun_acc,
-      bulan_acc,
-      sales_marketing,
-      grp_prod_acc,
-      subgrp_prod_acc,
-      kls_prod_acc
-    );
+    tabel_verifikasi_pipeline(tahun_acc, bulan_acc, sales_marketing);
 
     // Nama bulan dalam bahasa Indonesia
     const bulanIndonesia = [
@@ -1009,26 +896,30 @@ $(document).ready(function () {
       console.log(`Value: ${selectedValue}, Text: ${selectedText}`);
     });
 
-    // Fetch cabang
-    $.ajax({
-      url: url + "master/cabang",
-      method: "GET",
-      dataType: "json",
-      success: function (data) {
+    // Fetch cabang berdasarkan session branch_id
+    if (branchId !== "11") {
+      // Jika branch_id bukan '11', tampilkan hanya cabang dari session dan disable dropdown
+      $("#cabangOps")
+        .empty()
+        .append(
+          `<option value="${branchId}" selected>${branchId} - ${branchName}</option>`
+        )
+        .prop("disabled", true); // Nonaktifkan dropdown
+    } else {
+      // Jika branch_id adalah '11', ambil semua cabang dari API
+      $.getJSON(url + "master/cabang", (branches) => {
         $("#cabangOps")
           .empty()
-          .append('<option value="" selected>Pilih Cabang</option>');
-        data.forEach((cabang) => {
-          $("#cabangOps").append(
-            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          .append('<option value="">Pilih Cabang</option>')
+          .append(
+            branches.map(
+              (b) => `<option value="${b.branch_id}">${b.branch_name}</option>`
+            )
           );
-        });
-      },
-      error: function () {
-        alert("Gagal memuat data cabang");
-      },
-    });
+      });
+    }
 
+    // Event handler untuk perubahan cabang (tidak diubah)
     $("#cabangOps").on("change", function () {
       const branchId = $(this).val();
       console.log("Cabang terpilih: ", branchId); // Log Cabang terpilih
@@ -1059,18 +950,8 @@ $(document).ready(function () {
       var tahun_acc = $(this).val();
       var bulan_acc = $("#bulanAccPipeline").val();
       var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $("#kelasBarang").val();
 
-      tabel_verifikasi_pipeline(
-        tahun_acc,
-        bulan_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
+      tabel_verifikasi_pipeline(tahun_acc, bulan_acc, sales_marketing);
     });
 
     // Bulan
@@ -1078,18 +959,8 @@ $(document).ready(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $(this).val();
       var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $("#kelasBarang").val();
 
-      tabel_verifikasi_pipeline(
-        tahun_acc,
-        bulan_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
+      tabel_verifikasi_pipeline(tahun_acc, bulan_acc, sales_marketing);
     });
 
     // Tim Sales Marketing
@@ -1097,9 +968,6 @@ $(document).ready(function () {
       var tahun_acc = $("#tahunAccPipeline").val();
       var bulan_acc = $("#bulanAccPipeline").val();
       var sales_marketing = $(this).val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $("#kelasBarang").val();
 
       console.log(
         "tahun = " +
@@ -1110,136 +978,11 @@ $(document).ready(function () {
           sales_marketing
       );
 
-      tabel_verifikasi_pipeline(
-        tahun_acc,
-        bulan_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
-    });
-
-    // Grup Barang
-    $("#grupBarang").change(function () {
-      var tahun_acc = $("#tahunAccPipeline").val();
-      var bulan_acc = $("#bulanAccPipeline").val();
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $(this).val();
-
-      $.ajax({
-        url: url + "master/filter/subgrup",
-        method: "POST",
-        data: {
-          group_prod: grp_prod_acc,
-        },
-        success: function (data) {
-          $("#subgrupBarang").html(data);
-          var subgrp_prod_acc = $("#subgrupBarang").val();
-
-          $("#kelasBarang").select2({
-            placeholder: "Semua Kelas Grup",
-            allowClear: true,
-            closeOnSelect: false,
-          });
-          $("#kelasBarang").empty();
-
-          var kls_prod_acc = $("#kelasBarang").val();
-
-          console.log("grup barang = " + grp_prod_acc);
-          tabel_verifikasi_pipeline(
-            tahun_acc,
-            bulan_acc,
-            sales_marketing,
-            grp_prod_acc,
-            subgrp_prod_acc,
-            kls_prod_acc
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching subgroup data:", error);
-          alert("Gagal memuat data subgroup.");
-        },
-      });
-    });
-
-    // SubGrup Barang
-    $("#subgrupBarang").change(function () {
-      var tahun_acc = $("#tahunAccPipeline").val();
-      var bulan_acc = $("#bulanAccPipeline").val();
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $(this).val();
-
-      $.ajax({
-        url: url + "master/filter/kelas",
-        method: "POST",
-        data: {
-          group_prod: grp_prod_acc,
-          subgroup_prod: subgrp_prod_acc,
-        },
-        success: function (data) {
-          $("#kelasBarang").html(data);
-          var kls_prod_acc = $("#kelasBarang").val();
-
-          console.log(
-            "grup barang = " +
-              grp_prod_acc +
-              " subgrup barang = " +
-              subgrp_prod_acc
-          );
-          tabel_verifikasi_pipeline(
-            tahun_acc,
-            bulan_acc,
-            sales_marketing,
-            grp_prod_acc,
-            subgrp_prod_acc,
-            kls_prod_acc
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching class data:", error);
-          alert("Gagal memuat data kelas.");
-        },
-      });
-    });
-
-    // Kelas Barang
-    $("#kelasBarang").change(function () {
-      var tahun_acc = $("#tahunAccPipeline").val();
-      var bulan_acc = $("#bulanAccPipeline").val();
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_acc = $("#grupBarang").val();
-      var subgrp_prod_acc = $("#subgrupBarang").val();
-      var kls_prod_acc = $(this).val();
-
-      console.log(
-        "grup barang = " +
-          grp_prod_acc +
-          " subgrup barang = " +
-          subgrp_prod_acc +
-          " kelas barang = " +
-          kls_prod_acc
-      );
-      tabel_verifikasi_pipeline(
-        tahun_acc,
-        bulan_acc,
-        sales_marketing,
-        grp_prod_acc,
-        subgrp_prod_acc,
-        kls_prod_acc
-      );
+      tabel_verifikasi_pipeline(tahun_acc, bulan_acc, sales_marketing);
     });
 
     // Inisialisasi tabel Verifikasi Pipeline
-    function tabel_verifikasi_pipeline(
-      tahun_acc,
-      bulan_acc,
-      sales_marketing,
-      grp_prod_acc,
-      subgrp_prod_acc,
-      kls_prod_acc
-    ) {
+    function tabel_verifikasi_pipeline(tahun_acc, bulan_acc, sales_marketing) {
       if (table) {
         table.destroy(); // Hancurkan tabel lama jika ada
       }
@@ -1269,7 +1012,7 @@ $(document).ready(function () {
               title: "Target Nilai (Rp)",
               field: "target_value",
               headerHozAlign: "center",
-              hozAlign: "center",
+              hozAlign: "right",
               formatter: "money",
               formatterParams: { decimal: ",", thousand: "." },
             },
@@ -1352,9 +1095,6 @@ $(document).ready(function () {
               thn: tahun_acc,
               bln: bulan_acc,
               sales_marketing: sales_marketing,
-              grp_prod: grp_prod_acc,
-              subgrp_prod: subgrp_prod_acc,
-              klsgrp_prod: kls_prod_acc,
             },
             dataType: "json",
             success: function (data) {
@@ -1362,8 +1102,8 @@ $(document).ready(function () {
                 data: data,
                 height: "350px",
                 pagination: "local",
-                paginationSize: 25,
-                paginationSizeSelector: [10, 25, 50],
+                paginationSize: 100,
+                paginationSizeSelector: [50, 100, 150, 200, 250],
                 layout: "fitColumns",
                 columns: columns,
               });
@@ -1500,19 +1240,9 @@ $(document).ready(function () {
     var tahun_mon = $("#tahunMonPipeline").val();
     var bulan_mon = $("#bulanMonPipeline").val();
     var sales_marketing = $("#salesMarketing").val();
-    var grp_prod_mon = $("#grupBarang").val();
-    var subgrp_prod_mon = $("#subgrupBarang").val();
-    var kls_prod_mon = $("#kelasBarang").val();
 
     //data pipeline yang akan diverifikasi
-    tabel_monitoring_pipeline(
-      tahun_mon,
-      bulan_mon,
-      sales_marketing,
-      grp_prod_mon,
-      subgrp_prod_mon,
-      kls_prod_mon
-    );
+    tabel_monitoring_pipeline(tahun_mon, bulan_mon, sales_marketing);
 
     // Nama bulan dalam bahasa Indonesia
     const bulanIndonesia = [
@@ -1566,25 +1296,28 @@ $(document).ready(function () {
       console.log(`Value: ${selectedValue}, Text: ${selectedText}`);
     });
 
-    // Fetch cabang
-    $.ajax({
-      url: url + "master/cabang",
-      method: "GET",
-      dataType: "json",
-      success: function (data) {
+    // Fetch cabang berdasarkan session branch_id
+    if (branchId !== "11") {
+      // Jika branch_id bukan '11', tampilkan hanya cabang dari session dan disable dropdown
+      $("#cabangOps")
+        .empty()
+        .append(
+          `<option value="${branchId}" selected>${branchId} - ${branchName}</option>`
+        )
+        .prop("disabled", true); // Nonaktifkan dropdown
+    } else {
+      // Jika branch_id adalah '11', ambil semua cabang dari API
+      $.getJSON(url + "master/cabang", (branches) => {
         $("#cabangOps")
           .empty()
-          .append('<option value="" selected>Pilih Cabang</option>');
-        data.forEach((cabang) => {
-          $("#cabangOps").append(
-            `<option value="${cabang.branch_id}">${cabang.branch_name}</option>`
+          .append('<option value="">Pilih Cabang</option>')
+          .append(
+            branches.map(
+              (b) => `<option value="${b.branch_id}">${b.branch_name}</option>`
+            )
           );
-        });
-      },
-      error: function () {
-        alert("Gagal memuat data cabang");
-      },
-    });
+      });
+    }
 
     $("#cabangOps").on("change", function () {
       const branchId = $(this).val();
@@ -1616,18 +1349,8 @@ $(document).ready(function () {
       var tahun_mon = $(this).val();
       var bulan_mon = $("#bulanMonPipeline").val();
       var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_mon = $("#grupBarang").val();
-      var subgrp_prod_mon = $("#subgrupBarang").val();
-      var kls_prod_mon = $("#kelasBarang").val();
 
-      tabel_monitoring_pipeline(
-        tahun_mon,
-        bulan_mon,
-        sales_marketing,
-        grp_prod_mon,
-        subgrp_prod_mon,
-        kls_prod_mon
-      );
+      tabel_monitoring_pipeline(tahun_mon, bulan_mon, sales_marketing);
     });
 
     //Bulan
@@ -1635,18 +1358,8 @@ $(document).ready(function () {
       var tahun_mon = $("#tahunMonPipeline").val();
       var bulan_mon = $(this).val();
       var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_mon = $("#grupBarang").val();
-      var subgrp_prod_mon = $("#subgrupBarang").val();
-      var kls_prod_mon = $("#kelasBarang").val();
 
-      tabel_monitoring_pipeline(
-        tahun_mon,
-        bulan_mon,
-        sales_marketing,
-        grp_prod_mon,
-        subgrp_prod_mon,
-        kls_prod_mon
-      );
+      tabel_monitoring_pipeline(tahun_mon, bulan_mon, sales_marketing);
     });
 
     //Tim Sales Marketing
@@ -1654,9 +1367,6 @@ $(document).ready(function () {
       var tahun_mon = $("#tahunMonPipeline").val();
       var bulan_mon = $("#bulanMonPipeline").val();
       var sales_marketing = $(this).val();
-      var grp_prod_mon = $("#grupBarang").val();
-      var subgrp_prod_mon = $("#subgrupBarang").val();
-      var kls_prod_mon = $("#kelasBarang").val();
 
       // panggil function
       console.log(
@@ -1668,146 +1378,11 @@ $(document).ready(function () {
           sales_marketing
       );
 
-      tabel_monitoring_pipeline(
-        tahun_mon,
-        bulan_mon,
-        sales_marketing,
-        grp_prod_mon,
-        subgrp_prod_mon,
-        kls_prod_mon
-      );
-    });
-
-    //Grup Barang
-    // Update Option change grup barang
-    $("#grupBarang").change(function () {
-      var tahun_mon = $("#tahunMonPipeline").val();
-      var bulan_mon = $("#bulanMonPipeline").val();
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_mon = $(this).val();
-      // AJAX request --
-      $.ajax({
-        url: url + "master/filter/subgrup",
-        method: "POST",
-        data: {
-          group_prod: grp_prod_mon,
-        },
-        success: function (data) {
-          // Add options
-          $("#subgrupBarang").html(data);
-          var subgrp_prod_mon = $("#subgrupBarang").val();
-
-          // empty options
-          $("#kelasBarang").select2({
-            placeholder: "Semua Kelas Grup",
-            allowClear: true,
-            closeOnSelect: false,
-          });
-          $("#kelasBarang").empty();
-
-          var kls_prod_mon = $("#kelasBarang").val();
-
-          // panggil function
-          console.log("grup barang = " + grp_prod_mon);
-          tabel_monitoring_pipeline(
-            tahun_mon,
-            bulan_mon,
-            sales_marketing,
-            grp_prod_mon,
-            subgrp_prod_mon,
-            kls_prod_mon
-          );
-        },
-        error: function (xhr, status, error) {
-          console.error("Error fetching subgroup data:", error);
-          alert("Gagal memuat data subgroup.");
-        },
-      });
-    });
-
-    //SubGrup Barang
-    // Update Option change subgrup barang
-    $("#subgrupBarang").change(function () {
-      var tahun_mon = $("#tahunMonPipeline").val();
-      var bulan_mon = $("#bulanMonPipeline").val();
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_mon = $("#grupBarang").val();
-      var subgrp_prod_mon = $(this).val();
-      // AJAX request --
-      $.ajax({
-        url: url + "master/filter/kelas",
-        method: "POST",
-        data: {
-          group_prod: grp_prod_mon,
-          subgroup_prod: subgrp_prod_mon,
-        },
-        success: function (data) {
-          // Add options
-          $("#kelasBarang").html(data);
-          var kls_prod_mon = $("#kelasBarang").val();
-
-          // panggil function
-          console.log(
-            "grup barang = " +
-              grp_prod_mon +
-              " subgrup barang = " +
-              subgrp_prod_mon
-          );
-          tabel_monitoring_pipeline(
-            tahun_mon,
-            bulan_mon,
-            sales_marketing,
-            grp_prod_mon,
-            subgrp_prod_mon,
-            kls_prod_mon
-          );
-        },
-
-        error: function (xhr, status, error) {
-          console.error("Error fetching class data:", error);
-          alert("Gagal memuat data kelas.");
-        },
-      });
-    });
-
-    //Kelas Barang
-    // Update Option change kelas barang
-    $("#kelasBarang").change(function () {
-      var tahun_mon = $("#tahunMonPipeline").val();
-      var bulan_mon = $("#bulanMonPipeline").val();
-      var sales_marketing = $("#salesMarketing").val();
-      var grp_prod_mon = $("#grupBarang").val();
-      var subgrp_prod_mon = $("#subgrupBarang").val();
-      var kls_prod_mon = $(this).val();
-
-      // panggil function
-      console.log(
-        "grup barang = " +
-          grp_prod_mon +
-          " subgrup barang = " +
-          subgrp_prod_mon +
-          " kelas barang = " +
-          kls_prod_mon
-      );
-      tabel_monitoring_pipeline(
-        tahun_mon,
-        bulan_mon,
-        sales_marketing,
-        grp_prod_mon,
-        subgrp_prod_mon,
-        kls_prod_mon
-      );
+      tabel_monitoring_pipeline(tahun_mon, bulan_mon, sales_marketing);
     });
 
     // Inisialisasi tabel Verifikasi Pipeline
-    function tabel_monitoring_pipeline(
-      tahun_mon,
-      bulan_mon,
-      sales_marketing,
-      grp_prod_mon,
-      subgrp_prod_mon,
-      kls_prod_mon
-    ) {
+    function tabel_monitoring_pipeline(tahun_mon, bulan_mon, sales_marketing) {
       var table; // Deklarasikan di luar AJAX agar bisa diakses oleh #selectAll
 
       $.ajax({
@@ -1845,7 +1420,7 @@ $(document).ready(function () {
               title: "Target Nilai (Rp)",
               field: "target_value",
               headerHozAlign: "center",
-              hozAlign: "center",
+              hozAlign: "right",
               formatter: "money",
               formatterParams: { decimal: ",", thousand: "." },
             },
@@ -1853,7 +1428,7 @@ $(document).ready(function () {
               title: "Realisasi Nilai (Rp)",
               field: "real_value",
               headerHozAlign: "center",
-              hozAlign: "center",
+              hozAlign: "right",
               formatter: "money",
               formatterParams: { decimal: ",", thousand: "." },
             },
@@ -1875,7 +1450,7 @@ $(document).ready(function () {
                 title: "Penyesuaian Nilai (Rp)",
                 field: "adj_value",
                 headerHozAlign: "center",
-                hozAlign: "center",
+                hozAlign: "right",
                 formatter: "money",
                 formatterParams: { decimal: ",", thousand: "." },
               },
@@ -1896,9 +1471,6 @@ $(document).ready(function () {
               thn: tahun_mon,
               bln: bulan_mon,
               sales_marketing: sales_marketing,
-              grp_prod: grp_prod_mon,
-              subgrp_prod: subgrp_prod_mon,
-              klsgrp_prod: kls_prod_mon,
             },
             dataType: "json",
             success: function (data) {
@@ -1907,8 +1479,8 @@ $(document).ready(function () {
                 data: data,
                 height: "350px",
                 pagination: "local",
-                paginationSize: 25,
-                paginationSizeSelector: [10, 25, 50],
+                paginationSize: 50,
+                paginationSizeSelector: [25, 50, 75],
                 layout: "fitColumns",
                 columns: columns,
               });

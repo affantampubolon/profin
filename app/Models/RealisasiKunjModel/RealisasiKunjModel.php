@@ -11,7 +11,7 @@ class RealisasiKunjModel extends Model
     protected $allowedFields = ['id_ref', 'value', 'probability', 'latitude', 'longitude', 'pict', 'description', 'user_update', 'update_date', 'flg_verify', 'user_verify', 'date_verify', 'feedback'];
 
     //data verifikasi realisasi kunjungan
-    public function getDataVerifikasiRealisasi($nik, $tanggal, $grp_id, $subgrp_id, $clsgrp_id)
+    public function getDataVerifikasiRealisasi($nik, $tanggal)
     {
         $builder = $this->db->table('trn_plan a')
             ->select("
@@ -29,24 +29,16 @@ class RealisasiKunjModel extends Model
                 b.description, 
                 b.status,
                 b.flg_visit,
+                a.flg_non_route,
+                f_tv_flg_noo_cust(a.cust_id) AS flg_noo,
+                b.pict,
                 SUM(b.value) OVER (PARTITION BY a.cust_id,a.nik,a.date)::NUMERIC AS tot_value
             ")
             ->join('trn_real b', 'a.id = b.id_ref', 'inner')
             ->where('a.nik', $nik)
             ->where('a.date', $tanggal)
-            ->where('a.group_id', $grp_id)
             ->where('b.flg_verify IS NULL')
             ->orderBy('a.cust_id, a.date');
-
-            // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
-            if (!empty($subgrp_id)) {
-                $builder->where('a.subgroup_id', $subgrp_id);
-            }
-
-            // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
-            if (!empty($clsgrp_id)) {
-                $builder->where('a.class_id', $clsgrp_id);
-            }
 
         return $builder->get()->getResult();
     }
@@ -92,7 +84,7 @@ class RealisasiKunjModel extends Model
     }
 
     //data monitoring realisasi kunjungan
-    public function getDataMonitoringRealisasi($nik, $tanggal_1, $tanggal_2, $grp_id, $subgrp_id, $clsgrp_id)
+    public function getDataMonitoringRealisasi($nik, $tanggal_1, $tanggal_2)
     {
         $builder = $this->db->table('trn_plan a')
             ->select("
@@ -112,6 +104,8 @@ class RealisasiKunjModel extends Model
                 b.status,
                 b.flg_visit,
                 a.flg_non_route,
+                f_tv_flg_noo_cust(a.cust_id) AS flg_noo,
+                b.pict,
                 SUM(b.value) OVER (PARTITION BY a.cust_id,a.nik,a.date)::NUMERIC AS tot_value
             ")
             ->join('trn_real b', 'a.id = b.id_ref', 'inner')
@@ -119,19 +113,7 @@ class RealisasiKunjModel extends Model
             ->where('a.nik', $nik)
             ->where('a.date >=', $tanggal_1)
             ->where('a.date <=', $tanggal_2)
-            ->where('a.group_id', $grp_id)
-            ->where('a.subgroup_id', $subgrp_id)
             ->orderBy('a.cust_id, a.date');
-
-            // // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
-            // if (!empty($subgrp_id)) {
-            //     $builder->where('a.subgroup_id', $subgrp_id);
-            // }
-
-            // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
-            if (!empty($clsgrp_id)) {
-                $builder->where('a.class_id', $clsgrp_id);
-            }
 
         return $builder->get()->getResult();
     }

@@ -11,7 +11,7 @@ class RencanaKunjModel extends Model
     protected $allowedFields = ['branch_id', 'nik', 'group_id', 'subgroup_id', 'class_id', 'date', 'cust_id', 'cust_user_id', 'description', 'user_update', 'update_date', 'flg_approve', 'user_approve', 'date_approve', 'reason_reject'];
 
     //data verifikasi rencana kunjungan
-    public function getDataVerifikasiRencana($nik, $tanggal, $grp_id, $subgrp_id, $clsgrp_id)
+    public function getDataVerifikasiRencana($nik, $tanggal)
     {
         $builder = $this->db->table('trn_plan')
             ->select("
@@ -29,19 +29,8 @@ class RencanaKunjModel extends Model
             ") 
             ->where('nik', $nik)
             ->where("DATE(create_date) = '$tanggal'", null, false)
-            ->where('group_id', $grp_id)
             ->where('flg_approve IS NULL')
             ->orderBy('cust_id, date');
-
-            // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
-            if ($subgrp_id !== '') {
-                $builder->where('subgroup_id', $subgrp_id);
-            }
-
-            // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
-            if ($clsgrp_id !== '') {
-                $builder->where('class_id', $clsgrp_id);
-            }
 
             return $builder->get()->getResult();
     }
@@ -79,7 +68,7 @@ class RencanaKunjModel extends Model
     }
 
     //data monitoring rencana kunjungan
-    public function getDataMonitoringRencana($nik, $tanggal_1, $tanggal_2, $grp_id, $subgrp_id, $clsgrp_id)
+    public function getDataMonitoringRencana($nik, $tanggal_1, $tanggal_2)
     {
         $builder = $this->db->table('trn_plan')
             ->select("
@@ -100,19 +89,8 @@ class RencanaKunjModel extends Model
             ->where('nik', $nik)
             ->where('date >=', $tanggal_1)
             ->where('date <=', $tanggal_2)
-            ->where('group_id', $grp_id)
             ->where('flg_approve', 't')
             ->orderBy('cust_id, date');
-
-            // Kondisi untuk subgroup_id (jika tidak kosong, tambahkan filter)
-            if ($subgrp_id !== '') {
-                $builder->where('subgroup_id', $subgrp_id);
-            }
-
-            // Kondisi untuk class_id (jika tidak kosong, tambahkan filter)
-            if ($clsgrp_id !== '') {
-                $builder->where('class_id', $clsgrp_id);
-            }
 
             return $builder->get()->getResult();
     }
