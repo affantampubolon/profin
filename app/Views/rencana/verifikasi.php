@@ -34,7 +34,7 @@
                         <div class="row g-3">
                             <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for=""
-                                    >Tanggal Pembuatan</label
+                                    >Tanggal Kunjungan</label
                                 >
                                 <div class="input-group flatpicker-calender">
                                   <input

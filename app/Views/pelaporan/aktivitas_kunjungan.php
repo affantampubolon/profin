@@ -105,11 +105,6 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-xl-12 col-md-12 box-col-12">
-                                <p style="margin: 5px;"><b>Pelanggan:</b> <i class='fa fa-circle' style='color:#483AA0'></i> Existing <i class='fa fa-circle' style='color:#129990'></i> NOO</p>
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-xl-12 col-md-12 box-col-12">
                                 <div id="map" style="z-index: 1;"></div>
                             </div>
                         </div>

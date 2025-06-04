@@ -63,7 +63,13 @@ $routes->post('/master/area/kodepos', 'Master\Master::getMstAreaKodePos');
 // General
 $routes->post('/login', 'Auth\Auth::login');
 $routes->get('/logout', 'Auth\Auth::logout');
+
+//beranda
 $routes->get('/beranda', 'Auth\Auth::beranda');
+$routes->post('/beranda/data/getdaftarverifcab', 'Beranda\Beranda::dataVerifTertundaCab');
+$routes->post('/beranda/data/getdatapencapaiancab', 'Beranda\Beranda::dataPencapaianCab');
+
+//pipeline
 $routes->get('/pipeline/groupuser', 'Pipeline\Pipeline::getUserGroupSession');
 $routes->get('/pipeline/pembuatan', 'Pipeline\Pipeline::index');
 $routes->post('/pipeline/upload', 'Pipeline\Pipeline::uploadpipeline');
@@ -94,11 +100,18 @@ $routes->post('/rencana/verifikasi/getdetdata', 'Rencana\Rencana::dataVerifRenca
 $routes->post('/rencana/verifikasi/update', 'Rencana\Rencana::updateVerifikasi');
 $routes->post('/rencana/verifikasi/updateall', 'Rencana\Rencana::updateVerifikasiAll');
 
-
 $routes->get('/rencana/monitoring', 'Rencana\Rencana::monitoring');
 //monitoring rencana
 $routes->post('/rencana/monitoring/getdata', 'Rencana\Rencana::dataMonitoringRencana');
 $routes->post('/rencana/monitoring/getdetdata', 'Rencana\Rencana::dataMonitoringRencanaDet');
+
+
+//buka verifikasi rencana kunjungan
+$routes->get('/rencana/buka_verifikasi', 'Rencana\Rencana::bukaVerifikasi');
+$routes->post('/rencana/buka_verifikasi/getdata', 'Rencana\Rencana::dataBukaVerifRencana');
+$routes->post('/rencana/buka_verifikasi/getdetdata', 'Rencana\Rencana::dataBukaVerifRencanaDet');
+$routes->post('/rencana/buka_verifikasi/update', 'Rencana\Rencana::updateBukaVerifikasi');
+$routes->post('/rencana/buka_verifikasi/updateall', 'Rencana\Rencana::updateBukaVerifikasiAll');
 
 //verifikasi realisasi kunjungan
 $routes->get('/realisasi/cabuser', 'Realisasi\Realisasi::getUserBranchSession');
@@ -113,6 +126,13 @@ $routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
 $routes->post('/realisasi/monitoring/getdata', 'Realisasi\Realisasi::dataMonitoringRealisasi');
 $routes->post('/realisasi/monitoring/getdetdata', 'Realisasi\Realisasi::dataMonitoringRealisasiDet');
 
+//buka verifikasi realisasi kunjungan
+$routes->get('/realisasi/buka_verifikasi', 'Realisasi\Realisasi::bukaVerifikasi');
+$routes->post('/realisasi/buka_verifikasi/getdata', 'Realisasi\Realisasi::dataBukaVerifRealisasi');
+$routes->post('/realisasi/buka_verifikasi/getdetdata', 'Realisasi\Realisasi::dataBukaVerifRealisasiDet');
+$routes->post('/realisasi/buka_verifikasi/update', 'Realisasi\Realisasi::updateBukaVerifikasi');
+$routes->post('/realisasi/buka_verifikasi/updateall', 'Realisasi\Realisasi::updateBukaVerifikasiAll');
+
 //izin
 $routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
 $routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
@@ -125,3 +145,11 @@ $routes->post('/pelaporan/aktivitas_kunj/data_distribusi_prod', 'Pelaporan\Pelap
 $routes->get('/pelaporan/distribusi_prod', 'Pelaporan\Pelaporan::distribusiProd');
 $routes->post('/pelaporan/distribusi_prod/data_distribusi_prod_loc', 'Pelaporan\Pelaporan::dataDistribusiProdLoc');
 
+$routes->get('/pelaporan/kunjungan_sales', 'Pelaporan\Pelaporan::kunjunganSales');
+$routes->post('/pelaporan/kunjungan_sales/data_kunjungan_sales', 'Pelaporan\Pelaporan::dataKunjunganSales');
+
+$routes->get('/pelaporan/kunjungan_marketing', 'Pelaporan\Pelaporan::kunjunganMarketing');
+$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_guna', 'Pelaporan\Pelaporan::dataKunjMarkPenggunaan');
+$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_outlet', 'Pelaporan\Pelaporan::dataKunjMarkOutlet');
+$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_user', 'Pelaporan\Pelaporan::dataKunjMarkUser');
+$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_user_cat', 'Pelaporan\Pelaporan::dataKunjMarkUserCat');

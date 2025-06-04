@@ -82,4 +82,89 @@ class Pelaporan extends BaseController
         $data = $this->pelaporanModel->getDataDistribusiProdLoc($tanggal_1, $tanggal_2, $cabang, $grupprod, $subgrupprod, $klsgrupprod);
         echo json_encode($data);
     }
+
+    // Function Kunjungan Sales
+    public function kunjunganSales()
+    {
+        
+        $data = [
+            'title' => "Kunjungan Sales",
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('pelaporan/kunjungan_sales', $data);
+    }
+
+    // Data kunjungan sales
+    public function dataKunjunganSales()
+    {
+        //filter data
+        $cabang = $this->request->getPost('cabang');
+
+        $data = $this->pelaporanModel->getDataKunjunganSales($cabang);
+        echo json_encode($data);
+    }
+
+    // Function Kunjungan Marketing
+    public function kunjunganMarketing()
+    {
+        // Ambil username dari session
+        $username = session()->get('username');
+        
+        $data = [
+            'title' => "Kunjungan Marketing",
+            'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('pelaporan/kunjungan_marketing', $data);
+    }
+
+    // Data kunjungan marketing penggunaan
+    public function dataKunjMarkPenggunaan()
+    {
+        //filter data
+        $cabang = $this->request->getPost('cabang');
+
+        $data = $this->pelaporanModel->getDataKunjMarketingPenggunaan($cabang);
+        echo json_encode($data);
+    }
+
+    // Data kunjungan marketing outlet
+    public function dataKunjMarkOutlet()
+    {
+        //filter data
+        $subgrupprod = $this->request->getPost('subgrp_prod');
+        $klsgrupprod = $this->request->getPost('klsgrp_prod');
+
+        $data = $this->pelaporanModel->getDataKunjMarketingOutlet($subgrupprod, $klsgrupprod);
+        echo json_encode($data);
+    }
+
+    // Data kunjungan marketing user
+    public function dataKunjMarkUser()
+    {
+        //filter data
+        $cabang = $this->request->getPost('cabang');
+        $nik = $this->request->getPost('sales_marketing');
+        $subgrupprod = $this->request->getPost('subgrp_prod');
+        $klsgrupprod = $this->request->getPost('klsgrp_prod');
+
+        $data = $this->pelaporanModel->getDataKunjMarketingUser($cabang, $nik, $subgrupprod, $klsgrupprod);
+        echo json_encode($data);
+    }
+
+    // Data kunjungan marketing kategori user
+    public function dataKunjMarkUserCat()
+    {
+        //filter data
+        $cabang = $this->request->getPost('cabang');
+        $subgrupprod = $this->request->getPost('subgrp_prod');
+        $klsgrupprod = $this->request->getPost('klsgrp_prod');
+
+        $data = $this->pelaporanModel->getDataKunjMarketingUserCat($cabang, $subgrupprod, $klsgrupprod);
+        echo json_encode($data);
+    }
 }

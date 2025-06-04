@@ -30,8 +30,13 @@ class Auth extends BaseController
         if ($this->session->logged_in == true) {
             $this->goToDefaultPage();
         }
+
+        $cabang = session()->get('branch_id');
+        $nik = session()->get('username');
+
         $data = [
             'title' => "Beranda",
+            'data_daftar_tunda_verif' => $this->berandaModel->getDataVerifikasiTertundaSales($cabang, $nik),
             'validation' => $this->validation,
             'breadcrumb' => $this->breadcrumb,
             'session' => $this->session

@@ -20,12 +20,10 @@ class Realisasi extends BaseController
   {
     // Ambil username dari session
     $username = session()->get('username');
-    $grp_prod = session()->get('group_id');
 
     $data = [
       'title' => "Verifikasi Realisasi Kunjungan",
       'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
-      'subgroup_barang' => $this->kelasProdModel->getSubGrupBarang($grp_prod),
       'validation' => $this->validation,
       'breadcrumb' => $this->breadcrumb,
       'session' => $this->session
@@ -136,5 +134,103 @@ class Realisasi extends BaseController
 
       $data = $this->realisasiKunjModel->getDataMonitoringRealisasiDet($nik, $tanggal, $pelanggan);
       echo json_encode($data);
+  }
+
+  public function bukaVerifikasi()
+  {
+    // Ambil username dari session
+    $username = session()->get('username');
+
+    $data = [
+      'title' => "Buka Verifikasi Realisasi Kunjungan",
+      'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
+      'validation' => $this->validation,
+      'breadcrumb' => $this->breadcrumb,
+      'session' => $this->session
+    ];
+    return view('realisasi/buka_verifikasi', $data);
+  }
+
+  // Data buka verifikasi realisasi kunjungan
+  public function dataBukaVerifRealisasi()
+  {
+      //filter data verifikasi realisasi kunjungan
+      $nik = $this->request->getPost('sales_marketing');
+      $tanggal = $this->request->getPost('tanggal');
+
+      $data = $this->realisasiKunjModel->getDataBukaVerifikasiRealisasi($nik, $tanggal);
+      echo json_encode($data);
+  }
+
+  // Data detail buka verifikasi realisasi kunjungan
+  public function dataBukaVerifRealisasiDet()
+  {
+      //filter data detail verifikasi realisasi kunjungan
+      $nik = $this->request->getPost('sales_marketing');
+      $tanggal = $this->request->getPost('tanggal');
+      $pelanggan = $this->request->getPost('cust_id');
+
+      $data = $this->realisasiKunjModel->getDataBukaVerifikasiRealisasiDet($nik, $tanggal, $pelanggan);
+      echo json_encode($data);
+  }
+
+  public function updateBukaVerifikasi()
+  {
+    $cust_id = $this->request->getPost('cust_id');
+    $nik = $this->request->getPost('nik');
+    $date = $this->request->getPost('date');
+    $status = $this->request->getPost('status');
+
+    // Ambil username dari session
+    $username = $this->session->get('username');
+
+    // Data yang akan diupdate
+    $data = [
+        'status' => $status,
+        'user_update' => $username,
+        'update_date' => date('Y-m-d H:i:s')
+    ];
+
+    // Panggil model untuk update berdasarkan kombinasi date, nik, cust_id
+    $update = $this->realisasiKunjModel->updateBukaVerifRealisasi($cust_id, $nik, $date, $data);
+
+    if ($update) {
+        return $this->response->setJSON(['status' => 'success', 'message' => $message]);
+    } else {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data']);
+    }
+  }
+
+  // Update verifikasi untuk multiple kombinasi
+  public function updateBukaVerifikasiAll()
+  {
+      $combinations = json_decode($this->request->getPost('combinations'), true);
+      $status = $this->request->getPost('status');
+
+      // Ambil username dari session
+      $username = $this->session->get('username');
+
+      $data = [
+          'status' => $status,
+          'user_update' => $username,
+          'update_date' => date('Y-m-d H:i:s'),
+      ];
+
+      $success = true;
+      foreach ($combinations as $combination) {
+          $cust_id = $combination['cust_id'];
+          $nik = $combination['nik'];
+          $date = $combination['date'];
+          $update = $this->realisasiKunjModel->updateBukaVerifRealisasi($cust_id, $nik, $date, $data);
+          if (!$update) {
+              $success = false;
+          }
+      }
+
+      if ($success) {
+          return $this->response->setJSON(['status' => 'success', 'message' => 'Data berhasil diperbarui.']);
+      } else {
+          return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui sebagian atau seluruh data.']);
+      }
   }
 }

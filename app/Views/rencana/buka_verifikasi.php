@@ -7,7 +7,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-6">
-                <h4>Realisasi Kunjungan</h4>
+                <h4>Rencana Kunjungan</h4>
             </div>
             <div class="col-6">
                 <ol class="breadcrumb">
@@ -29,7 +29,7 @@
         <div class="col-xl-12 col-md-12 box-col-12">
             <div class="card">
                 <div class="card-header card-no-border">
-                    <h4>Persetujuan Realisasi Kunjungan</h4>
+                    <h4>Buka Persetujuan Rencana Kunjungan</h4>
                     <div class="row g-3">
                         <div class="row g-3">
                             <div class="col-xl-4 col-md-4">
@@ -39,7 +39,7 @@
                                 <div class="input-group flatpicker-calender">
                                   <input
                                     class="form-control"
-                                    id="tanggalAccKunjungan"
+                                    id="tanggalDispenKunjungan"
                                     type="date"
                                     value=""
                                   />
@@ -49,7 +49,7 @@
                                 <label class="form-label" for=""
                                     >Cabang</label
                                 >
-                                <select id="cabangRealisasiOps" class="select2 form-control" name="cabang_rencanaops"
+                                <select id="cabangBukaVerifikasi" class="select2 form-control" name="cabang_buka_verifikasi"
                                     <?= ($session->get('branch_id') <> '11') ? 'disabled' : ''; ?>>
                                     <?php if ($session->get('branch_id') <> '11'): ?>
                                         <!-- Jika bukan branch_id = 11 -->
@@ -87,9 +87,13 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="col-xl-12 col-md-12">
+                            <button id="saveApproveAll" class="btn btn-pill btn-outline btn-success">
+                                <i class="fa fa-check-circle-o"></i> Simpan Data
+                            </button>
+                        </div>
                         <div class="col-xl-12 col-md-12 box-col-12">
-                             <p><b>Keterangan:</b> <i class='fa fa-check' style='color:#03A791'></i> Ya <i class='fa fa-times' style='color:#FF5677'></i> Tidak</p>
-                             <div id="tabel_verifikasi_realisasi_kunjungan"></div>
+                             <div id="tabel_buka_verifikasi_rencana_kunjungan"></div>
                         </div>
                     </div>
                 </div>
@@ -98,64 +102,7 @@
     </div>
 </div>
 <!-- Container-fluid Ends-->
-<!-- Modal Input Alasan Penolakan -->
-<div
-    class="modal fade"
-    id="mapModal"
-    data-bs-backdrop="static"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="mapModal"
-    aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 id="kode_pelanggan"></h5>-<h5 id="nama_pelanggan"></h5>
-        <button
-          class="btn-close py-0"
-          type="button"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <div id="map" style="height: 400px;"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div
-    class="modal fade"
-    id="feedbackModal"
-    data-bs-backdrop="static"
-    tabindex="-1"
-    role="dialog"
-    aria-labelledby="feedbackModal"
-    aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="feedbackModalLabel">Feedback Verifikasi</h5>
-        <button
-          class="btn-close py-0"
-          type="button"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <textarea id="feedbackInput" class="form-control" rows="5" placeholder="Masukkan feedback (minimal 25 karakter, maksimal 250 karakter)"></textarea>
-        <p id="charCount" class="text-muted">0/250</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="saveFeedback">Simpan</button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Modal untuk menampilkan detail -->
     <div
         class="modal fade"
         id="detailModal"
@@ -169,57 +116,22 @@
             <div class="modal-content">
                 <div class="modal-toggle-wrapper text-start dark-sign-up">
                     <div class="modal-header justify-content-center border-0">
+                        <div class="row">
                             <h5 class="justify-content-center border-0">
-                                Detail Realisasi Kunjungan
+                                Detail Rencana Kunjungan
                             </h5>
-                            <h5 class="justify-content-center" id="kode_pelanggan"></h5>
+                        </div>
                         <!-- <div class="row">
                             <p class="justify-content-center border-0" id="kode_pelanggan"></p> <p>-</p> <p class="justify-content-center border-0" id="nama_pelanggan"></p>
                         </div> -->
                     </div>
                     <div class="modal-body">
                         <div class="col-xl-12 col-md-12 box-col-12">
-                             <div id="tabel_det_verifikasi_realisasi_kunjungan"></div>
+                             <div id="tabel_det_verifikasi_rencana_kunjungan"></div>
                              <!-- Elemen table untuk kondisi data kosong -->
                              <table id="detailTable" class="table table-bordered" style="display: none;">
                               <tbody></tbody>
                              </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- modal data photo kunjungan -->
-    <div
-        class="modal fade"
-        id="fotoKunjModal"
-        data-bs-backdrop="static"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="fotoKunjModalLabel"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-                <div class="modal-toggle-wrapper text-start dark-sign-up">
-                    <div class="modal-header justify-content-center border-0">
-                        <h5 class="justify-content-center border-0">
-                            Foto Realisasi
-                        </h5>
-                        <div class="row">
-                            <p class="justify-content-center border-0" id="kode_pelanggan"></p>
-                            <p>-</p>
-                            <p class="justify-content-center border-0" id="nama_pelanggan"></p>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="col-xl-12 col-md-12 box-col-12 text-center">
-                            <!-- Elemen untuk menampilkan foto -->
-                            <img id="foto_realisasi" src="" alt="Foto Realisasi" class="img-fluid" style="max-width: 100%; max-height: 400px;" />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

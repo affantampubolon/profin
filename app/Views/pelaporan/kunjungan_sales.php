@@ -7,7 +7,7 @@
     <div class="page-title">
         <div class="row">
             <div class="col-6">
-                <h4>Distribusi Produk</h4>
+                <h4>Kunjungan Sales</h4>
             </div>
             <div class="col-6">
                 <ol class="breadcrumb">
@@ -41,29 +41,15 @@
         <div class="col-xl-12 col-md-12 box-col-12">
             <div class="card">
                 <div class="card-header card-no-border">
-                    <h4>Monitoring Distribusi Produk</h4>
+                    <h4>Monitoring Kunjungan Sales</h4>
                 </div>
                 <div class="card-body pt-0">
-                        <div class="row g-3">
-                            <div class="col-xl-6 col-md-6">
-                                <label class="form-label" for=""
-                                    >Tanggal</label
-                                >
-                                <div class="form-group">
-                                  <input
-                                    class="form-control"
-                                    name="rentang_tgl_distribusi"
-                                    id="rentangTanggalDistribusi"
-                                    type="text"
-                                    value="<?php echo date("Y-m-d"); ?>"
-                                  />
-                                </div>
-                            </div>
+                        <div class="row m-10">
                             <div class="col-xl-6 col-md-6">
                                 <label class="form-label" for=""
                                     >Cabang</label
                                 >
-                                <select id="cabangdistprod" class="select2 form-control" name="cabang_dist_prod"
+                                <select id="cabangkunjsales" class="select2 form-control" name="cabang_kunjungan_sales"
                                     <?= ($session->get('branch_id') <> '11') ? 'disabled' : ''; ?>>
                                     <?php if ($session->get('branch_id') <> '11'): ?>
                                         <!-- Jika bukan branch_id = 11 -->
@@ -77,37 +63,9 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for=""
-                                    >Grup Barang</label
-                                >
-                                <select id="grupBarang" class="select2 form-control" name="grup_barang">
-                                    <?php foreach ($group_barang as $groupbarang): ?>
-                                        <option value="<?= $groupbarang['group_id']; ?>"> 
-                                            <?= $groupbarang['group_id'] ?> - <?= $groupbarang['group_name'] ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for=""
-                                    >Subgrup Barang</label
-                                >
-                                <select id="subgrupBarang" class="select2 form-control" name="subgrup_barang">
-                                </select>
-                            </div>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for=""
-                                    >Kelas Barang</label
-                                >
-                                <select id="kelasBarang" class="select2 form-control" name="kelas_barang">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row g-3">
+                        <div class="row m-10">
                             <div class="col-xl-12 col-md-12 box-col-12">
-                                <div id="map" style="z-index: 1;"></div>
+                                <div id="table_kunjungan_sales"></div>
                             </div>
                         </div>
                 </div>

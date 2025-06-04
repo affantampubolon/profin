@@ -1030,7 +1030,7 @@ $(document).ready(function () {
 
           if (group_id === "02" || group_id === "05") {
             columns.push({
-              title: "Probabilitas",
+              title: "Probabilitas (%)",
               field: "probability",
               headerHozAlign: "center",
               hozAlign: "center",
@@ -1455,7 +1455,7 @@ $(document).ready(function () {
                 formatterParams: { decimal: ",", thousand: "." },
               },
               {
-                title: "Probabilitas",
+                title: "Probabilitas (%)",
                 field: "probability",
                 headerHozAlign: "center",
                 hozAlign: "center",

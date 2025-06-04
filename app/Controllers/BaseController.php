@@ -12,6 +12,9 @@ use App\Models\UserModel\UserModel;
 use App\Models\UserModel\EmpModel;
 use App\Models\UserModel\ParamEmpModel;
 use App\Models\MenuModel\MenuModel;
+// beranda
+use App\Models\BerandaModel\BerandaModel;
+// 
 use App\Models\PipelineModel\PipelineModel;
 use App\Models\PipelineModel\PipelineDetModel;
 use App\Models\RencanaKunjModel\RencanaKunjModel;
@@ -80,6 +83,8 @@ abstract class BaseController extends Controller
     protected $empModel;
     protected $paramEmpModel;
     protected $menuModel;
+    //beranda
+    protected $berandaModel;
     // pipeline 
     protected $pipelineModel;
     protected $pipelineDetModel;
@@ -122,6 +127,7 @@ abstract class BaseController extends Controller
         $this->empModel         = new EmpModel();
         $this->paramEmpModel    = new ParamEmpModel();
         $this->menuModel        = new MenuModel();
+        $this->berandaModel    = new BerandaModel();
         //Pipeline
         $this->pipelineModel    = new PipelineModel();
         $this->pipelineDetModel = new PipelineDetModel();

@@ -14,12 +14,10 @@ class Rencana extends BaseController
   {
     // Ambil username dari session
     $username = session()->get('username');
-    $grp_prod = session()->get('group_id');
 
     $data = [
       'title' => "Verifikasi Rencana Kunjungan",
       'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
-      'subgroup_barang' => $this->kelasProdModel->getSubGrupBarang($grp_prod),
       'validation' => $this->validation,
       'breadcrumb' => $this->breadcrumb,
       'session' => $this->session
@@ -158,5 +156,103 @@ class Rencana extends BaseController
 
       $data = $this->rencanaKunjModel->getDataMonitoringRencanaDet($nik, $tanggal, $pelanggan);
       echo json_encode($data);
+  }
+
+  public function bukaVerifikasi()
+  {
+    // Ambil username dari session
+    $username = session()->get('username');
+
+    $data = [
+      'title' => "Buka Verifikasi Rencana Kunjungan",
+      'data_salesmarketing' => $this->salesMarketingModel->getSalesMarketingCab($username),
+      'validation' => $this->validation,
+      'breadcrumb' => $this->breadcrumb,
+      'session' => $this->session
+    ];
+    return view('rencana/buka_verifikasi', $data);
+  }
+
+  // Data buka verifikasi rencana kunjungan
+  public function dataBukaVerifRencana()
+  {
+      //filter data verifikasi rencana kunjungan
+      $nik = $this->request->getPost('sales_marketing');
+      $tanggal = $this->request->getPost('tanggal');
+
+      $data = $this->rencanaKunjModel->getDataBukaVerifikasiRencana($nik, $tanggal);
+      echo json_encode($data);
+  }
+
+  // Data detail buka verifikasi rencana kunjungan
+  public function dataBukaVerifRencanaDet()
+  {
+      //filter data detail verifikasi rencana kunjungan
+      $nik = $this->request->getPost('sales_marketing');
+      $tanggal = $this->request->getPost('tanggal');
+      $pelanggan = $this->request->getPost('cust_id');
+
+      $data = $this->rencanaKunjModel->getDataBukaVerifikasiRencanaDet($nik, $tanggal, $pelanggan);
+      echo json_encode($data);
+  }
+
+  public function updateBukaVerifikasi()
+  {
+    $cust_id = $this->request->getPost('cust_id');
+    $nik = $this->request->getPost('nik');
+    $date = $this->request->getPost('date');
+    $status = $this->request->getPost('status');
+
+    // Ambil username dari session
+    $username = $this->session->get('username');
+
+    $data = [
+        'status' => $status,
+        'user_update' => $username,
+        'update_date' => date('Y-m-d H:i:s')
+    ];
+
+    $update = $this->rencanaKunjModel->updateBukaVerifRencana($cust_id, $nik, $date, $data);
+
+    if ($update) {
+        $message = $status;
+
+        return $this->response->setJSON(['status' => 'success', 'message' => $message]);
+    } else {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data.']);
+    }
+  }
+
+  // Update verifikasi untuk multiple kombinasi
+  public function updateBukaVerifikasiAll()
+  {
+      $combinations = json_decode($this->request->getPost('combinations'), true);
+      $status = $this->request->getPost('status');
+
+      // Ambil username dari session
+      $username = $this->session->get('username');
+
+      $data = [
+          'status' => $status,
+          'user_update' => $username,
+          'update_date' => date('Y-m-d H:i:s'),
+      ];
+
+      $success = true;
+      foreach ($combinations as $combination) {
+          $cust_id = $combination['cust_id'];
+          $nik = $combination['nik'];
+          $date = $combination['date'];
+          $update = $this->rencanaKunjModel->updateBukaVerifRencana($cust_id, $nik, $date, $data);
+          if (!$update) {
+              $success = false;
+          }
+      }
+
+      if ($success) {
+          return $this->response->setJSON(['status' => 'success', 'message' => 'Data berhasil diperbarui.']);
+      } else {
+          return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui sebagian atau seluruh data.']);
+      }
   }
 }
