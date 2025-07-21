@@ -1,0 +1,112 @@
+.btn-1-ra {
+  background: linear-gradient(115.77deg, #fbeeac -35.98%, #75c2f6 107.82%);
+  border-radius: 50px;
+  font-family: "Open Sans";
+  line-height: 15px;
+  /* identical to box height */
+  align-items: center;
+  border: none;
+  padding: 10px 20px;
+  color: #000000; /* Contoh warna teks agar kontras dengan background */
+  display: inline-flex; /* Agar align-items berfungsi */
+  justify-content: center; /* Agar teks berada di tengah horizontal */
+  transition: all 0.3s ease; /* Transisi halus untuk efek hover */
+}
+
+.btn-1-ra:hover {
+  filter: brightness(0.9); /* Menggelapkan 10% */
+  cursor: pointer; /* Mengubah kursor menjadi pointer */
+}
+
+.btn-2-ra {
+  background: #ef3b3b;
+  border-radius: 50px;
+  font-family: "Open Sans";
+  line-height: 15px;
+  /* identical to box height */
+  align-items: center;
+  border: none;
+  padding: 10px 20px;
+  color: #ffffff; /* Contoh warna teks agar kontras dengan background */
+  display: inline-flex; /* Agar align-items berfungsi */
+  justify-content: center; /* Agar teks berada di tengah horizontal */
+  transition: all 0.3s ease; /* Transisi halus untuk efek hover */
+}
+
+.btn-2-ra:hover {
+  filter: brightness(0.9); /* Menggelapkan 10% */
+  cursor: pointer; /* Mengubah kursor menjadi pointer */
+}
+
+.btn-3-ra {
+  background: #19ac6d;
+  border-radius: 50px;
+  font-family: "Open Sans";
+  line-height: 15px;
+  /* identical to box height */
+  align-items: center;
+  border: none;
+  padding: 10px 20px;
+  color: #ffffff; /* Contoh warna teks agar kontras dengan background */
+  display: inline-flex; /* Agar align-items berfungsi */
+  justify-content: center; /* Agar teks berada di tengah horizontal */
+  transition: all 0.3s ease; /* Transisi halus untuk efek hover */
+}
+
+.btn-3-ra:hover {
+  filter: brightness(0.9); /* Menggelapkan 10% */
+  cursor: pointer; /* Mengubah kursor menjadi pointer */
+}
+
+.btn-4-ra {
+  background: #f4d160;
+  border-radius: 50px;
+  font-family: "Open Sans";
+  line-height: 15px;
+  /* identical to box height */
+  align-items: center;
+  border: none;
+  padding: 10px 20px;
+  color: #ffffff; /* Contoh warna teks agar kontras dengan background */
+  display: inline-flex; /* Agar align-items berfungsi */
+  justify-content: center; /* Agar teks berada di tengah horizontal */
+  transition: all 0.3s ease; /* Transisi halus untuk efek hover */
+}
+
+.btn-4-ra:hover {
+  filter: brightness(0.9); /* Menggelapkan 10% */
+  cursor: pointer; /* Mengubah kursor menjadi pointer */
+}
+
+.btn-primary-ra {
+  background-color: #75c2f6 !important;
+  border-color: #75c2f6 !important;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);
+}
+.btn-primary-ra.disabled,
+.btn-primary-ra:disabled {
+  background-color: #75c2f6 !important;
+  border-color: #75c2f6 !important;
+}
+.btn-primary-ra:focus {
+  box-shadow: unset !important;
+}
+.btn-primary-ra {
+  background-color: var(--theme-deafult) !important;
+  border-color: var(--theme-deafult) !important;
+}
+.btn-primary-ra:not([disabled]):not(.disabled).active {
+  background-color: #75c2f6de;
+  color: #fff !important;
+  border-color: #75c2f6de;
+  box-shadow: none !important;
+}
+.btn-primary-ra:not([disabled]):not(.disabled).active:hover,
+.btn-primary-ra:not([disabled]):not(.disabled).active:focus,
+.btn-primary-ra:not([disabled]):not(.disabled).active:active,
+.btn-primary-ra:not([disabled]):not(.disabled).active.active {
+  color: white;
+  background-color: #75c2f6de;
+  border-color: #75c2f6de;
+}
