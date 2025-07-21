@@ -18,4 +18,9 @@ class CabangModel extends Model
     {
         return $this->where('branch_id', $branch_id)->where('flg_used', TRUE)->first();
     }
+
+    public function getCabangFilter()
+    {
+        return $this->where('flg_used', TRUE)->orderBy('branch_id')->findAll();
+    }
 }

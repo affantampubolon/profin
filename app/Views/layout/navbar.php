@@ -31,65 +31,6 @@
     <div
       class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
       <ul class="nav-menus">
-        <li class="onhover-dropdown notification-down">
-          <div class="notification-box">
-            <svg>
-              <use
-                href="<?= base_url(''); ?>riho/assets/svg/icon-sprite.svg#notification-header"></use>
-            </svg><span class="badge rounded-pill badge-secondary">1 </span>
-          </div>
-          <div class="onhover-show-div notification-dropdown">
-            <div class="card mb-0">
-              <div class="card-header">
-                <div class="common-space">
-                  <h4 class="text-start f-w-600">Notifikasi</h4>
-                  <div><span>1 Baru</span></div>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="notitications-bar">
-                  <div class="tab-content" id="pills-tabContent">
-                    <div
-                      class="tab-pane fade show active"
-                      id="pills-aboutus"
-                      role="tabpanel"
-                      aria-labelledby="pills-aboutus-tab">
-                      <div class="user-message">
-                        <ul>
-                          <li>
-                            <div class="user-alerts">
-                              <img
-                                class="user-image rounded-circle img-fluid me-2"
-                                src="<?= base_url(''); ?>riho/assets/images/dashboard/user/5.jpg"
-                                alt="user" />
-                              <div class="user-name">
-                                <div>
-                                  <h6>
-                                    <a
-                                      class="f-w-500 f-14"
-                                      href="user-profile.html">Floyd Miles</a>
-                                  </h6>
-                                  <span class="f-light f-w-500 f-12">Sir, Can i remove part in
-                                    des...</span>
-                                </div>
-                                <div>
-                                  <svg>
-                                    <use
-                                      href="<?= base_url(''); ?>riho/assets/svg/icon-sprite.svg#more-vertical"></use>
-                                  </svg>
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
         <li class="profile-nav onhover-dropdown">
           <div class="media profile-media">
             <img
@@ -104,13 +45,13 @@
             </div>
           </div>
           <ul class="profile-dropdown onhover-show-div">
-            <li>
+            <!-- <li>
               <a href="user-profile.html"><i data-feather="user"></i><span>Profil</span></a>
             </li>
             <li>
               <a href="edit-profile.html">
                 <i data-feather="settings"></i><span>Pengaturan</span></a>
-            </li>
+            </li> -->
             <li>
               <a
                 class="btn btn-pill btn-outline-primary btn-sm"

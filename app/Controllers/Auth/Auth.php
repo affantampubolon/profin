@@ -17,7 +17,7 @@ class Auth extends BaseController
             $this->goToDefaultPage();
         }
         $data = [
-            'title' => "RAJA AMPAT - LOGIN",
+            'title' => "PROFIN - LOGIN",
             'validation' => $this->validation,
         ];
         return view('auth/login', $data);
@@ -36,7 +36,6 @@ class Auth extends BaseController
 
         $data = [
             'title' => "Beranda",
-            'data_daftar_tunda_verif' => $this->berandaModel->getDataVerifikasiTertundaSales($cabang, $nik),
             'validation' => $this->validation,
             'breadcrumb' => $this->breadcrumb,
             'session' => $this->session

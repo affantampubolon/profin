@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12 footer-copyright text-center">
-        <p class="mb-0">Copyright 2024 © Raja Ampat by Nusindo</p>
+        <p class="mb-0">Copyright 2025 © Profin by BKI Komersil Semarang</p>
       </div>
     </div>
   </div>
@@ -91,11 +91,10 @@ https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/theme-customizer/customizer.js"></script> -->
 <!-- BEGIN: Custom Js-->
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/dashboard/dashboard.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pipeline/pipeline.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/rencana-kunjungan/rencana-kunjungan.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/realisasi-kunjungan/realisasi-kunjungan.js"></script>
 <script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/master/master.js"></script>
-<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/pelaporan/pelaporan.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/proyek/proyek.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/keuangan/keuangan.js"></script>
+<script src="<?= base_url(''); ?>riho/assets/js/raja_ampat/monitoring/monitoring.js"></script>
 <!-- <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script> -->
 <script src="<?= base_url(''); ?>riho/assets/js/app.min.js"></script>
 <script>

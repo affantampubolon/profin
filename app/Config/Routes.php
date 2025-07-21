@@ -30,17 +30,32 @@ $routes->setAutoRoute(true);
 // Auth
 $routes->get('/', 'Auth\Auth::index');
 // Master
+$routes->get('/master/pminspector/datapminspector', 'Master\Master::dataPmInspector');
+$routes->get('/master/pminspector/filterpminspector', 'Master\Master::dataFilterPmInspector');
+$routes->get('/master/coa/datafilter', 'Master\Master::dataCoaFilter');
+$routes->get('/master/pelanggan/datafiltermstpelanggan', 'Master\Master::dataFilterPelanggan');
 $routes->post('/master/barang/subgrup', 'Master\Master::getSubGrupBarang');
 $routes->post('/master/barang/kelas', 'Master\Master::getKelasBarang');
 $routes->post('/master/filter/subgrup', 'Master\Master::getFilterSubgrp');
 $routes->post('/master/filter/kelas', 'Master\Master::getFilterClass');
 $routes->get('/master/cabang', 'Master\Master::getMstCabang');
-$routes->post('/master/salesmarketing', 'Master\Master::getMstSalesMarketing');
 $routes->get('/master/pelanggan/datapelanggancab', 'Master\Master::getMstPelanggan');
 $routes->get('/master/kategoripelanggan', 'Master\Master::getMstKategoriPelanggan');
+//KARYAWAN & USER
+$routes->get('/master/karyawan/index', 'Master\Master::indexMstKaryawan');
+$routes->post('/master/karyawan/datakaryawan', 'Master\Master::dataKaryawan');
+$routes->get('/master/karyawan/getkaryawan/(:num)', 'Master\Master::getKaryawan/$1');
+$routes->post('/master/karyawan/updatedatakaryawan', 'Master\Master::updateDataKaryawan');
+$routes->get('/master/karyawan/formulir', 'Master\Master::indexMstKaryawanForm');
+$routes->post('/master/karyawan/insertdatakaryawan', 'Master\Master::insertKaryawan');
+$routes->get('/master/user/index', 'Master\Master::indexMstUser');
+$routes->post('/master/user/datauser', 'Master\Master::dataUser');
+$routes->post('/master/user/updatedatauser', 'Master\Master::updateDataUser');
+$routes->get('/master/user/formulir', 'Master\Master::indexMstUserForm');
+$routes->get('/master/user/filterkaryawan', 'Master\Master::getFilterKaryawan');
+$routes->post('/master/user/insertdatauser', 'Master\Master::insertUser');
 //PELANGGAN
 $routes->get('/master/pelanggan/index', 'Master\Master::indexMstPelanggan');
-$routes->post('/master/pelanggan/getdatamstpelanggan', 'Master\Master::dataMstPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
 $routes->get('/master/pelanggan/getdataregis', 'Master\Master::dataRegisPelanggan');
 $routes->post('/master/pelanggan/updateregispelanggan', 'Master\Master::updateVerifRegisPelanggan');
@@ -52,8 +67,6 @@ $routes->post('/master/userpelanggan/updateuserpelanggan', 'Master\Master::updat
 //KELAS PRODUK
 $routes->get('/master/kelasproduk/index', 'Master\Master::indexMstKlsProduk');
 $routes->post('/master/kelasproduk/getdatamstklsproduk', 'Master\Master::dataMstKlsProduk');
-//PROBABILITAS
-$routes->get('/master/probabilitas', 'Master\Master::dataFilterProbabilitas');
 // Master Wilayah
 $routes->get('/master/area/provinsi', 'Master\Master::getMstAreaProvinsi');
 $routes->post('/master/area/kotakab', 'Master\Master::getMstAreaKotaKab');
@@ -66,90 +79,59 @@ $routes->get('/logout', 'Auth\Auth::logout');
 
 //beranda
 $routes->get('/beranda', 'Auth\Auth::beranda');
-$routes->post('/beranda/data/getdaftarverifcab', 'Beranda\Beranda::dataVerifTertundaCab');
-$routes->post('/beranda/data/getdatapencapaiancab', 'Beranda\Beranda::dataPencapaianCab');
+$routes->post('/beranda/data/getdatapembayaran', 'Beranda\Beranda::dataGraphicPayment');
+$routes->post('/beranda/data/getdatagrafikproyek', 'Beranda\Beranda::dataGraphicProject');
+$routes->post('/beranda/data/getdatagrafikanggaran', 'Beranda\Beranda::dataGraphicBudgetProject');
 
-//pipeline
-$routes->get('/pipeline/groupuser', 'Pipeline\Pipeline::getUserGroupSession');
-$routes->get('/pipeline/pembuatan', 'Pipeline\Pipeline::index');
-$routes->post('/pipeline/upload', 'Pipeline\Pipeline::uploadpipeline');
-$routes->get('/pipeline/formulir', 'Pipeline\Pipeline::indexform');
-$routes->get('/pipeline/persetujuan', 'Pipeline\Pipeline::indexPersetujuan');
-$routes->get('/pipeline/monitoring', 'Pipeline\Pipeline::indexMonitoring');
-$routes->post('/pipeline/temp/save', 'Pipeline\Pipeline::saveTemporerDetailPipeline');
-$routes->get('/pipeline/temp/getdata', 'Pipeline\Pipeline::getTemporerDetailPipeline');
-$routes->post('/pipeline/temp/delete', 'Pipeline\Pipeline::deleteTemporerDetailPipeline');
-$routes->post('/pipeline/temp/insert', 'Pipeline\Pipeline::insertFormPipeline');
+//proyek
+$routes->get('/proyek/dataproyekfilter', 'Proyek\Proyek::dataFilterProyek');
+$routes->get('/proyek/dataanggaranfilter', 'Proyek\Proyek::dataProyekAnggaranFilter');
+$routes->get('/proyek/datarealisasifilter', 'Proyek\Proyek::dataProyekRealisasiFilter');
+$routes->get('/proyek/datapembayaranfilter', 'Proyek\Proyek::dataProyekPembayaranFilter');
 
-//draft pipeline
-$routes->post('/pipeline/draft/getdata', 'Pipeline\Pipeline::dataDraftPipeline');
-$routes->post('/pipeline/draft/update', 'Pipeline\Pipeline::updateDraftPipeline');
-$routes->post('/pipeline/draft/delete', 'Pipeline\Pipeline::deleteDraftPipeline');
+//registrasi proyek
+$routes->get('/proyek/registrasi/index', 'Proyek\Proyek::registrasiindex');
+$routes->post('/proyek/registrasi/insertdataproyek', 'Proyek\Proyek::insertProyek');
 
-//verifikasi pipeline
-$routes->post('/pipeline/verifikasi/getdata', 'Pipeline\Pipeline::dataVerifPipeline');
-$routes->post('/pipeline/verifikasi/update', 'Pipeline\Pipeline::updateVerifikasi');
+//perbaruan data proyek
+$routes->get('/proyek/pembaruandata/index', 'Proyek\Proyek::pembaruandataindex');
+$routes->post('/proyek/pembaruandata/dataproyek', 'Proyek\Proyek::dataProyek');
+$routes->get('/proyek/pembaruandata/getproyek/(:num)', 'Proyek\Proyek::dataProyekId/$1');
+$routes->post('/proyek/pembaruandata/updatedataproyek', 'Proyek\Proyek::updateDataProyek');
 
-//monitoring pipeline
-$routes->post('/pipeline/monitoring/getdata', 'Pipeline\Pipeline::dataMonPipeline');
+//keuangananggaran
+$routes->get('/keuangan/anggaran/index', 'Keuangan\Keuangan::anggaranindex');
+$routes->post('/keuangan/anggaran/insertdataanggaran', 'Keuangan\Keuangan::insertAnggaran');
 
-//verifikasi rencana kunjungan
-$routes->get('/rencana/verifikasi', 'Rencana\Rencana::verifikasi');
-$routes->post('/rencana/verifikasi/getdata', 'Rencana\Rencana::dataVerifRencana');
-$routes->post('/rencana/verifikasi/getdetdata', 'Rencana\Rencana::dataVerifRencanaDet');
-$routes->post('/rencana/verifikasi/update', 'Rencana\Rencana::updateVerifikasi');
-$routes->post('/rencana/verifikasi/updateall', 'Rencana\Rencana::updateVerifikasiAll');
+//keuanganrealisasi
+$routes->get('/keuangan/realisasi/index', 'Keuangan\Keuangan::realisasiindex');
+$routes->post('/keuangan/realisasi/insertdatarealisasi', 'Keuangan\Keuangan::insertRealisasi');
 
-$routes->get('/rencana/monitoring', 'Rencana\Rencana::monitoring');
-//monitoring rencana
-$routes->post('/rencana/monitoring/getdata', 'Rencana\Rencana::dataMonitoringRencana');
-$routes->post('/rencana/monitoring/getdetdata', 'Rencana\Rencana::dataMonitoringRencanaDet');
+//keuangandropping
+$routes->get('/keuangan/dropping/index', 'Keuangan\Keuangan::droppingindex');
+$routes->post('/keuangan/dropping/insertdatadropping', 'Keuangan\Keuangan::insertDropping');
 
+//keuanganpembayaran
+$routes->get('/keuangan/pembayaran/index', 'Keuangan\Keuangan::pembayaranindex');
+$routes->post('/keuangan/pembayaran/insertdatapembayaran', 'Keuangan\Keuangan::insertPembayaran');
 
-//buka verifikasi rencana kunjungan
-$routes->get('/rencana/buka_verifikasi', 'Rencana\Rencana::bukaVerifikasi');
-$routes->post('/rencana/buka_verifikasi/getdata', 'Rencana\Rencana::dataBukaVerifRencana');
-$routes->post('/rencana/buka_verifikasi/getdetdata', 'Rencana\Rencana::dataBukaVerifRencanaDet');
-$routes->post('/rencana/buka_verifikasi/update', 'Rencana\Rencana::updateBukaVerifikasi');
-$routes->post('/rencana/buka_verifikasi/updateall', 'Rencana\Rencana::updateBukaVerifikasiAll');
+//Monitoring
+//Detail Proyek
+$routes->get('/monitoring/detproyek/index', 'Monitoring\Monitoring::detproyekindex');
+$routes->get('/monitoring/detproyek/getunduhdata', 'Monitoring\Monitoring::dataUnduhDetProyek');
+$routes->post('/monitoring/detproyek/getdetdata', 'Monitoring\Monitoring::dataDetProyek');
+$routes->get('/monitoring/detproyek/getdetdata/(:num)', 'Monitoring\Monitoring::dataDetProyekId/$1');
 
-//verifikasi realisasi kunjungan
-$routes->get('/realisasi/cabuser', 'Realisasi\Realisasi::getUserBranchSession');
-$routes->get('/realisasi/verifikasi', 'Realisasi\Realisasi::verifikasi');
-$routes->post('/realisasi/verifikasi/getdata', 'Realisasi\Realisasi::dataVerifRealisasi');
-$routes->post('/realisasi/verifikasi/getdetdata', 'Realisasi\Realisasi::dataVerifRealisasiDet');
-$routes->post('/realisasi/verifikasi/update', 'Realisasi\Realisasi::updateVerifikasi');
+//Anggaran dan Biaya
+$routes->get('/monitoring/anggaranbiaya/index', 'Monitoring\Monitoring::anggaranbiayaindex');
+$routes->get('/monitoring/anggaranbiaya/getunduhdata', 'Monitoring\Monitoring::dataUnduhAnggaranBiaya');
+$routes->post('/monitoring/anggaranbiaya/getdetdata', 'Monitoring\Monitoring::dataAnggaranBiayaProyek');
+$routes->post('/monitoring/anggaranbiaya/getdatadetrealisasi', 'Monitoring\Monitoring::dataDetRealisasi');
+$routes->post('/monitoring/anggaranbiaya/getdatadetdropping', 'Monitoring\Monitoring::dataDetDropping');
 
-//monitoring realisasi
-$routes->get('/realisasi/monitoring', 'Realisasi\Realisasi::monitoring');
+//Pembayaran Piutang
+$routes->get('/monitoring/pembayaranpiutang/index', 'Monitoring\Monitoring::pembayaranpiutangindex');
+$routes->get('/monitoring/pembayaranpiutang/getunduhdata', 'Monitoring\Monitoring::dataUnduhPembayaranPiutang');
+$routes->post('/monitoring/pembayaranpiutang/getdetdata', 'Monitoring\Monitoring::dataPembayaranPiutang');
+$routes->post('/monitoring/pembayaranpiutang/getdetpembayaranpiutang', 'Monitoring\Monitoring::dataDetPembayaranPiutang');
 
-$routes->post('/realisasi/monitoring/getdata', 'Realisasi\Realisasi::dataMonitoringRealisasi');
-$routes->post('/realisasi/monitoring/getdetdata', 'Realisasi\Realisasi::dataMonitoringRealisasiDet');
-
-//buka verifikasi realisasi kunjungan
-$routes->get('/realisasi/buka_verifikasi', 'Realisasi\Realisasi::bukaVerifikasi');
-$routes->post('/realisasi/buka_verifikasi/getdata', 'Realisasi\Realisasi::dataBukaVerifRealisasi');
-$routes->post('/realisasi/buka_verifikasi/getdetdata', 'Realisasi\Realisasi::dataBukaVerifRealisasiDet');
-$routes->post('/realisasi/buka_verifikasi/update', 'Realisasi\Realisasi::updateBukaVerifikasi');
-$routes->post('/realisasi/buka_verifikasi/updateall', 'Realisasi\Realisasi::updateBukaVerifikasiAll');
-
-//izin
-$routes->get('/izin/verifikasi', 'Izin\Izin::verifikasi');
-$routes->get('/izin/monitoring', 'Izin\Izin::monitoring');
-
-//pelaporan
-$routes->get('/pelaporan/aktivitas_kunj', 'Pelaporan\Pelaporan::aktvitasKunj');
-$routes->post('/pelaporan/aktivitas_kunj/data_aktivitas', 'Pelaporan\Pelaporan::dataAktivitasKunj');
-$routes->post('/pelaporan/aktivitas_kunj/data_distribusi_prod', 'Pelaporan\Pelaporan::dataDistribusiProd');
-
-$routes->get('/pelaporan/distribusi_prod', 'Pelaporan\Pelaporan::distribusiProd');
-$routes->post('/pelaporan/distribusi_prod/data_distribusi_prod_loc', 'Pelaporan\Pelaporan::dataDistribusiProdLoc');
-
-$routes->get('/pelaporan/kunjungan_sales', 'Pelaporan\Pelaporan::kunjunganSales');
-$routes->post('/pelaporan/kunjungan_sales/data_kunjungan_sales', 'Pelaporan\Pelaporan::dataKunjunganSales');
-
-$routes->get('/pelaporan/kunjungan_marketing', 'Pelaporan\Pelaporan::kunjunganMarketing');
-$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_guna', 'Pelaporan\Pelaporan::dataKunjMarkPenggunaan');
-$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_outlet', 'Pelaporan\Pelaporan::dataKunjMarkOutlet');
-$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_user', 'Pelaporan\Pelaporan::dataKunjMarkUser');
-$routes->post('/pelaporan/kunjungan_marketing/data_kunj_marketing_user_cat', 'Pelaporan\Pelaporan::dataKunjMarkUserCat');

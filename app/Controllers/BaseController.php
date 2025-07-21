@@ -14,20 +14,27 @@ use App\Models\UserModel\ParamEmpModel;
 use App\Models\MenuModel\MenuModel;
 // beranda
 use App\Models\BerandaModel\BerandaModel;
+//proyek
+use App\Models\ProyekModel\ProyekModel;
+//keuangan
+use App\Models\KeuanganModel\AnggaranModel;
+use App\Models\KeuanganModel\RealisasiModel;
+use App\Models\KeuanganModel\DroppingModel;
+use App\Models\KeuanganModel\PembayaranModel;
+//monitoring
+use App\Models\MonitoringModel\MonitoringModel;
+//master
+use App\Models\MasterModel\PmInspectorModel;
+use App\Models\MasterModel\CoaModel;
 // 
-use App\Models\PipelineModel\PipelineModel;
-use App\Models\PipelineModel\PipelineDetModel;
-use App\Models\RencanaKunjModel\RencanaKunjModel;
-use App\Models\RealisasiKunjModel\RealisasiKunjModel;
 use App\Models\MasterModel\KelasProdModel;
 use App\Models\MasterModel\CabangModel;
+use App\Models\MasterModel\PosisiModel;
+use App\Models\MasterModel\HakAksesModel;
 use App\Models\MasterModel\PelangganModel;
-use App\Models\MasterModel\SalesMarketingModel;
-use App\Models\MasterModel\SkalaProbabilitasModel;
-use App\Models\IzinModel\IzinModel;
+use App\Models\MasterModel\KaryawanModel;
 use App\Models\MasterModel\DepartmentModel;
 use App\Models\MasterModel\WilayahDetModel;
-use App\Models\PelaporanModel\PelaporanModel;
 
 /**
  * Class BaseController
@@ -76,7 +83,6 @@ abstract class BaseController extends Controller
     protected $kelasProdModel;
     protected $cabangModel;
     protected $pelangganModel;
-    protected $probabilitasModel;
     protected $wilayahModel;
     //auth
     protected $userModel;
@@ -85,18 +91,30 @@ abstract class BaseController extends Controller
     protected $menuModel;
     //beranda
     protected $berandaModel;
-    // pipeline 
-    protected $pipelineModel;
-    protected $pipelineDetModel;
-    protected $rencanaKunjModel;
-    protected $realisasiKunjModel;
-    // izin 
-    protected $izinModel;
+    //proyek
+    protected $proyekModel;
+    //keuangan
+    protected $anggaranModel;
+    protected $realisasiModel;
+    protected $droppingModel;
+    protected $pembayaranModel;
+    //monitoring
+    protected $monitoringModel;
+
+    //master
+    protected $pmInspectorModel;
+    protected $coaModel;
     // department
     protected $DeptModel;
 
-    //pelaporan
-    protected $pelaporanModel;
+    // posisi
+    protected $posisiModel;
+
+    // hak akses
+    protected $hakAksesModel;
+
+    // karyawan
+    protected $karyawanModel;
 
     protected $breadcrumb;
 
@@ -119,28 +137,33 @@ abstract class BaseController extends Controller
         $this->kelasProdModel      = new KelasProdModel();
         $this->cabangModel         = new CabangModel();
         $this->pelangganModel      = new PelangganModel();
-        $this->probabilitasModel   = new SkalaProbabilitasModel();
         $this->wilayahModel        = new WilayahDetModel();
-        $this->salesMarketingModel = new SalesMarketingModel();
         //General Models
         $this->userModel        = new UserModel();
         $this->empModel         = new EmpModel();
         $this->paramEmpModel    = new ParamEmpModel();
         $this->menuModel        = new MenuModel();
         $this->berandaModel    = new BerandaModel();
-        //Pipeline
-        $this->pipelineModel    = new PipelineModel();
-        $this->pipelineDetModel = new PipelineDetModel();
-        //Rencana Kunjungan
-        $this->rencanaKunjModel = new RencanaKunjModel();
-        //Realisasi Kunjungan
-        $this->realisasiKunjModel = new RealisasiKunjModel();
-        //Pelaporan
-        $this->pelaporanModel = new PelaporanModel();
-        //
-        $this->izinModel        = new IzinModel();
+        //proyek
+        $this->proyekModel = new ProyekModel();
+        //keuangan
+        $this->anggaranModel = new AnggaranModel();
+        $this->realisasiModel = new RealisasiModel();
+        $this->droppingModel = new DroppingModel();
+        $this->pembayaranModel = new PembayaranModel();
+        //monitoring
+        $this->monitoringModel = new MonitoringModel();
+        //master
+        $this->pmInspectorModel = new PmInspectorModel();
+        $this->coaModel = new CoaModel();
         
-        $this->DeptModel        = new DepartmentModel();
+        $this->DeptModel         = new DepartmentModel();
+
+        $this->posisiModel       = new PosisiModel();
+
+        $this->karyawanModel     = new KaryawanModel();
+
+        $this->hakAksesModel        = new HakAksesModel();
         // Ambil dan buat tree menu di BaseController
         $this->loadMenu();
 

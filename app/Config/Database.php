@@ -78,10 +78,10 @@ class Database extends Config
     //     */
     public array $default = [
         'DSN'        => '',
-        'hostname'   => '170.1.70.55',
+        'hostname'   => 'localhost',
         'username'   => 'postgres',
-        'password'   => 'NusindoOps2025**',
-        'database'   => 'raja_ampat_dev',
+        'password'   => 'admin',
+        'database'   => 'profin_dev',
         'schema'     => 'public',
         'DBDriver'   => 'Postgre',
         'DBPrefix'   => '',

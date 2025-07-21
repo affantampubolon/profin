@@ -6,15 +6,15 @@
 <div class="container-fluid p-0">
   <div class="row m-0">
     <div class="col-12 p-0">
-      <div class="login-card login-dark">
+      <div class="login-card">
         <div>
           <div>
             <a class="logo"><img
                 class="img-fluid for-dark"
-                src="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat_text.png"
+                src="<?= base_url(''); ?>riho/assets/images/logo/PROFIN-upt1.png"
                 alt="looginpage" /><img
                 class="img-fluid for-light"
-                src="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat_text.png"
+                src="<?= base_url(''); ?>riho/assets/images/logo/PROFIN-upt1.png"
                 style="width: 10%;"
                 alt="looginpage" /></a>
           </div>
@@ -61,7 +61,7 @@
               <div class="form-group mb-0">
                 <div class="text-end mt-3">
                   <button
-                    class="btn-1-ra w-100 f-w-700"
+                    class="btn btn-primary w-100 f-w-700"
                     type="submit">
                     MASUK
                   </button>

@@ -13,4 +13,9 @@ class DepartmentModel extends Model
     {
         return $this->where('id', $dept_id)->where('flg_used', TRUE)->first();
     }
+
+    public function getDepartemenFilter()
+    {
+        return $this->where('flg_used', TRUE)->orderBy('id')->findAll();
+    }
 }

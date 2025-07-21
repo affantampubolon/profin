@@ -16,21 +16,33 @@ class Beranda extends BaseController
       return $this->response->setJSON(['branch_id' => $session->get('branch_id')]);
   }
 
-  // Data untuk gauge chart pencapaian cab
-  public function dataPencapaianCab()
+  // Data grafik pembayaran invoice (persentase pembayaran)
+  public function dataGraphicPayment()
   {
-      $cabang = session()->get('branch_id');
+      $year = $this->request->getPost('tahun');
+      $project_manager = $this->request->getPost('pmfilter');
 
-      $data = $this->berandaModel->getDataPencapaianCab($cabang);
+      $data = $this->berandaModel->getGraphicPayment($year, $project_manager);
       echo json_encode($data);
   }
 
-  // Data daftar verifikasi tertunda per cabang
-  public function dataVerifTertundaCab()
+  // Data grafik proyek (pendapatan dan pembayaran)
+  public function dataGraphicProject()
   {
-      $cabang = session()->get('branch_id');
+      $year = $this->request->getPost('tahun');
+      $project_manager = $this->request->getPost('pmfilter');
 
-      $data = $this->berandaModel->getDataVerifikasiTertundaCab($cabang);
+      $data = $this->berandaModel->getGraphicProject($year, $project_manager);
+      echo json_encode($data);
+  }
+
+  // Data grafik proyek (anggaran dan realisasi)
+  public function dataGraphicBudgetProject()
+  {
+      $year = $this->request->getPost('tahun');
+      $project_manager = $this->request->getPost('pmfilter');
+
+      $data = $this->berandaModel->getGraphicBudgetProject($year, $project_manager);
       echo json_encode($data);
   }
     

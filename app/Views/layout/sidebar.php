@@ -1,7 +1,7 @@
 <!-- Page Sidebar Start-->
 <div class="sidebar-wrapper" data-layout="stroke-svg">
   <div class="logo-wrapper">
-    <img class="img-fluid" src="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat_text_samping.png" alt="" style="width: 95%;" />
+    <!-- <img class="img-fluid" src="<?= base_url(''); ?>riho/assets/images/logo/PROFIN-upt.png" alt="" style="width: 95%;" /> -->
     <div class="back-btn"><i class="fa fa-angle-left"> </i></div>
     <!-- <div class="toggle-sidebar">
       <i

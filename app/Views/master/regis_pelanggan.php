@@ -51,7 +51,7 @@
                 </div>
                 <div class="card-body pt-0">
                     <form class="row g-3">
-                        <input type="hidden" id="idPelanggan" name="idPelanggan">
+                        <input type="hidden" id="idRefUser" name="idRefUser">
                         <div class="col-xl-12 col-md-12 box-col-12">
                             <p class="text-uppercase"><b>Identitas Pelanggan</b></p>
                             <div class="row p-2">

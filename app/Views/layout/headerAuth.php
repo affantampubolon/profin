@@ -4,15 +4,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="RAJA AMPAT merupakan aplikasi operasional" />
+    content="PROFIN" />
   <meta
     name="keywords"
-    content="Raja Ampat, Operasioanl, admin, dashboard, web app" />
+    content="PROFIN" />
   <meta name="NUSINDO" content="dashboard" />
-  <link rel="icon" href="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat.png" type="image/x-icon" />
+  <link rel="icon" href="<?= base_url(''); ?>riho/assets/images/logo/logo-icon-profin-upt1.png" type="image/x-icon" />
   <link
     rel="shortcut icon"
-    href="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat.png"
+    href="<?= base_url(''); ?>riho/assets/images/logo/logo-icon-profin-upt1.png"
     type="image/x-icon" />
   <title><?= $title; ?></title>
   <!-- Google font-->

@@ -17,14 +17,13 @@ class PelangganModel extends Model
      */
 
     //Master Pelanggan
-    public function getDataMstPelanggan($cabang)
+    public function getDataMstPelanggan()
     {
         $builder = $this->db->table('mst_customer')
             ->select("
                 id,
                 branch_id,
                 cust_id,
-                req_no,
                 cust_name,
                 category_id,
                 f_tv_catcust_name(category_id) AS catcust_name,
@@ -57,6 +56,26 @@ class PelangganModel extends Model
             ")
             ->where('branch_id', $cabang)
             ->orderBy('id');
+
+        return $builder->get()->getResult();
+    }
+
+    //Master Filter Pelanggan
+    public function getDataFilterMstPelanggan()
+    {
+        $builder = $this->db->table('mst_customer')
+            ->select("
+                id,
+                branch_id,
+                cust_id,
+                cust_name,
+                address,
+                pic_name,
+                email,
+                phone_no
+            ")
+            ->where('flg_used', 't')
+            ->orderBy('cust_id');
 
         return $builder->get()->getResult();
     }

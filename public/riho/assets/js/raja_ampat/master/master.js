@@ -1124,5 +1124,400 @@ $(document).ready(function () {
         },
       });
     }
+  } else if (window.location.pathname === "/master/karyawan/index") {
+    // Deklarasi elemen filter
+    const $cabang = $("#cabang");
+
+    // Fungsi untuk mendapatkan semua nilai filter saat ini
+    function getFilterValues() {
+      var cabang = $cabang.val();
+      return { cabang };
+    }
+
+    // Fetch cabang berdasarkan session branch_id
+    if (branchId !== "11") {
+      // Jika branch_id bukan '11', tampilkan hanya cabang dari session dan disable dropdown
+      $cabang
+        .empty()
+        .append(
+          `<option value="${branchId}" selected>${branchId} - ${branchName}</option>`
+        );
+      $cabang.select2(); // Inisialisasi Select2 untuk cabang
+    } else {
+      // Jika branch_id adalah '11', ambil semua cabang dari API
+      $.getJSON(url + "master/cabang", (branches) => {
+        $cabang
+          .empty()
+          .append('<option value="">Pilih Cabang</option>')
+          .append(
+            branches.map(
+              (b) =>
+                `<option value="${b.branch_id}">${b.branch_id} - ${b.branch_name}</option>`
+            )
+          );
+        $cabang.select2(); // Inisialisasi Select2 untuk cabang
+      });
+    }
+
+    // Event handler untuk cabang
+    $cabang.on("change", function () {
+      var filters = getFilterValues();
+      data_karyawan(filters.cabang);
+    });
+
+    // Panggil data_karyawan dengan nilai default saat halaman dimuat
+    var filters = getFilterValues();
+    data_karyawan(filters.cabang);
+
+    // Fungsi untuk menampilkan tabel distribusi produk
+    function data_karyawan(cabang) {
+      $.ajax({
+        type: "POST",
+        url: url + "master/karyawan/datakaryawan",
+        async: true,
+        data: { cabang: cabang },
+        dataType: "json",
+        success: function (data) {
+          // Inisialisasi Tabulator
+          var table = new Tabulator("#table_master_karyawan", {
+            data: data,
+            movableColumns: true,
+            layout: "fitColumns",
+            height: "500px",
+            responsiveLayout: "collapse",
+            pagination: "local",
+            paginationSize: 50,
+            paginationSizeSelector: [20, 50, 70],
+            columns: [
+              {
+                title: "NIK",
+                field: "nik",
+                headerHozAlign: "center",
+                hozAlign: "center",
+              },
+              {
+                title: "Nama",
+                field: "emp_name",
+                headerHozAlign: "center",
+                headerFilter: "input",
+              },
+              {
+                title: "Cabang",
+                field: "branch_name",
+                headerHozAlign: "center",
+              },
+              {
+                title: "Departemen",
+                field: "department_name",
+                headerHozAlign: "center",
+              },
+              {
+                title: "Jabatan",
+                field: "position_name",
+                headerHozAlign: "center",
+              },
+              {
+                title: "Hak Akses",
+                field: "role_name",
+                headerHozAlign: "center",
+              },
+              {
+                title: "Aksi",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return `
+                  <a class="badge rounded-circle p-2 badge-success update-btn" href="#" data-id="${rowData.id}">
+                      <i class="fa fa-edit" style="cursor: pointer;"></i>
+                  </a>`;
+                },
+                cellClick: function (e, cell) {
+                  var target = e.target.closest("a");
+                  if (!target) return;
+
+                  var row = cell.getRow();
+                  var rowData = row.getData();
+
+                  if (target.classList.contains("update-btn")) {
+                    showUpdateModal(rowData.id, rowData.nik);
+                  }
+                },
+              },
+            ],
+          });
+        },
+        error: function (xhr, status, err) {
+          console.error("Error fetching kunjungan sales:", err);
+        },
+      });
+    }
+
+    // Fungsi untuk menampilkan modal update
+    function showUpdateModal(id, nik) {
+      // Fetch data karyawan berdasarkan id
+      $.getJSON(url + `master/karyawan/getkaryawan/${id}`, function (data) {
+        if (data) {
+          // Isi form dengan data awal
+          $("#nikKaryawan").val(data.nik).prop("disabled", true);
+          $("#namaKaryawan").val(data.emp_name).prop("disabled", true);
+          $("#cabKaryawan").val(data.branch_id).trigger("change");
+          $("#depKaryawan").val(data.department_id).trigger("change");
+          $("#jabKaryawan").val(data.position_id).trigger("change");
+          $("#roleKaryawan").val(data.role_id).trigger("change");
+
+          // Tambahkan input tersembunyi untuk id
+          $("#formUpdateKaryawan").append(
+            `<input type="hidden" name="id" value="${id}">`
+          );
+
+          // Tampilkan modal
+          $("#updateKaryawanModal").modal("show");
+
+          // Event submit form
+          $("#formUpdateKaryawan")
+            .off("submit")
+            .on("submit", function (e) {
+              e.preventDefault();
+              Swal.fire({
+                title: "Anda yakin?",
+                text: "Data karyawan akan diperbarui!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya, simpan!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  $.ajax({
+                    type: "POST",
+                    url: url + "master/karyawan/updatedatakaryawan",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                      if (response.status === "success") {
+                        Swal.fire(
+                          "Berhasil!",
+                          response.message,
+                          "success"
+                        ).then(() => {
+                          $("#updateKaryawanModal").modal("hide");
+                          location.reload(); // Refresh halaman untuk update tabel
+                        });
+                      } else {
+                        Swal.fire("Gagal!", response.message, "error");
+                      }
+                    },
+                    error: function (xhr, status, err) {
+                      Swal.fire(
+                        "Error!",
+                        "Terjadi kesalahan saat menyimpan data.",
+                        "error"
+                      );
+                    },
+                  });
+                }
+              });
+            });
+        }
+      });
+    }
+  } else if (window.location.pathname == "/master/karyawan/formulir") {
+    document
+      .getElementById("formKaryawan")
+      .addEventListener("submit", function (e) {
+        e.preventDefault(); // Mencegah submit langsung
+        Swal.fire({
+          title: "Anda yakin?",
+          text: "Data karyawan akan disimpan!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya, simpan!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.submit(); // Submit form jika dikonfirmasi
+          }
+        });
+      });
+  } else if (window.location.pathname === "/master/user/index") {
+    data_user();
+
+    // Fungsi untuk menampilkan tabel distribusi produk
+    function data_user() {
+      $.ajax({
+        type: "POST",
+        url: url + "master/user/datauser",
+        async: true,
+        data: {},
+        dataType: "json",
+        success: function (data) {
+          // Inisialisasi Tabulator
+          var table = new Tabulator("#table_master_user", {
+            data: data,
+            movableColumns: true,
+            layout: "fitColumns",
+            height: "500px",
+            responsiveLayout: "collapse",
+            pagination: "local",
+            paginationSize: 50,
+            paginationSizeSelector: [20, 50, 70],
+            columns: [
+              {
+                title: "username",
+                field: "username",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                headerFilter: "input",
+              },
+              {
+                title: "Status",
+                field: "flg_used",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                editor: "list",
+                editorParams: {
+                  values: {
+                    t: "AKTIF",
+                    f: "TIDAK AKTIF",
+                  },
+                },
+                formatter: function (cell, formatterParams) {
+                  var value = cell.getValue();
+                  console.log("Status value:", value);
+                  if (value === "t") {
+                    return "<p>AKTIF</p>";
+                  } else if (value === "f") {
+                    return "<p>TIDAK AKTIF</p>";
+                  }
+                  return value;
+                },
+                cellEdited: function (cell) {
+                  var newValue = cell.getValue();
+                  var rowData = cell.getRow().getData();
+                  var id = rowData.id;
+
+                  if (newValue === "f") {
+                    Swal.fire({
+                      title: "Anda yakin?",
+                      text: "Status akan diubah menjadi TIDAK AKTIF!",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Ya, ubah!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        $.ajax({
+                          type: "POST",
+                          url: url + "master/user/updatedatauser",
+                          data: {
+                            id: id,
+                            status: newValue,
+                          },
+                          dataType: "json",
+                          success: function (response) {
+                            if (response.status === "success") {
+                              Swal.fire(
+                                "Berhasil!",
+                                response.message,
+                                "success"
+                              );
+                            } else {
+                              Swal.fire(
+                                "Gagal!",
+                                response.message,
+                                "error"
+                              ).then(() => {
+                                cell.restoreOldValue();
+                              });
+                            }
+                          },
+                          error: function (xhr, status, err) {
+                            Swal.fire(
+                              "Error!",
+                              "Terjadi kesalahan saat menyimpan data.",
+                              "error"
+                            );
+                            cell.restoreOldValue();
+                          },
+                        });
+                      } else {
+                        cell.restoreOldValue();
+                      }
+                    });
+                  }
+                },
+              },
+            ],
+          });
+          console.log("Tabulator Editors:", Tabulator.Editors); // Debug editor
+        },
+        error: function (xhr, status, err) {
+          console.error("Error fetching data:", err);
+        },
+      });
+    }
+  } else if (window.location.pathname === "/master/user/formulir") {
+    // Fetch data karyawan baru
+    $.ajax({
+      url: url + "master/user/filterkaryawan",
+      method: "GET",
+      dataType: "json",
+      success: function (data) {
+        $("#masterkaryawan").empty();
+        $("#masterkaryawan").append(
+          '<option value="" selected>Pilih Karyawan</option>'
+        );
+        data.forEach((userbaru) => {
+          $("#masterkaryawan").append(
+            `<option value="${userbaru.id}" 
+                         idRefUser="${userbaru.id}" 
+                         usernameKaryawan="${userbaru.nik}">
+                         ${userbaru.emp_name}
+                    </option>`
+          );
+        });
+        $("#masterkaryawan").select2({
+          placeholder: "Pilih Karyawan",
+          allowClear: true,
+        });
+
+        $("#masterkaryawan").on("change", function () {
+          const selectedOption = $(this).find("option:selected");
+          const id = selectedOption.val(); // Ambil id dari value
+          const username = selectedOption.attr("usernameKaryawan"); // Ambil nik sebagai username
+
+          // Isi input tersembunyi idRefUser
+          $("#idRefUser").val(id);
+          // Isi field usernameKaryawan (disabled, hanya untuk tampilan)
+          $("#usernameKaryawan").val(username);
+        });
+      },
+      error: function (xhr, status, error) {
+        console.error("Error fetching data pelanggan:", error);
+        alert("Gagal memuat data pelanggan.");
+      },
+    });
+
+    document
+      .getElementById("formUser")
+      .addEventListener("submit", function (e) {
+        e.preventDefault(); // Mencegah submit langsung
+        Swal.fire({
+          title: "Anda yakin?",
+          text: "Data user akan disimpan!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya, simpan!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.submit(); // Submit form jika dikonfirmasi
+          }
+        });
+      });
   }
 });

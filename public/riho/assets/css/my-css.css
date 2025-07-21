@@ -1,7 +1,7 @@
-.btn-1-ra{
-  background: linear-gradient(115.77deg, #FBEEAC -35.98%, #75C2F6 107.82%);
+.btn-1-ra {
+  background: linear-gradient(115.77deg, #fbeeac -35.98%, #75c2f6 107.82%);
   border-radius: 50px;
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   line-height: 15px;
   /* identical to box height */
   align-items: center;
@@ -18,10 +18,10 @@
   cursor: pointer; /* Mengubah kursor menjadi pointer */
 }
 
-.btn-2-ra{
-  background: #EF3B3B;
+.btn-2-ra {
+  background: #ef3b3b;
   border-radius: 50px;
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   line-height: 15px;
   /* identical to box height */
   align-items: center;
@@ -38,10 +38,10 @@
   cursor: pointer; /* Mengubah kursor menjadi pointer */
 }
 
-.btn-3-ra{
-  background: #19AC6D;
+.btn-3-ra {
+  background: #19ac6d;
   border-radius: 50px;
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   line-height: 15px;
   /* identical to box height */
   align-items: center;
@@ -58,10 +58,10 @@
   cursor: pointer; /* Mengubah kursor menjadi pointer */
 }
 
-.btn-4-ra{
-  background: #F4D160;
+.btn-4-ra {
+  background: #f4d160;
   border-radius: 50px;
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   line-height: 15px;
   /* identical to box height */
   align-items: center;
@@ -78,16 +78,16 @@
   cursor: pointer; /* Mengubah kursor menjadi pointer */
 }
 
-
 .btn-primary-ra {
-  background-color: #75C2F6 !important;
-  border-color: #75C2F6 !important;
+  background-color: #75c2f6 !important;
+  border-color: #75c2f6 !important;
   -webkit-tap-highlight-color: transparent;
   transform: translateZ(0);
 }
-.btn-primary-ra.disabled, .btn-primary-ra:disabled {
-  background-color: #75C2F6 !important;
-  border-color: #75C2F6 !important;
+.btn-primary-ra.disabled,
+.btn-primary-ra:disabled {
+  background-color: #75c2f6 !important;
+  border-color: #75c2f6 !important;
 }
 .btn-primary-ra:focus {
   box-shadow: unset !important;
@@ -102,7 +102,10 @@
   border-color: #75c2f6de;
   box-shadow: none !important;
 }
-.btn-primary-ra:not([disabled]):not(.disabled).active:hover, .btn-primary-ra:not([disabled]):not(.disabled).active:focus, .btn-primary-ra:not([disabled]):not(.disabled).active:active, .btn-primary-ra:not([disabled]):not(.disabled).active.active {
+.btn-primary-ra:not([disabled]):not(.disabled).active:hover,
+.btn-primary-ra:not([disabled]):not(.disabled).active:focus,
+.btn-primary-ra:not([disabled]):not(.disabled).active:active,
+.btn-primary-ra:not([disabled]):not(.disabled).active.active {
   color: white;
   background-color: #75c2f6de;
   border-color: #75c2f6de;

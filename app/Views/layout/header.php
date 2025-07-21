@@ -6,15 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta
     name="description"
-    content="RAJA AMPAT merupakan aplikasi operasional" />
+    content="PROFIN" />
   <meta
     name="keywords"
-    content="Raja Ampat, Operasioanl, admin, dashboard, web app" />
+    content="PROFIN" />
   <meta name="NUSINDO" content="dashboard" />
-  <link rel="icon" href="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat.png" type="image/x-icon" />
+  <link rel="icon" href="<?= base_url(''); ?>riho/assets/images/logo/logo-icon-profin-upt1.png" type="image/x-icon" />
   <link
     rel="shortcut icon"
-    href="<?= base_url(''); ?>riho/assets/images/logo/logo_raja_ampat.png"
+    href="<?= base_url(''); ?>riho/assets/images/logo/logo-icon-profin-upt1.png"
     type="image/x-icon" />
   <title><?= $title; ?></title>
   <!-- Google font-->
@@ -90,7 +90,8 @@
   <!-- Responsive css-->
   <link rel="stylesheet" type="text/css" href="<?= base_url(''); ?>riho/assets/css/responsive.css" />
   <!-- Tabulator table -->
-  <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet">
+  <!-- <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator.min.css" rel="stylesheet"> -->
+  <link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator_bootstrap4.min.css" rel="stylesheet">
   <!-- select2 -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <!-- datatable -->
