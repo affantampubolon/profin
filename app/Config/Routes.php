@@ -33,6 +33,7 @@ $routes->get('/', 'Auth\Auth::index');
 $routes->get('/master/pminspector/datapminspector', 'Master\Master::dataPmInspector');
 $routes->get('/master/pminspector/filterpminspector', 'Master\Master::dataFilterPmInspector');
 $routes->get('/master/coa/datafilter', 'Master\Master::dataCoaFilter');
+$routes->post('/master/coa/datanilai', 'Master\Master::dataCoaVal');
 $routes->get('/master/pelanggan/datafiltermstpelanggan', 'Master\Master::dataFilterPelanggan');
 $routes->post('/master/barang/subgrup', 'Master\Master::getSubGrupBarang');
 $routes->post('/master/barang/kelas', 'Master\Master::getKelasBarang');
