@@ -2857,8 +2857,10 @@ table tbody .border-bottom-warning td {
 
 /*======= Table tabulator styling css start  ======= */
 /* Mengatur warna latar belakang untuk sel kolom dengan kelas highlight-column */
-.tabulator .tabulator-col.highlight-column .tabulator-col-content {
-  background-color: #fffbde !important;
+.tabulator
+  .tabulator-col.highlight-column
+  .tabulator-col-content {
+  background-color: #5EABD6 !important;
 }
 
 /*======= Svg stroke css start  ======= */
@@ -31823,7 +31825,7 @@ footer .license-list h6 {
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-  background-color: #F2F9FF;
+  background-color: #f2f9ff;
   /* background: url("../images/login/login_bg.jpg"); */
   background-position: center;
   padding: 30px 12px;

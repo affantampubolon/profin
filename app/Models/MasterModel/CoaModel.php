@@ -23,4 +23,15 @@ class CoaModel extends Model
 
         return $query->getResultArray();
     }
+
+    // Mendapatkan nilai COA
+    public function getCoaVal($coa, $id_ref)
+    {
+        $builder = $this->db->table('trn_cost_plan')
+            ->select('diff_amt, net_plan_amt')
+            ->where('coa', $coa)
+            ->where('id_ref', $id_ref);
+
+            return $builder->get()->getResult();
+    }
 }

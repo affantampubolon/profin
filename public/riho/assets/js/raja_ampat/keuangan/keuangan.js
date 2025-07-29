@@ -184,6 +184,16 @@ $(document).ready(function () {
       data: [], // Mulai dengan tabel kosong
       columns: [
         {
+          title: "Aksi",
+          hozAlign: "center",
+          width: 75,
+          headerHozAlign: "center",
+          formatter: "buttonCross",
+          cellClick: function (e, cell) {
+            cell.getRow().delete(); // Menghapus baris langsung dari tabel
+          },
+        },
+        {
           title: "COA",
           field: "coa",
           headerHozAlign: "center",
@@ -227,6 +237,14 @@ $(document).ready(function () {
           },
         },
         {
+          title: "Nilai Sisa",
+          field: "diff_amt", // Gunakan field valid agar bisa dirender
+          headerHozAlign: "center",
+          hozAlign: "right",
+          formatter: "money",
+          formatterParams: { decimal: ",", thousand: "." },
+        },
+        {
           title: "Uraian",
           field: "description",
           headerHozAlign: "center",
@@ -246,16 +264,17 @@ $(document).ready(function () {
           bottomCalcFormatterParams: { decimal: ",", thousand: "." },
           cssClass: "highlight-column",
         },
-        {
-          title: "Aksi",
-          hozAlign: "center",
-          headerHozAlign: "center",
-          formatter: "buttonCross",
-          cellClick: function (e, cell) {
-            cell.getRow().delete(); // Menghapus baris langsung dari tabel
-          },
-        },
       ],
+    });
+
+    table.on("cellEdited", function (cell) {
+      const field = cell.getField();
+      const row = cell.getRow();
+
+      // Hanya trigger jika field coa atau id_ref yang diubah
+      if (field === "coa" || field === "id_ref") {
+        updateDiffAmt(row);
+      }
     });
 
     // Memuat data COA dari server saat halaman dimuat
@@ -285,6 +304,36 @@ $(document).ready(function () {
         alert("Gagal memuat data No. Dokumen: " + error);
       },
     });
+
+    // Fungsi untuk memperbarui nilai 'Nilai Sisa' berdasarkan COA dan id_ref
+    function updateDiffAmt(row) {
+      const rowData = row.getData();
+      const coa = rowData.coa;
+      const id_ref = rowData.id_ref;
+
+      if (coa && id_ref) {
+        $.ajax({
+          url: url + "/master/coa/datanilai",
+          method: "POST",
+          data: { coa: coa, id_ref: id_ref },
+          dataType: "json",
+          success: function (response) {
+            // Ambil item pertama dari array jika ada
+            if (Array.isArray(response) && response.length > 0) {
+              const item = response[0];
+              row.update({ diff_amt: parseFloat(item.diff_amt) });
+            } else {
+              row.update({ diff_amt: 0 });
+            }
+          },
+
+          error: function (xhr, status, error) {
+            console.error("Gagal memuat nilai sisa:", error);
+            row.update({ diff_amt: 0 }); // fallback kalau error
+          },
+        });
+      }
+    }
 
     // Fungsi untuk menambahkan baris kosong
     function addBlankRow() {
@@ -383,6 +432,16 @@ $(document).ready(function () {
       data: [], // Mulai dengan tabel kosong
       columns: [
         {
+          title: "Aksi",
+          hozAlign: "center",
+          width: 75,
+          headerHozAlign: "center",
+          formatter: "buttonCross",
+          cellClick: function (e, cell) {
+            cell.getRow().delete(); // Menghapus baris langsung dari tabel
+          },
+        },
+        {
           title: "COA",
           field: "coa",
           headerHozAlign: "center",
@@ -426,6 +485,14 @@ $(document).ready(function () {
           },
         },
         {
+          title: "Nilai Sisa",
+          field: "net_plan_amt", // Gunakan field valid agar bisa dirender
+          headerHozAlign: "center",
+          hozAlign: "right",
+          formatter: "money",
+          formatterParams: { decimal: ",", thousand: "." },
+        },
+        {
           title: "Uraian",
           field: "description",
           headerHozAlign: "center",
@@ -445,16 +512,17 @@ $(document).ready(function () {
           bottomCalcFormatterParams: { decimal: ",", thousand: "." },
           cssClass: "highlight-column",
         },
-        {
-          title: "Aksi",
-          hozAlign: "center",
-          headerHozAlign: "center",
-          formatter: "buttonCross",
-          cellClick: function (e, cell) {
-            cell.getRow().delete(); // Menghapus baris langsung dari tabel
-          },
-        },
       ],
+    });
+
+    table.on("cellEdited", function (cell) {
+      const field = cell.getField();
+      const row = cell.getRow();
+
+      // Hanya trigger jika field coa atau id_ref yang diubah
+      if (field === "coa" || field === "id_ref") {
+        updateDiffAmt(row);
+      }
     });
 
     // Memuat data COA dari server saat halaman dimuat
@@ -484,6 +552,36 @@ $(document).ready(function () {
         alert("Gagal memuat data No. Dokumen: " + error);
       },
     });
+
+    // Fungsi untuk memperbarui nilai 'Nilai Sisa' berdasarkan COA dan id_ref
+    function updateDiffAmt(row) {
+      const rowData = row.getData();
+      const coa = rowData.coa;
+      const id_ref = rowData.id_ref;
+
+      if (coa && id_ref) {
+        $.ajax({
+          url: url + "/master/coa/datanilai",
+          method: "POST",
+          data: { coa: coa, id_ref: id_ref },
+          dataType: "json",
+          success: function (response) {
+            // Ambil item pertama dari array jika ada
+            if (Array.isArray(response) && response.length > 0) {
+              const item = response[0];
+              row.update({ net_plan_amt: parseFloat(item.net_plan_amt) });
+            } else {
+              row.update({ net_plan_amt: 0 });
+            }
+          },
+
+          error: function (xhr, status, error) {
+            console.error("Gagal memuat nilai sisa:", error);
+            row.update({ net_plan_amt: 0 }); // fallback kalau error
+          },
+        });
+      }
+    }
 
     // Fungsi untuk menambahkan baris kosong
     function addBlankRow() {
