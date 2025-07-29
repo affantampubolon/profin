@@ -62,6 +62,7 @@ class Keuangan extends BaseController
                   'description' => $row['description'],
                   'budget_amt' => str_replace([',', '.'], ['', ''], $row['budget_amt']), // Hilangkan format uang
                   'diff_amt' => str_replace([',', '.'], ['', ''], $row['budget_amt']),
+                  'net_plan_amt' => str_replace([',', '.'], ['', ''], $row['budget_amt']),
                   'no_doc' => $no_doc, // Gunakan no_doc yang sama untuk semua baris
                   'user_create' => $username,   
                   'create_date' => date('Y-m-d H:i:s'),

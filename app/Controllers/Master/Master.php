@@ -42,6 +42,16 @@ class Master extends BaseController
         return $this->response->setJSON($data); // Mengembalikan data dalam format JSON
     }
 
+    // Data nilai anggaran
+    public function dataCoaVal()
+    {
+        $coa = $this->request->getPost('coa');
+        $id_ref = $this->request->getPost('id_ref');
+
+        $data = $this->coaModel->getCoaVal($coa, $id_ref);
+        echo json_encode($data);
+    }
+
     // Data pelanggan
     public function dataFilterPelanggan()
     {
