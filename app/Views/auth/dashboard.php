@@ -68,6 +68,9 @@
       </div>
     </div>
   </div>
+  <!-- <div class="row size-column">
+    <p><b>Rupiah (Rp)</b></p>
+  </div> -->
   <!-- jumlah detail Proyek dan pembayaran Invoice-->
   <div class="row size-column">
     <div class="row g-1 justify-content-between">
