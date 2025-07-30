@@ -265,6 +265,7 @@ $(document).ready(function () {
               $("#arbalance").text(formatNumber(data.ar_balance));
               $("#contractamt").text(formatNumber(data.contract_amt));
               $("#revenueamt").text(formatNumber(data.revenue_amt));
+              $("#paymentamt").text(formatNumber(data.payment_amt));
               $("#budgetamt").text(formatNumber(data.budget_amt));
               $("#realamt").text(formatNumber(data.real_amt));
               $("#prsachiev").text(formatNumber(data.prs_achiev));
@@ -405,7 +406,7 @@ $(document).ready(function () {
             data: data,
             // movableColumns: true,
             // layout: "fitColumns",
-            height: "500px",
+            height: "550px",
             frozenColumns: true,
             pagination: "local",
             paginationSize: 50,
@@ -455,6 +456,9 @@ $(document).ready(function () {
                 formatter: "money",
                 formatterParams: { decimal: ",", thousand: "." },
                 minWidth: 150,
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ",", thousand: "." },
               },
               {
                 title: "Nilai Realisasi Biaya",
@@ -464,6 +468,9 @@ $(document).ready(function () {
                 formatter: "money",
                 formatterParams: { decimal: ",", thousand: "." },
                 minWidth: 150,
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ",", thousand: "." },
               },
               {
                 title: "Nilai Dropping",
@@ -473,6 +480,9 @@ $(document).ready(function () {
                 formatter: "money",
                 formatterParams: { decimal: ",", thousand: "." },
                 minWidth: 150,
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ",", thousand: "." },
               },
               {
                 title: "Nilai Sisa Anggaran",
@@ -482,6 +492,9 @@ $(document).ready(function () {
                 formatter: "money",
                 formatterParams: { decimal: ",", thousand: "." },
                 minWidth: 150,
+                bottomCalc: "sum",
+                bottomCalcFormatter: "money",
+                bottomCalcFormatterParams: { decimal: ",", thousand: "." },
               },
             ],
           });
