@@ -464,7 +464,7 @@ $(document).ready(function () {
           },
         },
         {
-          title: "No. Dokumen",
+          title: "No. WBS",
           field: "id_ref",
           headerHozAlign: "center",
           formatter: function (cell) {

@@ -211,17 +211,21 @@
                                 <p>Rupiah</p>
                             </div>
                             <div class="row">
-                                <div class="col-xl-4 col-md-4">
+                                <div class="col-xl-3 col-md-3">
                                     <label class="form-label anggaranbiaya-label" for=""><b>Saldo Piutang</b></label>
                                     <p id="arbalance" name="arbalance"></p>
                                 </div>
-                                <div class="col-xl-4 col-md-4">
+                                <div class="col-xl-3 col-md-3">
                                     <label class="form-label anggaranbiaya-label" for=""><b>Nilai Kontrak</b></label>
                                     <p id="contractamt" name="contractamt"></p>
                                 </div>
-                                <div class="col-xl-4 col-md-4">
+                                <div class="col-xl-3 col-md-3">
                                     <label class="form-label anggaranbiaya-label" for=""><b>Nilai Pendapatan</b></label>
                                     <p id="revenueamt" name="revenueamt"></p>
+                                </div>
+                                <div class="col-xl-3 col-md-3">
+                                    <label class="form-label anggaranbiaya-label" for=""><b>Pembayaran Invoice</b></label>
+                                    <p id="paymentamt" name="paymentamt"></p>
                                 </div>
                             </div>
                             <div class="row">
