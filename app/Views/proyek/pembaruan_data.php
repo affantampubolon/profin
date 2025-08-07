@@ -72,6 +72,21 @@
                 <form class="row g-3" id="formUpdateProyek" action="/proyek/pembaruandata/updatedataproyek" method="POST">
                     <div class="col-xl-12 col-md-12 box-col-12">
                         <div class="row p-2">
+                        <p class="text-uppercase"><b>.Registrasi Proyek</b></p>
+                            <div class="col-xl-4 col-md-4">
+                                <label class="form-label" for="">No. WBS <span class="txt-danger f-w-600">*</span></label>
+                                <input class="form-control" id="nowbs" name="nowbs" type="text" />
+                            </div>
+                            <div class="col-xl-4 col-md-4">
+                                <label class="form-label" for="">No. SO <span class="txt-danger f-w-600">*</span></label>
+                                <input class="form-control" id="noso" name="noso" type="text" />
+                            </div>
+                            <div class="col-xl-4 col-md-4">
+                                <label class="form-label" for="">No. Laporan <span class="txt-danger f-w-600">*</span></label>
+                                <input class="form-control" id="reportno" name="reportno" type="text" />
+                            </div>
+                        </div>
+                        <div class="row p-2">
                         <p class="text-uppercase"><b>.Waktu Proyek</b></p>
                             <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for="">Tanggal Mulai Pekerjaan <span class="txt-danger f-w-600">*</span></label>

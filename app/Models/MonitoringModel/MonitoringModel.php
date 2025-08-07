@@ -92,6 +92,24 @@ class MonitoringModel extends Model
 
             return $builder->get()->getResult();
     }
+
+    // Data Pembayaran Piutang Unduh
+    public function getDataPembayaranPiutangDet($tahun)
+    {
+        $builder = $this->db->table('vw_summary_payment_det')
+            ->select('id, year, month, 
+                     wbs_no, so_no, company_name, job_name, no_doc, invoice_date, payment_date, period_payment,
+                     description, reason, payment_amt, emp_name')
+            ->orderBy('year, month, id');
+
+            //  Kondisi untuk tahun
+            if (empty($tahun)) {
+                $tahun = date('Y'); // Gunakan tahun berjalan jika kosong
+            }
+            $builder->where('year', $tahun);
+
+            return $builder->get()->getResult();
+    }
     
     // Data Pembayaran Piutang
     public function getDataPembayaranPiutang($tahun = '')
@@ -115,7 +133,7 @@ class MonitoringModel extends Model
     public function getDataDetPembayaranPiutang($idref)
     {
         $builder = $this->db->table('vw_payment_hist')
-            ->select('no_doc, id_ref, create_date, description, payment_amt, payment_date, emp_name')
+            ->select('no_doc, id_ref, create_date, description, reason, payment_amt, invoice_date, payment_date, period_payment, emp_name')
             ->where('id_ref', $idref)
             ->orderBy('create_date');
 

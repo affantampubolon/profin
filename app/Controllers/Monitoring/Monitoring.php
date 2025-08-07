@@ -216,7 +216,7 @@ class Monitoring extends BaseController
               $tahun = date('Y'); // Gunakan tahun berjalan jika kosong
           }
 
-          $data = $this->monitoringModel->getDataPembayaranPiutang($tahun = '');
+          $data = $this->monitoringModel->getDataPembayaranPiutangDet($tahun);
 
           // Buat objek Spreadsheet
           $spreadsheet = new Spreadsheet();
@@ -224,7 +224,8 @@ class Monitoring extends BaseController
 
           // Definisikan header kolom yang user-friendly
           $headers = [
-              'tahun', 'bulan', 'No. WBS', 'No. SO', 'Perusahaan', 'Nama Pekerjaan', 'Nilai Pendapatan', 'Nilai Pembayaran', 'Saldo Piutang'
+              'tahun', 'bulan', 'No. WBS', 'No. SO', 'Perusahaan', 'Nama Pekerjaan', 'No. Pembayaran', 'Tgl Terbit Invoice', 'Tgl Pembayaran',
+              'periode (hari)', 'uraian', 'kendala', 'nilai pembayaran', 'pembuat'
           ];
 
           // Isi header
@@ -234,8 +235,9 @@ class Monitoring extends BaseController
           $rowData = [];
           foreach ($data as $row) {
               $rowData[] = [
-                  $row->year, $row->month, $row->wbs_no, $row->so_no, $row->company_name, $row->job_name, $row->revenue_amt,
-                  $row->payment_amt, $row->ar_balance
+                  $row->year, $row->month, $row->wbs_no, $row->so_no, $row->company_name, $row->job_name, $row->no_doc,
+                  $row->invoice_date, $row->payment_date, $row->period_payment, $row->description, $row->reason,
+                  $row->payment_amt, $row->emp_name
               ];
           }
           $sheet->fromArray($rowData, NULL, 'A2');

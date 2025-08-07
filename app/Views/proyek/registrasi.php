@@ -49,14 +49,18 @@
                                 <div class="col-xl-4 col-md-4">
                                     <label class="form-label" for="">No. WBS <span class="txt-danger f-w-600">*</span></label>
                                     <input class="form-control" id="nowbs" name="nowbs" type="text" />
+                                    <p class="txt-danger" for="">isi angka 0 jika No.WBS belum ada</p>
                                 </div>
                                 <div class="col-xl-4 col-md-4">
                                     <label class="form-label" for="">No. SO <span class="txt-danger f-w-600">*</span></label>
                                     <input class="form-control" id="noso" name="noso" type="text" />
+                                    <p class="txt-danger" for="">isi angka 0 jika No.SO belum ada</p>
                                 </div>
                                 <div class="col-xl-4 col-md-4">
-                                    <label class="form-label" for="">No. Laporan <span class="txt-danger f-w-600">*</span></label>
-                                    <input class="form-control" id="reportno" name="reportno" type="text" />
+                                    <label class="form-label" for="">Jenis Pekerjaan <span class="txt-danger f-w-600">*</span></label>
+                                    <select id="jobcategory" name="jobcategory" class="select2 form-control">
+                                        <option value="">Pilih Jenis Pekerjaan</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -116,7 +120,7 @@
                                 </div>
                                 <div class="col-xl-6 col-md-6">
                                     <label class="form-label" for="">Inspector <span class="txt-danger f-w-600">*</span></label>
-                                    <select id="inspector" name="inspector" class="select2 form-control">
+                                    <select id="inspector" name="inspector[]" class="select2 form-control" multiple>
                                         <option value="">Pilih Inspector</option>
                                     </select>
                                 </div>

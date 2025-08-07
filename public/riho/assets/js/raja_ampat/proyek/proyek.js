@@ -1,5 +1,25 @@
 $(document).ready(function () {
   if (window.location.pathname === "/proyek/registrasi/index") {
+    // Fetch kategori proyek untuk Project Manager
+    $.ajax({
+      url: url + "master/katproyek/datafilter",
+      method: "GET",
+      dataType: "json",
+      success: function (data) {
+        $("#jobcategory")
+          .empty()
+          .append('<option value="" selected>Pilih Jenis Pekerjaan</option>');
+        data.forEach((catproject) => {
+          $("#jobcategory").append(
+            `<option value="${catproject.id}">${catproject.name}</option>`
+          );
+        });
+      },
+      error: function () {
+        alert("Gagal memuat data kategori proyek");
+      },
+    });
+
     // Fetch pminspector untuk Project Manager
     $.ajax({
       url: url + "master/pminspector/datapminspector",
@@ -22,7 +42,7 @@ $(document).ready(function () {
       },
     });
 
-    // Fetch pminspector untuk Inspector
+    // Fetch pminspector untuk Inspector (multi-select)
     $.ajax({
       url: url + "master/pminspector/datapminspector",
       method: "GET",
@@ -35,6 +55,10 @@ $(document).ready(function () {
           $("#inspector").append(
             `<option value="${pminspector.nik}">${pminspector.emp_name}</option>`
           );
+        });
+        $("#inspector").select2({
+          placeholder: "Pilih Inspector",
+          allowClear: true,
         });
       },
       error: function () {
@@ -75,10 +99,10 @@ $(document).ready(function () {
           const email = selectedOption.attr("email");
           const notelp = selectedOption.attr("notelp");
 
-          $("#companyaddress").val(alamat);
-          $("#companypic").val(namapic);
-          $("#email").val(email);
-          $("#telpno").val(notelp);
+          $("#companyaddress").val(alamat || "");
+          $("#companypic").val(namapic || "");
+          $("#email").val(email || "");
+          $("#telpno").val(notelp || "");
         });
       },
       error: function (xhr, status, error) {
@@ -123,7 +147,39 @@ $(document).ready(function () {
           confirmButtonText: "Ya, simpan!",
         }).then((result) => {
           if (result.isConfirmed) {
-            this.submit(); // Submit form jika dikonfirmasi
+            const formData = new FormData(this);
+            // Konversi array inspector menjadi string JSON
+            const inspectorValues = $("#inspector").val() || [];
+            formData.set("inspector", JSON.stringify(inspectorValues));
+
+            $.ajax({
+              type: "POST",
+              url: url + "proyek/registrasi/insertdataproyek", // Perbaiki URL ke endpoint yang benar
+              data: formData,
+              processData: false,
+              contentType: false,
+              dataType: "json",
+              success: function (response) {
+                if (response.status === "success") {
+                  Swal.fire("Berhasil!", response.message, "success").then(
+                    () => {
+                      window.location.href = "/proyek/registrasi/index";
+                    }
+                  );
+                } else {
+                  Swal.fire("Gagal!", response.message, "error");
+                }
+              },
+              error: function (xhr, status, err) {
+                console.log("AJAX Error:", xhr.responseText); // Debug error
+                Swal.fire(
+                  "Error!",
+                  "Terjadi kesalahan saat menyimpan data: " +
+                    (xhr.responseText || "Cek konsol untuk detail"),
+                  "error"
+                );
+              },
+            });
           }
         });
       });
@@ -132,7 +188,6 @@ $(document).ready(function () {
 
     // Fungsi untuk menampilkan tabel proyek
     function data_proyek() {
-      // Tambahkan kelas CSS ke elemen #tabel_daftar_proyek
       $("#tabel_daftar_proyek").addClass("table-bordered table-sm");
       $.ajax({
         type: "POST",
@@ -141,11 +196,8 @@ $(document).ready(function () {
         data: {},
         dataType: "json",
         success: function (data) {
-          // Inisialisasi Tabulator
           var table = new Tabulator("#tabel_daftar_proyek", {
             data: data,
-            // movableColumns: true,
-            // layout: "fitColumns",
             height: "500px",
             frozenColumns: true,
             pagination: "local",
@@ -207,44 +259,67 @@ $(document).ready(function () {
 
     // Fungsi untuk menampilkan modal update
     function showUpdateModal(id) {
-      // Fetch data proyek berdasarkan id
       $.getJSON(url + `proyek/pembaruandata/getproyek/${id}`, function (data) {
         if (data) {
-          // Isi form dengan data awal
-          $("#jobstartdate").val(data.job_start_date).trigger("change");
-          $("#jobenddate").val(data.job_finish_date).trigger("change");
-          $("#jobtotaltime").val(data.job_tot_time).trigger("change");
-          $("#progressjob").val(data.progress).trigger("change"); // Set nilai awal
-          $("#progressjob").trigger("select2:select"); // Sinkronkan dengan Select2
-          $("#invoicesenddate").val(data.invoice_send_date).trigger("change");
+          // Isi form dengan data awal, konversi NULL atau kosong menjadi string kosong yang valid
+          $("#nowbs")
+            .val(data.wbs_no || "")
+            .trigger("change");
+          $("#noso")
+            .val(data.so_no || "")
+            .trigger("change");
+          $("#reportno")
+            .val(data.report_no || "")
+            .trigger("change");
+          $("#jobstartdate")
+            .val(data.job_start_date || "")
+            .trigger("change");
+          $("#jobenddate")
+            .val(data.job_finish_date || "")
+            .trigger("change");
+          $("#jobtotaltime")
+            .val(data.job_tot_time || "")
+            .trigger("change");
+          $("#progressjob")
+            .val(data.progress || "")
+            .trigger("change");
+          $("#progressjob").trigger("select2:select");
+          $("#invoicesenddate")
+            .val(data.invoice_send_date || "")
+            .trigger("change");
           $("#invoicereceivedate")
-            .val(data.invoice_receive_date)
+            .val(data.invoice_receive_date || "")
             .trigger("change");
           $("#invoicereceivename")
-            .val(data.invoice_receive_name)
+            .val(data.invoice_receive_name || "")
             .trigger("change");
-          $("#revenueamt").val(data.revenue_amt).trigger("change");
+          $("#revenueamt")
+            .val(data.revenue_amt || "")
+            .trigger("change");
 
           // Fungsi untuk menghitung total hari
           function calculateTotalDays() {
-            const startDate = new Date(
-              document.getElementById("jobstartdate").value
-            );
-            const endDate = new Date(
-              document.getElementById("jobenddate").value
-            );
+            const startDate = document.getElementById("jobstartdate").value;
+            const endDate = document.getElementById("jobenddate").value;
 
-            if (!isNaN(startDate) && !isNaN(endDate) && startDate <= endDate) {
-              const timeDiff = endDate - startDate;
-              let dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24)); // Hitung hari penuh
-              if (timeDiff === 0) {
-                dayDiff = 1; // Jika sama, set ke 1 hari
+            if (startDate && endDate) {
+              const start = new Date(startDate);
+              const end = new Date(endDate);
+
+              if (!isNaN(start) && !isNaN(end) && start <= end) {
+                const timeDiff = end - start;
+                let dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+                if (timeDiff === 0) {
+                  dayDiff = 1;
+                } else {
+                  dayDiff += 1;
+                }
+                $("#jobtotaltime").val(dayDiff);
               } else {
-                dayDiff += 1; // Tambah 1 hari untuk menyertakan hari terakhir
+                $("#jobtotaltime").val("");
               }
-              $("#jobtotaltime").val(dayDiff);
             } else {
-              $("#jobtotaltime").val(""); // Kosongkan jika tanggal tidak valid
+              $("#jobtotaltime").val(""); // Kosongkan jika salah satu tanggal kosong
             }
           }
 
@@ -275,10 +350,19 @@ $(document).ready(function () {
                 confirmButtonText: "Ya, simpan!",
               }).then((result) => {
                 if (result.isConfirmed) {
+                  // Konversi tanggal kosong menjadi NULL sebelum submit
+                  const formData = $(this).serializeArray();
+                  formData.forEach((field) => {
+                    if (field.name.includes("date") && !field.value) {
+                      field.value = null;
+                    }
+                  });
+                  const serializedData = $.param(formData);
+
                   $.ajax({
                     type: "POST",
                     url: url + "proyek/pembaruandata/updatedataproyek",
-                    data: $(this).serialize(),
+                    data: serializedData,
                     dataType: "json",
                     success: function (response) {
                       if (response.status === "success") {
@@ -288,7 +372,7 @@ $(document).ready(function () {
                           "success"
                         ).then(() => {
                           $("#updateProyekModal").modal("hide");
-                          location.reload(); // Refresh halaman untuk update tabel
+                          location.reload();
                         });
                       } else {
                         Swal.fire("Gagal!", response.message, "error");

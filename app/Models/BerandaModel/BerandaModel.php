@@ -52,6 +52,7 @@ class BerandaModel extends Model
         $tot_project = $this->db->table('vw_project_payment_rec')
             ->select('month')
             ->select([
+                'COALESCE(SUM(contract_amt), 0)::numeric AS contract_tot',
                 'COALESCE(SUM(project_amt), 0)::numeric AS project_tot',
                 'COALESCE(SUM(revenue_amt), 0)::numeric AS revenue_tot',
                 'COALESCE(SUM(payment_amt), 0)::numeric AS payment_tot'
@@ -70,6 +71,7 @@ class BerandaModel extends Model
         $builder = $this->db->table('(' . $all_months . ') AS trn_month')
             ->select('trn_month.month')
             ->select([
+                'COALESCE(SUM(tot.contract_tot) OVER (), 0)::numeric AS contract_tot_year',
                 'COALESCE(SUM(tot.revenue_tot) OVER (), 0)::numeric AS revenue_tot_year',
                 'COALESCE(SUM(tot.project_tot) OVER (), 0)::numeric AS project_tot_year',
                 'COALESCE(tot.project_tot, 0)::numeric AS project_tot',
@@ -120,6 +122,8 @@ class BerandaModel extends Model
         $builder = $this->db->table('(' . $all_months . ') AS trn_month')
             ->select('trn_month.month')
             ->select([
+                'COALESCE(SUM(budget.budget_tot) OVER (), 0)::numeric AS budget_tot_year',
+                'COALESCE(SUM(budget.real_tot) OVER (), 0)::numeric AS real_tot_year',
                 'COALESCE(budget.budget_tot, 0)::numeric AS budget_tot',
                 'COALESCE(budget.real_tot, 0)::numeric AS real_tot',
                 'COALESCE(budget.real_drop_tot, 0)::numeric AS real_drop_tot',

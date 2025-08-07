@@ -296,12 +296,32 @@ class Keuangan extends BaseController
           // Siapkan data untuk insert ke trn_payment
           $insertData = [];
           foreach ($data as $row) {
+              // Konversi string tanggal ke objek DateTime untuk perhitungan
+              $invoiceDate = new \DateTime($row['invoice_date']);
+              $paymentDate = new \DateTime($row['payment_date']);
+
+              // Hitung selisih hari
+              $timeDiff = $paymentDate->diff($invoiceDate);
+              $dayDiff = $timeDiff->days; // Selisih hari penuh
+
+              // Logika mirip JavaScript: tambah 1 hari untuk menyertakan hari terakhir
+              if ($dayDiff === 0) {
+                  $dayDiff = 0; // Jika sama, set ke 0 hari (bisa diubah ke 1 jika diperlukan)
+              } else {
+                  $dayDiff += 1; // Tambah 1 hari untuk hari terakhir
+              }
+
               $insertData[] = [
                   'id_ref' => $row['id_ref'],
                   'no_doc' => $no_doc, // Gunakan no_doc yang sama untuk semua baris
+                  'invoice_date' => $row['invoice_date'],
                   'payment_date' => $row['payment_date'],
+                  //memasukkan jumlah hari
+                  'period_payment' => $dayDiff, // Hasil perhitungan hari
+                  //   
                   'payment_amt' => str_replace([',', '.'], ['', ''], $row['payment_amt']), // Hilangkan format uang
                   'description' => $row['description'],
+                  'reason' => $row['reason'],
                   'user_create' => $username,
                   'create_date' => date('Y-m-d H:i:s'),
               ];

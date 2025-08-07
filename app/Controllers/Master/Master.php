@@ -52,63 +52,19 @@ class Master extends BaseController
         echo json_encode($data);
     }
 
+    // Data kategori proyek
+    public function dataKatProyek()
+    {
+        $data = $this->kategoriProyekModel->getKatProyekFilter();
+        echo json_encode($data);
+    }
+
     // Data pelanggan
     public function dataFilterPelanggan()
     {
 
         $data = $this->pelangganModel->getDataFilterMstPelanggan();
         echo json_encode($data);
-    }
-
-    // Function untuk mendapatkan Subgrup Barang berdasarkan Grup Barang
-    public function getSubGrupBarang()
-    {
-        $grp_prod = session()->get('group_id');
-
-        // Validasi input
-        if (empty($grp_prod)) {
-            return $this->response
-                ->setStatusCode(400)
-                ->setJSON(['message' => 'Group Product tidak boleh kosong']);
-        }
-
-        // Ambil data dari model
-        $data = $this->kelasProdModel->getSubGrupBarang($grp_prod);
-
-        if (empty($data)) {
-            return $this->response
-                ->setStatusCode(404)
-                ->setJSON(['message' => 'Sub Grup Barang tidak ditemukan']);
-        }
-
-        // Buat opsi untuk dropdown
-        $options = '<option selected value="">Pilih Sub Grup Barang</option>';
-        foreach ($data as $row) {
-            $options .= '<option value="' . $row['subgroup_id'] . '">'
-                . $row['subgroup_id'] . ' - ' . $row['subgroup_name']
-                . '</option>';
-        }
-
-        return $this->response->setBody($options);
-    }
-
-    // Function untuk mendapatkan Kelas Barang berdasarkan Grup dan Subgrup Barang
-    public function getKelasBarang()
-    {
-        $grp_prod = $this->request->getPost('grp_prod');
-        $subgrp_prod = $this->request->getPost('subgrp_prod');
-
-        // 
-        $data = $this->kelasProdModel->getKelasBarang($grp_prod, $subgrp_prod);
-        // Buat opsi untuk dropdown
-        $options = '<option selected value="">Pilih Kelas Barang</option>';
-        foreach ($data as $row) {
-            $options .= '<option value="' . $row['class_id'] . '">'
-                . $row['class_id'] . ' - ' . $row['class_name']
-                . '</option>';
-        }
-
-        return $this->response->setBody($options);
     }
 
     //MASTER PELANGGAN
@@ -205,153 +161,6 @@ class Master extends BaseController
         }
     }
 
-    //USER PELANGGAN
-    // Function Index -> halaman Master User Pelanggan
-    public function indexUserPelanggan()
-    {
-        $data = [
-            'title' => "User pelanggan",
-            'breadcrumb' => $this->breadcrumb,
-            'session' => $this->session
-        ];
-        return view('master/user_pelanggan', $data);
-    }
-
-    //data master user pelanggan
-    public function dataMstUserPelanggan()
-    {
-        $cabang = $this->request->getPost('branch_id');
-
-        $data = $this->pelangganModel->getDataMstUserPelanggan($cabang);
-        echo json_encode($data);
-    }
-
-    //data master posisi user pelanggan
-    public function dataMstPosUserPelanggan()
-    {
-        
-        $data = $this->pelangganModel->getMstPosUserPelanggan();
-        echo json_encode($data);
-    }
-
-    public function updateUserPelanggan()
-    {
-        // Log request untuk debugging
-        log_message('debug', 'Update Request Data: ' . json_encode($this->request->getPost()));
-
-        // Ambil data dari POST
-        $data = $this->request->getPost();
-        $id = $data['id'] ?? null;
-
-        // Validasi input
-        if (empty($id)) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Parameter id kosong'
-            ], 400);
-        }
-
-        // Ambil username dari session
-        $username = $this->session->get('username');
-        if (!$username) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Session username tidak ditemukan'
-            ], 401);
-        }
-
-        // Validasi role_id
-        $roleId = $this->session->get('role_id');
-        if (!in_array($roleId, ['1', '2'])) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Akses ditolak'
-            ], 403);
-        }
-
-        // Hapus id dari data yang akan diupdate
-        unset($data['id']);
-
-        // Konversi string kosong ke NULL untuk kolom tertentu
-        $nullableFields = ['name', 'user_cat', 'no_phone'];
-        foreach ($nullableFields as $field) {
-            if (isset($data[$field]) && $data[$field] === '') {
-                $data[$field] = null;
-            }
-        }
-
-        // Tambahkan user_update dan update_date
-        $data['user_update'] = $username;
-        $data['update_date'] = date('Y-m-d H:i:s');
-
-        // Update data di database
-        $result = $this->pelangganModel->updateUserPelanggan($id, $data);
-
-        // Response JSON
-        if ($result) {
-            return $this->response->setJSON(['success' => true]);
-        } else {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Gagal mengupdate data'
-            ], 500);
-        }
-    }
-
-
-    //KELAS PRODUK
-    //MASTER KELAS PRODUK
-    // Function Index -> halaman Kelas Produk
-    public function indexMstKlsProduk()
-    {
-        $data = [
-            'title' => "Master kelas produk",
-            'breadcrumb' => $this->breadcrumb,
-            'session' => $this->session
-        ];
-        return view('master/kelas_produk', $data);
-    }
-
-    //data master kelas produk
-    public function dataMstKlsProduk()
-    {
-        $grupprod = session()->get('group_id');
-
-        $data = $this->kelasProdModel->getDataMstKlsProd($grupprod);
-        echo json_encode($data);
-    }
-
-    //KEBUTUHAN FILTER DATA DENGAN OPSI KESELURUHAN DATA SUBGROUP DAN CLASS DIAMBIL
-    // Function untuk mendapatkan Subgroup Barang berdasarkan Group Product
-    public function getFilterSubgrp()
-    {
-        $data = $this->kelasProdModel->getFilterMstprodsubgrp($this->request->getPost('group_prod'));
-        foreach ($data as $row) {
-            $label = $row['subgroup_id'] !== null ? $row['subgroup_id'] . ' - ' . $row['subgroup_name'] : $row['subgroup_name'];
-            echo '<option value="' . $row['subgroup_id'] . '">' . $label . '</option>';
-        }
-    }
-
-    // Function untuk mendapatkan Class Barang berdasarkan Group dan Subgroup Barang
-    public function getFilterClass()
-    {
-        $data = $this->kelasProdModel->getFilterMstclass(
-            $this->request->getPost('group_prod'),
-            $this->request->getPost('subgroup_prod')
-        );
-        foreach ($data as $row) {
-            $label = $row['class_id'] !== null ? $row['class_id'] . ' - ' . $row['class_name'] : $row['class_name'];
-            echo '<option value="' . $row['class_id'] . '">' . $label . '</option>';
-        }
-    }
-
-    // Function untuk mendapatkan Data Unit/Cabang
-    public function getMstCabang()
-    {
-        $data = $this->cabangModel->getCabang();
-        echo json_encode($data);
-    }
-
     // Function untuk mendapatkan Pelanggan
     public function getMstPelanggan()
     {
@@ -429,25 +238,6 @@ class Master extends BaseController
 
         $data = $this->wilayahModel->getAreaKodePos($province_id, $city_id, $district_id, $subdistrict_id);
         echo json_encode($data);
-    }
-
-    public function dataFilterProbabilitas()
-    {
-        // Ambil username dari session
-        $username = session()->get('username');
-    
-        $data = $this->probabilitasModel->getSkalaProbabilitas($username);
-    
-        // Format data agar cocok dengan Tabulator
-        $formattedData = [];
-        foreach ($data as $item) {
-            $formattedData[] = [
-                "value" => $item['scale'],       // Ini yang dipilih saat update
-                "label" => $item['description']  // Ini yang ditampilkan di dropdown
-            ];
-        }
-
-        return $this->response->setJSON($formattedData);
     }
 
     //MASTER KARYAWAN

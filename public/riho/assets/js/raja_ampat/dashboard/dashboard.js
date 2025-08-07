@@ -86,8 +86,42 @@ $(document).ready(function () {
             return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
           }
 
+          $("#totalcontract").text(formatNumber(data[0].contract_tot_year));
           $("#totalrevenue").text(formatNumber(data[0].revenue_tot_year));
           $("#totalproject").text(data[0].project_tot_year);
+        },
+        error: function (xhr, status, error) {
+          console.error("Error fetching chart data:", {
+            status,
+            error,
+            response: xhr.responseText,
+          });
+        },
+      });
+    }
+
+    // Fungsi untuk membuat banner anggaran dashboard
+    function banner_anggaran_dashboard(filters) {
+      $.ajax({
+        url: url + "beranda/data/getdatagrafikanggaran",
+        type: "POST",
+        data: filters,
+        dataType: "json",
+        success: function (data) {
+          // Fungsi untuk memformat angka dengan separator ribuan (titik) dan desimal (koma)
+          function formatNumber(num) {
+            if (!num && num !== 0) return "N/A";
+            num = Number(num);
+            if (isNaN(num)) return "N/A";
+            const parts = num.toString().split(".");
+            let integerPart = parts[0];
+            let decimalPart = parts[1] ? parts[1].padEnd(2, "0") : "00";
+            integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
+          }
+
+          $("#totalbudget").text(formatNumber(data[0].budget_tot_year));
+          $("#totalrealbudget").text(formatNumber(data[0].real_tot_year));
         },
         error: function (xhr, status, error) {
           console.error("Error fetching chart data:", {
@@ -545,6 +579,7 @@ $(document).ready(function () {
     $tahun.on("change", function () {
       var filters = getFilterValues();
       banner_total_dashboard(filters);
+      banner_anggaran_dashboard(filters);
       grafik_prs_pembayaran(filters);
       grafik_total_proyek(filters);
       grafik_prs_real(filters);
@@ -556,6 +591,7 @@ $(document).ready(function () {
     $pmfilter.on("change", function () {
       var filters = getFilterValues();
       banner_total_dashboard(filters);
+      banner_anggaran_dashboard(filters);
       grafik_prs_pembayaran(filters);
       grafik_total_proyek(filters);
       grafik_prs_real(filters);
@@ -566,6 +602,7 @@ $(document).ready(function () {
     // Inisialisasi awal dengan kedua filter
     var filters = getFilterValues();
     banner_total_dashboard(filters);
+    banner_anggaran_dashboard(filters);
     grafik_prs_pembayaran(filters);
     grafik_total_proyek(filters);
     grafik_prs_real(filters);
@@ -576,6 +613,7 @@ $(document).ready(function () {
     setInterval(function () {
       var filters = getFilterValues();
       banner_total_dashboard(filters);
+      banner_anggaran_dashboard(filters);
       grafik_prs_pembayaran(filters);
       grafik_total_proyek(filters);
       grafik_prs_real(filters);

@@ -9,7 +9,7 @@ class PembayaranModel extends Model
 
     protected $tablePembayaran = 'trn_payment';
 
-    protected $allowedFields = ['id','no_doc','id_ref', 'description','payment_amt', 'payment_date', 'flg_used','user_create','create_date','user_update','update_date'];
+    protected $allowedFields = ['id','no_doc','id_ref', 'description', 'reason', 'payment_amt', 'invoice_date', 'payment_date', 'period_payment', 'flg_used','user_create','create_date','user_update','update_date'];
 
     public function insertPembayaran($data)
     {

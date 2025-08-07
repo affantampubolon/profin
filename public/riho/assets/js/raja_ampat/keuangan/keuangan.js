@@ -216,7 +216,7 @@ $(document).ready(function () {
           },
         },
         {
-          title: "No. Dokumen",
+          title: "No. WBS",
           field: "id_ref",
           headerHozAlign: "center",
           formatter: function (cell) {
@@ -671,27 +671,51 @@ $(document).ready(function () {
     $("#tabel_pembayaran").addClass("table-bordered table-sm");
     var table = new Tabulator("#tabel_pembayaran", {
       height: "500px",
-      layout: "fitColumns",
-      responsiveLayout: "collapse",
+      // layout: "fitColumns",
+      // responsiveLayout: "collapse",
+      frozenColumns: true,
       pagination: "local",
       paginationSize: 20,
       paginationSizeSelector: [10, 20, 30],
       data: [], // Mulai dengan tabel kosong
       columns: [
         {
-          title: "Tgl Pembayaran",
-          field: "payment_date",
+          title: "Aksi",
+          hozAlign: "center",
+          headerHozAlign: "center",
+          frozen: true,
+          formatter: "buttonCross",
+          cellClick: function (e, cell) {
+            cell.getRow().delete(); // Menghapus baris langsung dari tabel
+          },
+        },
+        {
+          title: "Tgl Terbit Invoice",
+          field: "invoice_date",
           headerHozAlign: "center",
           hozAlign: "center",
+          frozen: true,
           editor: "date",
           editorParams: {
             format: "dd-MM-yyyy",
           },
         },
         {
-          title: "No. Dokumen",
+          title: "Tgl Pembayaran",
+          field: "payment_date",
+          headerHozAlign: "center",
+          hozAlign: "center",
+          frozen: true,
+          editor: "date",
+          editorParams: {
+            format: "dd-MM-yyyy",
+          },
+        },
+        {
+          title: "No. WBS",
           field: "id_ref",
           headerHozAlign: "center",
+          minWidth: 250,
           formatter: function (cell) {
             var docValue = cell.getValue();
             var docLabel =
@@ -713,6 +737,15 @@ $(document).ready(function () {
           title: "Uraian",
           field: "description",
           headerHozAlign: "center",
+          minWidth: 250,
+          editor: "input",
+          cssClass: "highlight-column",
+        },
+        {
+          title: "Kendala",
+          field: "reason",
+          headerHozAlign: "center",
+          minWidth: 150,
           editor: "input",
           cssClass: "highlight-column",
         },
@@ -721,6 +754,7 @@ $(document).ready(function () {
           field: "payment_amt",
           headerHozAlign: "center",
           hozAlign: "right",
+          minWidth: 200,
           formatter: "money",
           formatterParams: { decimal: ",", thousand: "." },
           editor: "input",
@@ -728,15 +762,6 @@ $(document).ready(function () {
           bottomCalcFormatter: "money",
           bottomCalcFormatterParams: { decimal: ",", thousand: "." },
           cssClass: "highlight-column",
-        },
-        {
-          title: "Aksi",
-          hozAlign: "center",
-          headerHozAlign: "center",
-          formatter: "buttonCross",
-          cellClick: function (e, cell) {
-            cell.getRow().delete(); // Menghapus baris langsung dari tabel
-          },
         },
       ],
     });

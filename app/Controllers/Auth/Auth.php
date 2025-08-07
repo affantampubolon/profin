@@ -75,7 +75,7 @@ class Auth extends BaseController
                         if ($paramEmp) {
                             $empData = $this->empModel->getEmployeeByNik($paramEmp['nik']);
                             $deptData = $this->DeptModel->getGroupByDeptID($paramEmp['department_id']);
-                            $groupData = $this->kelasProdModel->getGrupBarang($paramEmp['nik']);
+                            // $groupData = $this->kelasProdModel->getGrupBarang($paramEmp['nik']);
                             $cabData = $this->cabangModel->getCabangBySession($paramEmp['branch_id']);
                             // Set sessionnya berdasarkan role
                             if ($empData == TRUE) {
@@ -89,8 +89,8 @@ class Auth extends BaseController
                                     'branch_name'    => $cabData['branch_name'],
                                     'position_id'   => $paramEmp['position_id'],
                                     'department_id' => $paramEmp['department_id'],
-                                    'group_id'      => $deptData['group_id'],
-                                    'group_name'    => $groupData['group_name'],
+                                    // 'group_id'      => $deptData['group_id'],
+                                    // 'group_name'    => $groupData['group_name'],
                                     'logged_in'     => TRUE,
                                 ];
                                 // Set session

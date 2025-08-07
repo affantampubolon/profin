@@ -8,7 +8,7 @@ class ProyekModel extends Model
 {
     protected $tableProyek = 'trn_job_project';
 
-    protected $allowedFields = ['id','no_doc','wbs_no','so_no','job_name','company_id','company_address','company_pic','hp_no','email','job_location','project_manager','inspector','report_no','ar_balance','invoice_send_date','invoice_receive_date','invoice_receive_name','job_start_date','job_finish_date','job_tot_time','contract_amt','revenue_amt','cost_plan_amt', 'cost_real_amt', 'payment_amt', 'progress', 'flg_used','user_create','create_date','user_update','update_date'];
+    protected $allowedFields = ['id','no_doc','wbs_no','so_no','job_name','company_id','company_address','company_pic','hp_no','email','job_location','project_manager','inspector','report_no','ar_balance','invoice_send_date','invoice_receive_date','invoice_receive_name','job_start_date','job_finish_date','job_tot_time','contract_amt','revenue_amt','cost_plan_amt', 'cost_real_amt', 'payment_amt', 'progress', 'job_category', 'flg_used','user_create','create_date','user_update','update_date'];
 
     public function getProyekFilter()
     {
@@ -25,6 +25,7 @@ class ProyekModel extends Model
         $builder = $this->db->table('trn_job_project')
         ->select('id, no_doc, wbs_no, so_no')
         ->where('flg_used', 't')
+        ->where('wbs_no <>', '0')
         ->whereNotIn('id', function ($builder) {
             $builder->select('id_ref')
                     ->from('trn_cost_plan')
