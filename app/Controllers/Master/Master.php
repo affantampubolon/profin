@@ -79,6 +79,14 @@ class Master extends BaseController
         return view('master/pelanggan', $data);
     }
 
+     public function dataMstPelanggan()
+    {
+        $cabang = session()->get('branch_id');
+
+        $data = $this->pelangganModel->getDataMstPelanggan($cabang);
+        echo json_encode($data);
+    }
+
     // Function Index -> halaman Registrasi Pelanggan
     public function indexRegisPelanggan()
     {
@@ -90,30 +98,13 @@ class Master extends BaseController
         return view('master/regis_pelanggan', $data);
     }
 
-    public function dataRegisPelanggan()
-    {
-        $cabang = session()->get('branch_id');
-
-        $data = $this->pelangganModel->getRegisPelanggan($cabang);
-        echo json_encode($data);
-    }
-
-    public function updateVerifRegisPelanggan()
+    public function insertPelanggan()
     {
         // Log request untuk debugging
         log_message('debug', 'Request Data: ' . json_encode($this->request->getPost()));
 
         // Ambil data dari POST
         $data = $this->request->getPost();
-        $id = $data['id'] ?? null;
-
-        // Validasi input
-        if (empty($id)) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Parameter id kosong'
-            ]);
-        }
 
         // Ambil username dari session
         $username = $this->session->get('username');
@@ -124,31 +115,13 @@ class Master extends BaseController
             ]);
         }
 
-        // Hapus id dari data yang akan diupdate
-        unset($data['id']);
-
-        // Konversi string kosong ke NULL untuk kolom date
-        $dateFields = ['exp_date_sia', 'exp_date_sipa'];
-        foreach ($dateFields as $field) {
-            if (isset($data[$field]) && $data[$field] === '') {
-                $data[$field] = null;
-            }
-        }
-
-        // Konversi string kosong ke NULL untuk kolom numeric
-        $numericFields = ['plafond', 'payment_term'];
-        foreach ($numericFields as $field) {
-            if (isset($data[$field]) && $data[$field] === '') {
-                $data[$field] = null;
-            }
-        }
 
         // Tambahkan user_update dan update_date
-        $data['user_update'] = $username;
-        $data['update_date'] = date('Y-m-d H:i:s');
+        $data['user_create'] = $username;
+        $data['create_date'] = date('Y-m-d H:i:s');
 
-        // Update data di database
-        $result = $this->pelangganModel->updateVerifPelanggan($id, $data);
+        // masukkan data di database
+        $result = $this->pelangganModel->insertPelanggan($data);
 
         // Response JSON
         if ($result) {
@@ -159,85 +132,6 @@ class Master extends BaseController
                 'message' => 'Gagal mengupdate data'
             ]);
         }
-    }
-
-    // Function untuk mendapatkan Pelanggan
-    public function getMstPelanggan()
-    {
-        // Ambil username dari session
-        $username = session()->get('username');
-
-        $data = $this->pelangganModel->getMstPelangganCab($username);
-        echo json_encode($data);
-    }
-
-    // Function Data Kategori Pelanggan
-    public function getMstKategoriPelanggan()
-    {
-        $data = $this->pelangganModel->getMstKategoriPelanggan();
-        echo json_encode($data);
-    }
-
-    // Function Data Wilayah
-    // Area Provinsi
-    public function getMstAreaProvinsi()
-    {
-        $data = $this->wilayahModel->getAreaProvinsi();
-        echo json_encode($data);
-    }
-
-    // Area Kota/Kab
-    public function getMstAreaKotaKab()
-    {
-        $province_id = $this->request->getPost('province_id');
-        if (empty($province_id)) {
-            return $this->response->setStatusCode(400)->setJSON(['message' => 'Province ID tidak boleh kosong']);
-        }
-
-        $data = $this->wilayahModel->getAreaKotaKab($province_id);
-        echo json_encode($data);
-    }
-
-    // Area Kecamatan
-    public function getMstAreaKecamatan()
-    {
-        $province_id = $this->request->getPost('province_id');
-        $city_id = $this->request->getPost('city_id');
-        if (empty($province_id) || empty($city_id)) {
-            return $this->response->setStatusCode(400)->setJSON(['message' => 'Province ID dan City ID tidak boleh kosong']);
-        }
-
-        $data = $this->wilayahModel->getAreaKecamatan($province_id, $city_id);
-        echo json_encode($data);
-    }
-
-    // Area Kelurahan
-    public function getMstAreaKelurahan()
-    {
-        $province_id = $this->request->getPost('province_id');
-        $city_id = $this->request->getPost('city_id');
-        $district_id = $this->request->getPost('district_id');
-        if (empty($province_id) || empty($city_id) || empty($district_id)) {
-            return $this->response->setStatusCode(400)->setJSON(['message' => 'Semua parameter wilayah harus diisi']);
-        }
-
-        $data = $this->wilayahModel->getAreaKelurahan($province_id, $city_id, $district_id);
-        echo json_encode($data);
-    }
-
-    // Kode Pos
-    public function getMstAreaKodePos()
-    {
-        $province_id = $this->request->getPost('province_id');
-        $city_id = $this->request->getPost('city_id');
-        $district_id = $this->request->getPost('district_id');
-        $subdistrict_id = $this->request->getPost('subdistrict_id');
-        if (empty($province_id) || empty($city_id) || empty($district_id) || empty($subdistrict_id)) {
-            return $this->response->setStatusCode(400)->setJSON(['message' => 'Semua parameter wilayah harus diisi']);
-        }
-
-        $data = $this->wilayahModel->getAreaKodePos($province_id, $city_id, $district_id, $subdistrict_id);
-        echo json_encode($data);
     }
 
     //MASTER KARYAWAN

@@ -40,66 +40,6 @@ $(document).ready(function () {
       data_mst_pelanggan(filters.cabang);
     });
 
-    // Custom filter editor untuk kolom flg_noo
-    var nooFilterEditor = function (
-      cell,
-      onRendered,
-      success,
-      cancel,
-      editorParams
-    ) {
-      var select = document.createElement("select");
-      select.style.padding = "4px";
-      select.style.width = "100%";
-      select.style.boxSizing = "border-box";
-
-      // Opsi dropdown
-      var options = [
-        { value: "all", label: "Semua" },
-        { value: "t", label: "Ya" },
-        { value: "f", label: "Tidak" },
-      ];
-
-      // Tambahkan opsi ke dropdown
-      options.forEach(function (option) {
-        var opt = document.createElement("option");
-        opt.value = option.value;
-        opt.text = option.label;
-        select.appendChild(opt);
-      });
-
-      // Set nilai awal (jika ada)
-      select.value = cell.getValue() || "all";
-
-      // Event handler untuk perubahan nilai
-      function buildValue() {
-        success(select.value);
-      }
-
-      // Trigger buildValue saat nilai berubah atau dropdown kehilangan fokus
-      select.addEventListener("change", buildValue);
-      select.addEventListener("blur", buildValue);
-
-      // Handle tombol Escape untuk membatalkan
-      select.addEventListener("keydown", function (e) {
-        if (e.keyCode == 27) {
-          cancel();
-        }
-      });
-
-      return select;
-    };
-
-    // Custom filter function untuk kolom flg_noo
-    function nooFilterFunction(headerValue, rowValue, rowData, filterParams) {
-      // headerValue: nilai filter yang dipilih ("all", "t", "f")
-      // rowValue: nilai flg_noo pada baris ("t", "f", atau null)
-      if (headerValue === "all") {
-        return true; // Tampilkan semua baris
-      }
-      return rowValue === headerValue; // Cocokkan nilai filter dengan nilai baris
-    }
-
     function data_mst_pelanggan(cabang) {
       $.ajax({
         type: "POST",
@@ -111,6 +51,8 @@ $(document).ready(function () {
         dataType: "json",
 
         success: function (data) {
+          // Tambahkan kelas CSS ke elemen #tabel_master_pelanggan
+          $("#tabel_master_pelanggan").addClass("table-bordered table-sm");
           var table = new Tabulator("#tabel_master_pelanggan", {
             data: data,
             height: "350px",
@@ -119,25 +61,6 @@ $(document).ready(function () {
             paginationSizeSelector: [10, 25, 50],
             layout: "fitColumns",
             columns: [
-              {
-                title: "Noo?",
-                field: "flg_noo",
-                headerHozAlign: "center",
-                hozAlign: "center",
-                headerFilter: nooFilterEditor,
-                headerFilterFunc: nooFilterFunction,
-                headerFilterLiveFilter: false, // Nonaktifkan filter langsung untuk dropdown
-                formatter: function (cell, formatterParams) {
-                  var value = cell.getValue();
-                  console.log("Flg value:", value); // Debugging: Log the value to ensure correctness
-
-                  if (value === "t") {
-                    return "<i class='fa fa-check' style='color:#03A791'></i>";
-                  } else if (value === "f") {
-                    return "<i class='fa fa-times' style='color:#FF5677'></i>";
-                  }
-                },
-              },
               {
                 title: "Kode Pelanggan",
                 field: "cust_id",
@@ -149,11 +72,6 @@ $(document).ready(function () {
                 field: "cust_name",
                 headerHozAlign: "center",
                 headerFilter: "input",
-              },
-              {
-                title: "Kategori Pelanggan",
-                field: "catcust_name",
-                headerHozAlign: "center",
               },
               {
                 title: "Aksi",
@@ -185,279 +103,29 @@ $(document).ready(function () {
           ? `${rowData.cust_id} - ${rowData.cust_name}`
           : "-"
       );
-      $("#no_request").text(rowData.req_no || "-");
-      $("#nama_pemilik").text(rowData.owner_name || "-");
+      $("#nama_pic").text(rowData.pic_name || "-");
       $("#email").text(rowData.email || "-");
       $("#no_telp").text(rowData.phone_no || "-");
-      $("#ktp").text(rowData.id_card || "-");
-      $("#siup").text(rowData.siup || "-");
       $("#alamat").text(rowData.address || "-");
-      $("#provinsi").text(rowData.province_name || "-");
-      $("#kota").text(rowData.city_name || "-");
-      $("#kecamatan").text(rowData.district_name || "-");
-      $("#kelurahan").text(rowData.subdistrict_name || "-");
-      $("#kode_pos").text(rowData.zip_code || "-");
-      $("#kategori_pelanggan").text(rowData.catcust_name || "-");
-      $("#nama_apoteker").text(rowData.pharmacist || "-");
-      $("#no_sipa").text(rowData.sipa || "-");
-      $("#no_sia").text(rowData.sia || "-");
-      $("#ed_sipa").text(rowData.exp_date_sipa || "-");
-      $("#ed_sia").text(rowData.exp_date_sia || "-");
-      $("#status_pajak").text(rowData.tax_status || "-");
       $("#npwp").text(rowData.npwp || "-");
       $("#nama_pajak").text(rowData.cust_name_tax || "-");
       $("#alamat_pajak").text(rowData.address_tax || "-");
-      $("#kons_bangunan").text(rowData.construction_type || "-");
-      $("#hak_bangunan").text(rowData.status_building || "-");
       $("#detailPelangganModal").modal("show");
     }
   } else if (window.location.pathname == "/master/pelanggan/registrasi") {
-    // Fetch data pelanggan baru (bagian ini tetap sama)
-    $.ajax({
-      url: url + "master/pelanggan/getdataregis",
-      method: "GET",
-      dataType: "json",
-      success: function (data) {
-        $("#masterpelangganbaru").empty();
-        $("#masterpelangganbaru").append(
-          '<option value="" selected>Pilih Pelanggan</option>'
-        );
-        data.forEach((pelangganbaru) => {
-          $("#masterpelangganbaru").append(
-            `<option value="${pelangganbaru.req_no}" 
-                 data-cust-name="${pelangganbaru.cust_name}" 
-                 data-category-id="${pelangganbaru.category_id}" 
-                 data-category-name="${pelangganbaru.catcust_name}" 
-                 data-flg-pharmacist="${pelangganbaru.flg_pharmacist}" 
-                 data-id="${pelangganbaru.id}">
-                 ${pelangganbaru.req_no} - ${pelangganbaru.cust_name}
-          </option>`
-          );
-        });
-        $("#masterpelangganbaru").select2({
-          placeholder: "Pilih Pelanggan",
-          allowClear: true,
-        });
-
-        $("#masterpelangganbaru").on("change", function () {
-          const selectedOption = $(this).find("option:selected");
-          const custName = selectedOption.data("cust-name");
-          const categoryId = selectedOption.data("category-id");
-          const categoryName = selectedOption.data("category-name");
-          const flgPharmacist = selectedOption.data("flg-pharmacist");
-          const id = selectedOption.data("id");
-
-          const custCategory =
-            categoryId && categoryName ? `${categoryId} - ${categoryName}` : "";
-          $("#namaPelanggan").val(custName || "");
-          $("#kategoriPelanggan").val(custCategory);
-          $("#idPelanggan").val(id || "");
-
-          if (flgPharmacist === true) {
-            $("#formApoteker").show();
-          } else {
-            $("#formApoteker").hide();
-          }
-        });
-
-        $("#namaPelanggan").val("");
-        $("#kategoriPelanggan").val("");
-        $("#formApoteker").hide();
-      },
-      error: function (xhr, status, error) {
-        console.error("Error fetching data pelanggan:", error);
-        alert("Gagal memuat data pelanggan.");
-      },
-    });
-
-    // Fetch Provinsi (bagian ini tetap sama)
-    $.ajax({
-      url: url + "master/area/provinsi",
-      method: "GET",
-      dataType: "json",
-      success: function (data) {
-        $("#masterprovinsi")
-          .empty()
-          .append('<option value="" selected>Pilih Provinsi</option>');
-        data.forEach((provinsi) => {
-          $("#masterprovinsi").append(
-            `<option value="${provinsi.province_id}">${provinsi.name}</option>`
-          );
-        });
-      },
-      error: function () {
-        alert("Gagal memuat data provinsi");
-      },
-    });
-
-    // Fetch Kota/Kabupaten (bagian ini tetap sama)
-    $("#masterprovinsi").on("change", function () {
-      const provinceId = $(this).val();
-      $("#masterkota")
-        .empty()
-        .append('<option value="" selected>Pilih Kota/Kabupaten</option>');
-      $("#masterkecamatan, #masterkelurahan")
-        .empty()
-        .append('<option value="">-</option>');
-      $("#kodepos").val("");
-
-      if (provinceId) {
-        $.ajax({
-          url: url + "master/area/kotakab",
-          method: "POST",
-          data: { province_id: provinceId },
-          dataType: "json",
-          success: function (data) {
-            data.forEach((kota) => {
-              $("#masterkota").append(
-                `<option value="${kota.city_id}">${kota.name}</option>`
-              );
-            });
-          },
-        });
-      }
-    });
-
-    // Fetch Kecamatan (bagian ini tetap sama)
-    $("#masterkota").on("change", function () {
-      const provinceId = $("#masterprovinsi").val();
-      const cityId = $(this).val();
-      $("#masterkecamatan")
-        .empty()
-        .append('<option value="" selected>Pilih Kecamatan</option>');
-      $("#masterkelurahan").empty().append('<option value="">-</option>');
-      $("#kodepos").val("");
-
-      if (cityId) {
-        $.ajax({
-          url: url + "master/area/kecamatan",
-          method: "POST",
-          data: { province_id: provinceId, city_id: cityId },
-          dataType: "json",
-          success: function (data) {
-            data.forEach((kecamatan) => {
-              $("#masterkecamatan").append(
-                `<option value="${kecamatan.district_id}">${kecamatan.name}</option>`
-              );
-            });
-          },
-        });
-      }
-    });
-
-    // Fetch Kelurahan (bagian ini tetap sama)
-    $("#masterkecamatan").on("change", function () {
-      const provinceId = $("#masterprovinsi").val();
-      const cityId = $("#masterkota").val();
-      const districtId = $(this).val();
-      $("#masterkelurahan")
-        .empty()
-        .append('<option value="" selected>Pilih Kelurahan</option>');
-      $("#kodepos").val("");
-
-      if (districtId) {
-        $.ajax({
-          url: url + "master/area/kelurahandesa",
-          method: "POST",
-          data: {
-            province_id: provinceId,
-            city_id: cityId,
-            district_id: districtId,
-          },
-          dataType: "json",
-          success: function (data) {
-            data.forEach((kelurahan) => {
-              $("#masterkelurahan").append(
-                `<option value="${kelurahan.subdistrict_id}">${kelurahan.name}</option>`
-              );
-            });
-          },
-        });
-      }
-    });
-
-    // Fetch Kode Pos (bagian ini tetap sama)
-    $("#masterkelurahan").on("change", function () {
-      const provinceId = $("#masterprovinsi").val();
-      const cityId = $("#masterkota").val();
-      const districtId = $("#masterkecamatan").val();
-      const subdistrictId = $(this).val();
-
-      if (subdistrictId) {
-        $.ajax({
-          url: url + "master/area/kodepos",
-          method: "POST",
-          data: {
-            province_id: provinceId,
-            city_id: cityId,
-            district_id: districtId,
-            subdistrict_id: subdistrictId,
-          },
-          dataType: "json",
-          success: function (data) {
-            if (data.length > 0) {
-              $("#kodepos").val(data[0].zip_code);
-            } else {
-              $("#kodepos").val("");
-            }
-          },
-        });
-      }
-    });
-
     // Submit form
     $("form").on("submit", function (e) {
       e.preventDefault();
 
       // Daftar field wajib
       const requiredFields = [
+        "#namaPelanggan",
+        "#namaPic",
+        "#notelpPelanggan",
         "#alamatPelanggan",
-        "#masterprovinsi",
-        "#masterkota",
-        "#masterkecamatan",
-        "#masterkelurahan",
-        "#statusPajak",
-        "#ktpPelanggan",
         "#namaPemilik",
-        "#cekVerifikasi",
       ];
       let isValid = true;
-
-      // Validasi field wajib
-      requiredFields.forEach((field) => {
-        if (field === "#cekVerifikasi") {
-          if (!$(field).is(":checked")) {
-            isValid = false;
-            $(field).addClass("is-invalid");
-          } else {
-            $(field).removeClass("is-invalid");
-          }
-        } else if ($(field).val() === "") {
-          isValid = false;
-          $(field).addClass("is-invalid");
-        } else {
-          $(field).removeClass("is-invalid");
-        }
-      });
-
-      // Validasi tambahan untuk form apoteker jika ditampilkan
-      if ($("#formApoteker").is(":visible")) {
-        const apotekerFields = [
-          "#namaApoteker",
-          "#noSipa",
-          "#noSia",
-          "#edSipa",
-          "#edSia",
-        ];
-        apotekerFields.forEach((field) => {
-          if ($(field).val() === "") {
-            isValid = false;
-            $(field).addClass("is-invalid");
-          } else {
-            $(field).removeClass("is-invalid");
-          }
-        });
-      }
 
       if (!isValid) {
         Swal.fire({
@@ -483,61 +151,31 @@ $(document).ready(function () {
         if (result.isConfirmed) {
           // Membuat objek formData
           const formData = {
-            id: $("#idPelanggan").val(),
             cust_name: $("#namaPelanggan").val()
               ? $("#namaPelanggan").val().toUpperCase()
               : null,
             address: $("#alamatPelanggan").val()
               ? $("#alamatPelanggan").val().toUpperCase()
               : null,
-            province_id: $("#masterprovinsi").val(),
-            city_id: $("#masterkota").val(),
-            district_id: $("#masterkecamatan").val(),
-            subdistrict_id: $("#masterkelurahan").val(),
-            zip_code: $("#kodepos").val() || null,
-            category_id: $("#kategoriPelanggan").val().split(" - ")[0],
             email: $("#emailPelanggan").val() || null,
             phone_no: $("#notelpPelanggan").val() || null,
-            tax_status: $("#statusPajak").val(),
             npwp: $("#npwpPelanggan").val() || null,
-            siup: $("#siupPelanggan").val() || null,
             cust_name_tax: $("#namanpwpPelanggan").val()
               ? $("#namanpwpPelanggan").val().toUpperCase()
               : null,
             address_tax: $("#alamatnpwpPelanggan").val()
               ? $("#alamatnpwpPelanggan").val().toUpperCase()
               : null,
-            id_card: $("#ktpPelanggan").val(),
-            construction_type: $("#tipeBangunan").val() || null,
-            status_building: $("#hakBangunan").val() || null,
-            owner_name: $("#namaPemilik").val()
-              ? $("#namaPemilik").val().toUpperCase()
+            pic_name: $("#namaPic").val()
+              ? $("#namaPic").val().toUpperCase()
               : null,
-            flg_verify_noo: $("#cekVerifikasi").is(":checked") ? 1 : 0,
           };
-
-          // Hanya tambahkan data apoteker jika form apoteker ditampilkan
-          if ($("#formApoteker").is(":visible")) {
-            formData.pharmacist = $("#namaApoteker").val()
-              ? $("#namaApoteker").val().toUpperCase()
-              : null;
-            formData.sipa = $("#noSipa").val() || null;
-            formData.sia = $("#noSia").val() || null;
-            formData.exp_date_sia = $("#edSia").val() || null;
-            formData.exp_date_sipa = $("#edSipa").val() || null;
-          } else {
-            formData.pharmacist = null;
-            formData.sipa = null;
-            formData.sia = null;
-            formData.exp_date_sia = null;
-            formData.exp_date_sipa = null;
-          }
 
           // Debugging: Log formData untuk memeriksa nilai
           console.log("formData:", formData);
 
           $.ajax({
-            url: url + "/master/pelanggan/updateregispelanggan",
+            url: url + "/master/pelanggan/insertpelanggan",
             method: "POST",
             data: formData,
             dataType: "json",
