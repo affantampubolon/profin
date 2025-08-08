@@ -186,7 +186,6 @@ $(document).ready(function () {
   } else if (window.location.pathname === "/proyek/pembaruandata/index") {
     data_proyek();
 
-    // Fungsi untuk menampilkan tabel proyek
     function data_proyek() {
       $("#tabel_daftar_proyek").addClass("table-bordered table-sm");
       $.ajax({
@@ -209,22 +208,17 @@ $(document).ready(function () {
                 headerHozAlign: "center",
                 hozAlign: "center",
                 frozen: true,
-                formatter: function (cell, formatterParams, onRendered) {
+                formatter: function (cell) {
                   var rowData = cell.getRow().getData();
-                  return `
-                  <a class="badge rounded-circle p-2 badge-success update-btn" href="#" data-id="${rowData.id}">
-                      <i class="fa fa-edit" style="cursor: pointer;"></i>
-                  </a>`;
+                  return `<a class="badge rounded-circle p-2 badge-success update-btn" href="#" data-id="${rowData.id}"><i class="fa fa-edit" style="cursor: pointer;"></i></a>`;
                 },
                 cellClick: function (e, cell) {
                   var target = e.target.closest("a");
                   if (!target) return;
-
                   var row = cell.getRow();
                   var rowData = row.getData();
-
                   if (target.classList.contains("update-btn")) {
-                    showUpdateModal(rowData.id, rowData.nik);
+                    showUpdateModal(rowData.id);
                   }
                 },
               },
@@ -257,11 +251,9 @@ $(document).ready(function () {
       });
     }
 
-    // Fungsi untuk menampilkan modal update
     function showUpdateModal(id) {
       $.getJSON(url + `proyek/pembaruandata/getproyek/${id}`, function (data) {
         if (data) {
-          // Isi form dengan data awal, konversi NULL atau kosong menjadi string kosong yang valid
           $("#nowbs")
             .val(data.wbs_no || "")
             .trigger("change");
@@ -282,8 +274,8 @@ $(document).ready(function () {
             .trigger("change");
           $("#progressjob")
             .val(data.progress || "")
-            .trigger("change");
-          $("#progressjob").trigger("select2:select");
+            .trigger("change")
+            .trigger("select2:select");
           $("#invoicesenddate")
             .val(data.invoice_send_date || "")
             .trigger("change");
@@ -297,49 +289,45 @@ $(document).ready(function () {
             .val(data.revenue_amt || "")
             .trigger("change");
 
-          // Fungsi untuk menghitung total hari
           function calculateTotalDays() {
             const startDate = document.getElementById("jobstartdate").value;
             const endDate = document.getElementById("jobenddate").value;
-
             if (startDate && endDate) {
               const start = new Date(startDate);
               const end = new Date(endDate);
-
               if (!isNaN(start) && !isNaN(end) && start <= end) {
                 const timeDiff = end - start;
                 let dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-                if (timeDiff === 0) {
-                  dayDiff = 1;
-                } else {
-                  dayDiff += 1;
-                }
+                if (timeDiff === 0) dayDiff = 1;
+                else dayDiff += 1;
                 $("#jobtotaltime").val(dayDiff);
               } else {
                 $("#jobtotaltime").val("");
               }
             } else {
-              $("#jobtotaltime").val(""); // Kosongkan jika salah satu tanggal kosong
+              $("#jobtotaltime").val("");
             }
           }
 
-          // Tambahkan event listener untuk perubahan tanggal
           $("#jobstartdate").on("change", calculateTotalDays);
           $("#jobenddate").on("change", calculateTotalDays);
 
-          // Tambahkan input tersembunyi untuk id
           $("#formUpdateProyek").append(
             `<input type="hidden" name="id" value="${id}">`
           );
-
-          // Tampilkan modal
           $("#updateProyekModal").modal("show");
 
-          // Event submit form
           $("#formUpdateProyek")
             .off("submit")
             .on("submit", function (e) {
               e.preventDefault();
+              const fileInput = document.querySelector("#fileSpk");
+              if (fileInput.files.length === 0) {
+                console.log("No file selected");
+              } else {
+                console.log("File selected: ", fileInput.files[0].name);
+              }
+
               Swal.fire({
                 title: "Anda yakin?",
                 text: "Data Proyek akan diperbarui!",
@@ -350,19 +338,18 @@ $(document).ready(function () {
                 confirmButtonText: "Ya, simpan!",
               }).then((result) => {
                 if (result.isConfirmed) {
-                  // Konversi tanggal kosong menjadi NULL sebelum submit
-                  const formData = $(this).serializeArray();
-                  formData.forEach((field) => {
-                    if (field.name.includes("date") && !field.value) {
-                      field.value = null;
-                    }
-                  });
-                  const serializedData = $.param(formData);
+                  const formData = new FormData(this);
+                  // Log FormData untuk debugging (hanya untuk browser console)
+                  for (var pair of formData.entries()) {
+                    console.log(pair[0] + ": " + pair[1]);
+                  }
 
                   $.ajax({
                     type: "POST",
                     url: url + "proyek/pembaruandata/updatedataproyek",
-                    data: serializedData,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     dataType: "json",
                     success: function (response) {
                       if (response.status === "success") {
@@ -384,6 +371,7 @@ $(document).ready(function () {
                         "Terjadi kesalahan saat menyimpan data.",
                         "error"
                       );
+                      console.error("AJAX Error: ", xhr.responseText);
                     },
                   });
                 }

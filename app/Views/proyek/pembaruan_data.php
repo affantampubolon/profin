@@ -69,7 +69,7 @@
                 ></button>
             </div>
             <div class="modal-body">
-                <form class="row g-3" id="formUpdateProyek" action="/proyek/pembaruandata/updatedataproyek" method="POST">
+                <form class="row g-3" id="formUpdateProyek" action="/proyek/pembaruandata/updatedataproyek" method="POST" enctype="multipart/form-data">
                     <div class="col-xl-12 col-md-12 box-col-12">
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Registrasi Proyek</b></p>
@@ -173,11 +173,26 @@
                                 <input class="form-control" id="revenueamt" name="revenueamt" type="text" />
                             </div>
                         </div>
+                        <div class="row p-2">
+                            <div class="col-xl-6 col-md-12">
+                                <p class="form-label" for="">Unggah File SPK <span class="txt-danger f-w-600">*</span></p>
+                                <input
+                                    class="form-control"
+                                    name="fileSpk" id="fileSpk"
+                                    type="file"
+                                    aria-describedby="inputGroupFileAddon03"
+                                    aria-label="Upload"
+                                />
+                                <p class="mb-2">
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-xl-12 col-md-12 box-col-12">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fa fa-save"></i> Simpan
-                        </button>
+                    <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-save"> Simpan</i> 
+                            </button>
                     </div>
                 </form>
             </div>

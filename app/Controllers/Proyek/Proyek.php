@@ -188,52 +188,95 @@ class Proyek extends BaseController
   }
 
   public function updateDataProyek()
-  {
-      $id = $this->request->getPost('id');
-      $nowbs = $this->request->getPost('nowbs');
-      $noso = $this->request->getPost('noso');
-      $reportno = $this->request->getPost('reportno');
-      $jobstartdate = $this->request->getPost('jobstartdate');
-      $jobenddate = $this->request->getPost('jobenddate');
-      $jobtotaltime = $this->request->getPost('jobtotaltime');
-      $invoicesenddate = $this->request->getPost('invoicesenddate');
-      $invoicereceivedate = $this->request->getPost('invoicereceivedate');
-      $invoicereceivename = $this->request->getPost('invoicereceivename');
-      $progressjob = $this->request->getPost('progressjob');
-      $revenueamt = $this->request->getPost('revenueamt');
+{
+    $id = $this->request->getPost('id');
+    $nowbs = $this->request->getPost('nowbs');
+    $noso = $this->request->getPost('noso');
+    $reportno = $this->request->getPost('reportno');
+    $jobstartdate = $this->request->getPost('jobstartdate');
+    $jobenddate = $this->request->getPost('jobenddate');
+    $jobtotaltime = $this->request->getPost('jobtotaltime');
+    $invoicesenddate = $this->request->getPost('invoicesenddate');
+    $invoicereceivedate = $this->request->getPost('invoicereceivedate');
+    $invoicereceivename = $this->request->getPost('invoicereceivename');
+    $progressjob = $this->request->getPost('progressjob');
+    $revenueamt = $this->request->getPost('revenueamt');
 
-      $username = $this->session->get('username');
+    $username = $this->session->get('username');
 
-      // Validasi dan konversi nilai kosong menjadi NULL untuk kolom date
-      $data = [
-          'wbs_no' => $nowbs ?: null,
-          'so_no' => $noso ?: null,
-          'report_no' => $reportno ?: null,
-          'job_start_date' => empty($jobstartdate) ? null : $jobstartdate,
-          'job_finish_date' => empty($jobenddate) ? null : $jobenddate,
-          'job_tot_time' => $jobtotaltime ?: null,
-          'invoice_send_date' => empty($invoicesenddate) ? null : $invoicesenddate,
-          'invoice_receive_date' => empty($invoicereceivedate) ? null : $invoicereceivedate,
-          'invoice_receive_name' => $invoicereceivename ?: null,
-          'progress' => $progressjob ?: null,
-          'ar_balance' => $revenueamt ?: null,
-          'revenue_amt' => $revenueamt ?: null,
-          'user_update' => $username ?: null,
-          'update_date' => date('Y-m-d H:i:s')
-      ];
+    // Ambil data lama dari database
+    $oldData = $this->proyekModel->getDataProyekId($id);
+    if (!$oldData) {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Data proyek tidak ditemukan']);
+    }
 
-      // Validasi data sebelum update
-      if (!$id) {
-          return $this->response->setJSON(['status' => 'error', 'message' => 'ID tidak ditemukan']);
-      }
+    // Siapkan data untuk update, gunakan nilai lama jika tidak ada pembaruan
+    $data = [
+        'wbs_no' => $nowbs ?: $oldData->wbs_no,
+        'so_no' => $noso ?: $oldData->so_no,
+        'report_no' => $reportno ?: $oldData->report_no,
+        'job_start_date' => ($jobstartdate === null || $jobstartdate === '') ? $oldData->job_start_date : $jobstartdate,
+        'job_finish_date' => ($jobenddate === null || $jobenddate === '') ? $oldData->job_finish_date : $jobenddate,
+        'job_tot_time' => $jobtotaltime ?: $oldData->job_tot_time,
+        'invoice_send_date' => ($invoicesenddate === null || $invoicesenddate === '') ? $oldData->invoice_send_date : $invoicesenddate,
+        'invoice_receive_date' => ($invoicereceivedate === null || $invoicereceivedate === '') ? $oldData->invoice_receive_date : $invoicereceivedate,
+        'invoice_receive_name' => $invoicereceivename ?: $oldData->invoice_receive_name,
+        'progress' => $progressjob ?: ($oldData->progress ?? 0),
+        'ar_balance' => $revenueamt ?: $oldData->ar_balance,
+        'revenue_amt' => $revenueamt ?: $oldData->revenue_amt,
+        'user_update' => $username ?: $oldData->user_update,
+        'update_date' => date('Y-m-d H:i:s')
+    ];
 
-      $result = $this->proyekModel->updateProyek($id, $data);
+    // Penanganan unggahan file PDF
+    $fileSpk = $this->request->getFile('fileSpk');
+    log_message('debug', 'File detected: ' . ($fileSpk ? 'Yes' : 'No') . ', Is Valid: ' . ($fileSpk ? ($fileSpk->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileSpk && $fileSpk->isValid() && !$fileSpk->hasMoved()) {
+        // Validasi format dan ukuran file
+        $fileType = $fileSpk->getClientMimeType();
+        $fileSize = $fileSpk->getSize();
 
-      if ($result) {
-          return $this->response->setJSON(['status' => 'success', 'message' => 'Data proyek berhasil diperbarui']);
-      } else {
-          return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data proyek']);
-      }
-  }
+        log_message('debug', 'File Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+        }
+
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        }
+
+        // Pastikan direktori ada
+        $uploadPath = WRITEPATH . 'uploads/spk';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+
+        // Simpan file
+        $fileName = $fileSpk->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileSpk->move($uploadPath, $fileName)) {
+            $data['file_spk'] = $fileName; // Simpan nama file ke database
+            log_message('debug', 'File saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move file: ' . $fileSpk->getErrorString());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $fileSpk->getErrorString()]);
+        }
+    } elseif (isset($oldData->file_spk)) {
+        $data['file_spk'] = $oldData->file_spk; // Pertahankan file lama jika tidak ada unggahan baru
+    }
+
+    // Validasi data sebelum update
+    if (!$id) {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'ID tidak ditemukan']);
+    }
+
+    $result = $this->proyekModel->updateProyek($id, $data);
+
+    if ($result) {
+        return $this->response->setJSON(['status' => 'success', 'message' => 'Data proyek berhasil diperbarui']);
+    } else {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal memperbarui data proyek']);
+    }
+}
 
 }
