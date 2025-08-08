@@ -95,6 +95,7 @@ $routes->post('/keuangan/dropping/insertdatadropping', 'Keuangan\Keuangan::inser
 
 //keuanganpembayaran
 $routes->get('/keuangan/pembayaran/index', 'Keuangan\Keuangan::pembayaranindex');
+$routes->post('/keuangan/pembayaran/unggahinvoice', 'Keuangan\Keuangan::unggahInvoicePembayaran');
 $routes->post('/keuangan/pembayaran/insertdatapembayaran', 'Keuangan\Keuangan::insertPembayaran');
 
 //Monitoring

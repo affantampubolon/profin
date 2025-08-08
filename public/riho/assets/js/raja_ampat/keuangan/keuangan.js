@@ -663,21 +663,16 @@ $(document).ready(function () {
       });
     });
   } else if (window.location.pathname === "/keuangan/pembayaran/index") {
-    // Variabel untuk menyimpan data dokumen dari server
     var docData = [];
 
-    // Inisialisasi tabel Tabulator
-    // Tambahkan kelas CSS ke elemen #tabel_realisasi_biaya
     $("#tabel_pembayaran").addClass("table-bordered table-sm");
     var table = new Tabulator("#tabel_pembayaran", {
       height: "500px",
-      // layout: "fitColumns",
-      // responsiveLayout: "collapse",
       frozenColumns: true,
       pagination: "local",
       paginationSize: 20,
       paginationSizeSelector: [10, 20, 30],
-      data: [], // Mulai dengan tabel kosong
+      data: [],
       columns: [
         {
           title: "Aksi",
@@ -686,7 +681,29 @@ $(document).ready(function () {
           frozen: true,
           formatter: "buttonCross",
           cellClick: function (e, cell) {
-            cell.getRow().delete(); // Menghapus baris langsung dari tabel
+            cell.getRow().delete();
+          },
+        },
+        {
+          title: "Unggah",
+          headerHozAlign: "center",
+          hozAlign: "center",
+          frozen: true,
+          formatter: function (cell) {
+            var rowData = cell.getRow().getData();
+            if (rowData.file_invoice) {
+              return `<span>${rowData.file_invoice}</span>`;
+            } else {
+              return `<a class="badge rounded-circle p-2 badge-info upload-btn" href="#"><i class="fa fa-upload" style="cursor: pointer;"></i></a>`;
+            }
+          },
+          cellClick: function (e, cell) {
+            if (!cell.getRow().getData().file_invoice) {
+              // Hanya buka modal jika belum ada file
+              var row = cell.getRow();
+              $("#uploadButton").data("row", row); // Simpan referensi baris
+              $("#unggahInvoiceModal").modal("show");
+            }
           },
         },
         {
@@ -696,9 +713,7 @@ $(document).ready(function () {
           hozAlign: "center",
           frozen: true,
           editor: "date",
-          editorParams: {
-            format: "dd-MM-yyyy",
-          },
+          editorParams: { format: "dd-MM-yyyy" },
         },
         {
           title: "Tgl Pembayaran",
@@ -707,9 +722,7 @@ $(document).ready(function () {
           hozAlign: "center",
           frozen: true,
           editor: "date",
-          editorParams: {
-            format: "dd-MM-yyyy",
-          },
+          editorParams: { format: "dd-MM-yyyy" },
         },
         {
           title: "No. WBS",
@@ -730,16 +743,8 @@ $(document).ready(function () {
               return "<strong>" + label + "</strong>";
             },
             autocomplete: true,
-            filterRemote: true, // Filtering di server
+            filterRemote: true,
           },
-        },
-        {
-          title: "Uraian",
-          field: "description",
-          headerHozAlign: "center",
-          minWidth: 250,
-          editor: "input",
-          cssClass: "highlight-column",
         },
         {
           title: "Kendala",
@@ -766,13 +771,13 @@ $(document).ready(function () {
       ],
     });
 
-    // Memuat data No. Dokumen dari server saat halaman dimuat
+    // Memuat data No. Dokumen
     $.ajax({
       url: url + "/proyek/datapembayaranfilter",
       method: "GET",
       dataType: "json",
       success: function (data) {
-        docData = data; // Simpan data No. Dokumen untuk formatter
+        docData = data;
       },
       error: function (xhr, status, error) {
         console.error("Error fetching document data:", error);
@@ -780,12 +785,43 @@ $(document).ready(function () {
       },
     });
 
+    // Event listener untuk unggah file
+    $("#uploadButton").on("click", function () {
+      var row = $(this).data("row");
+      var formData = new FormData($("#uploadForm")[0]);
+
+      $.ajax({
+        url: url + "/keuangan/pembayaran/unggahinvoice",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (response) {
+          if (response.status === "success") {
+            row.update({ file_invoice: response.fileName }); // Simpan nama file ke baris
+            $("#unggahInvoiceModal").modal("hide");
+            $("#uploadForm")[0].reset(); // Reset form
+            Swal.fire("Berhasil!", "File berhasil diunggah.", "success");
+          } else {
+            Swal.fire("Gagal!", response.message, "error");
+          }
+        },
+        error: function (xhr, status, err) {
+          Swal.fire(
+            "Error!",
+            "Terjadi kesalahan saat mengunggah file.",
+            "error"
+          );
+        },
+      });
+    });
+
     // Fungsi untuk menambahkan baris kosong
     function addBlankRow() {
       table.addRow({});
     }
 
-    // Event listener untuk tombol "Tambah Baris"
     $("#tambahbaris").on("click", addBlankRow);
 
     // Event listener untuk tombol "Simpan"
@@ -820,13 +856,10 @@ $(document).ready(function () {
             return;
           }
 
-          // Kirim data ke server
           $.ajax({
             url: url + "keuangan/pembayaran/insertdatapembayaran",
             method: "POST",
-            data: {
-              data: JSON.stringify(tableData),
-            },
+            data: { data: JSON.stringify(tableData) },
             dataType: "json",
             success: function (response) {
               if (response.status === "success") {
@@ -839,7 +872,6 @@ $(document).ready(function () {
                   window.location.href = "/keuangan/pembayaran/index";
                 });
               } else {
-                // Tampilkan pesan error dari server
                 Swal.fire({
                   title: "Error",
                   text: response.message,
