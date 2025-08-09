@@ -97,114 +97,31 @@
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <p class="text-uppercase"><i class="fa fa-pencil"></i> <b>Identitas Pelanggan</b></p>
                                 <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>No. Permintaan</b></label>
-                                        <p class="" id="no_request"></p>
+                                    <div class="col-xl-4 col-md-4">
+                                        <label class="form-label" for=""><b>Nama PIC</b></label>
+                                        <p class="" id="nama_pic"></p>
                                     </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Nama Pemilik</b></label>
-                                        <p class="" id="nama_pemilik"></p>
-                                    </div>
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
+                                    <div class="col-xl-4 col-md-4">
                                         <label class="form-label" for=""><b>Email</b></label>
                                         <p class="" id="email"></p>
                                     </div>
-                                    <div class="col-xl-6 col-md-6">
+                                    <div class="col-xl-4 col-md-4">
                                         <label class="form-label" for=""><b>No. Telepon</b></label>
                                         <p class="" id="no_telp"></p>
                                     </div>
                                 </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>No. KTP</b></label>
-                                        <p class="" id="ktp"></p>
-                                    </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>No. SIUP</b></label>
-                                        <p class="" id="siup"></p>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-xl-12 col-md-12 box-col-12">
-                                <p class="text-uppercase"><i class="fa fa-pencil"></i> <b>Detail Lokasi</b></p>
+                                <p class="text-uppercase"><i class="fa fa-pencil"></i> <b>Lokasi Pelanggan</b></p>
                                 <div class="row g-3">
                                     <div class="col-xl-12 col-md-12">
                                         <label class="form-label" for=""><b>Alamat</b></label>
                                         <p class="" id="alamat"></p>
                                     </div>
                                 </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Provinsi</b></label>
-                                        <p class="" id="provinsi"></p>
-                                    </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Kota / Kabupaten</b></label>
-                                        <p class="" id="kota"></p>
-                                    </div>
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Kecamatan</b></label>
-                                        <p class="" id="kecamatan"></p>
-                                    </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Kelurahan / Desa</b></label>
-                                        <p class="" id="kelurahan"></p>
-                                    </div>
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for="">Kode Pos</label>
-                                        <p class="" id="kode_pos"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-md-12 box-col-12">
-                                <p class="text-uppercase"><i class="fa fa-pencil"></i> <b>Klasifikasi Pelanggan</b></p>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Kategori Pelanggan</b></label>
-                                        <p class="" id="kategori_pelanggan"></p>
-                                    </div>
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Nama Apoteker</b></label>
-                                        <p class="" id="nama_apoteker"></p>
-                                    </div>
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>No. S.I.P.A</b></label>
-                                        <p class="" id="no_sipa"></p>
-                                    </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>No. S.I.A</b></label>
-                                        <p class="" id="no_sia"></p>
-                                    </div>
-                                </div>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Masa berlaku S.I.P.A</b></label>
-                                        <p class="" id="ed_sipa"></p>
-                                    </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Masa berlaku S.I.A</b></label>
-                                        <p class="" id="ed_sia"></p>
-                                    </div>
-                                </div>
                             </div>
                             <div class="col-xl-12 col-md-12 box-col-12">
                                 <p class="text-uppercase"><i class="fa fa-pencil"></i> <b>Informasi Pajak</b></p>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Status Pajak</b></label>
-                                        <p class="" id="status_pajak"></p>
-                                    </div>
-                                </div>
                                 <div class="row g-3">
                                     <div class="col-xl-6 col-md-6">
                                         <label class="form-label" for=""><b>NPWP</b></label>
@@ -219,19 +136,6 @@
                                     <div class="col-xl-12 col-md-12">
                                         <label class="form-label" for=""><b>Alamat</b></label>
                                         <p class="" id="alamat_pajak"></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xl-12 col-md-12 box-col-12">
-                                <p class="text-uppercase"><i class="fa fa-pencil"></i> <b>Informasi Tambahan</b></p>
-                                <div class="row g-3">
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Konstruksi Bangunan</b></label>
-                                        <p class="" id="kons_bangunan"></p>
-                                    </div>
-                                    <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for=""><b>Status Hak Bangunan</b></label>
-                                        <p class="" id="hak_bangunan"></p>
                                     </div>
                                 </div>
                             </div>

@@ -40,7 +40,7 @@
           <div class="card-body pt-0">
               <div class="row m-10">
                    <div class="col-xl-6 col-md-6">
-                      <label class="form-label" for=""
+                      <label class="form-label f-w-600" for=""
                           >Tahun</label
                       >
                       <select id="tahunfilter" name="tahunfilter" class="select2 form-control">
@@ -56,7 +56,7 @@
                       </select>
                   </div>
                   <div class="col-xl-6 col-md-6">
-                      <label class="form-label" for=""
+                      <label class="form-label f-w-600" for=""
                           >Project Manager</label
                       >
                       <select id="pmfilter" name="pmfilter" class="select2 form-control">
@@ -73,35 +73,69 @@
   </div> -->
   <!-- jumlah detail Proyek dan pembayaran Invoice-->
   <div class="row size-column">
-    <div class="row g-1 justify-content-between">
-      <div class="col-xl-4 col-md-4 box-col-4 total-revenue-total-order">
-        <div class="row">
-          <div class="col-xl-12 col-md-12 box-col-12">
-            <div class="card alert-light-primary" style="height: 150px;">
-              <div class="card-header">
-                <h4><i class="fa fa-thumbs-o-up"></i>  Total Pendapatan</h4>
-              </div>
-              <div class="card-body">
-                <h3 class="f-w-900" id="totalrevenue"></h3>
-              </div>
-            </div>
+    <div class="row g-1">
+      <div class="col-xl-4 col-md-4 box-col-4">
+        <div class="card alert-light-info" style="height: 150px;">
+          <div class="card-header">
+            <h5 class="f-w-700"><i class="fa fa-pencil"></i>  Nilai Proyek</h5>
           </div>
-          <div class="col-xl-12 col-md-12 box-col-12">
-            <div class="card alert-light-success" style="height: 150px;">
-              <div class="card-header">
-                <h4><i class="fa fa-briefcase"></i> Total Proyek</h4>
-              </div>
-              <div class="card-body">
-                <h3 class="m-2 f-w-900" id="totalproject"></h3>
-              </div>
-            </div>
+          <div class="card-body">
+            <h4 class="f-w-900" id="totalcontract"></h4>
           </div>
         </div>
       </div>
-      <div class="col-xl-8 col-md-8 box-col-8">
+      <div class="col-xl-4 col-md-4 box-col-4">
+        <div class="card alert-light-success" style="height: 150px;">
+          <div class="card-header">
+            <h5 class="f-w-700"><i class="fa fa-thumbs-o-up"></i>  Realisasi Pendapatan</h5>
+          </div>
+          <div class="card-body">
+            <h4 class="f-w-900" id="totalrevenue"></h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-md-4 box-col-4">
+        <div class="card alert-light-primary" style="height: 150px;">
+          <div class="card-header">
+            <h5 class="f-w-700"><i class="fa fa-anchor"></i>  Total Pekerjaan</h5>
+          </div>
+          <div class="card-body">
+            <h4 class="f-w-900" id="totalproject"></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row size-column">
+    <div class="row g-1">
+      <div class="col-xl-6 col-md-6 box-col-6">
+        <div class="card alert-light-primary" style="height: 150px;">
+          <div class="card-header">
+            <h5 class="f-w-700"><i class="fa fa-suitcase"></i>  Nilai Anggaran</h5>
+          </div>
+          <div class="card-body">
+            <h4 class="f-w-900" id="totalbudget"></h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-md-6 box-col-6">
+        <div class="card alert-light-danger" style="height: 150px;">
+          <div class="card-header">
+            <h5 class="f-w-700"><i class="fa fa-money"></i>  Realisasi Biaya</h5>
+          </div>
+          <div class="card-body">
+            <h4 class="f-w-900" id="totalrealbudget"></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row size-column">
+    <div class="row g-1 justify-content-between">
+      <div class="col-xl-12 col-md-12 box-col-12">
         <div class="card">
           <div class="card-header sales-chart card-no-border">
-            <h4><i class="fa fa-bell-o"></i> Pembayaran Invoice</h4>
+            <h5 class="f-w-700"><i class="fa fa-bell-o"></i> Pembayaran Invoice</h5>
           </div>
           <div class="card-body pt-0">
               <div class="row m-2">
@@ -120,7 +154,7 @@
       <div class="col-xl-6 col-md-6 box-col-6">
         <div class="card">
           <div class="card-header sales-chart card-no-border">
-            <h4>Jumlah Proyek</h4>
+            <h5 class="f-w-700">Jumlah Proyek</h5>
           </div>
           <div class="card-body pt-0">
               <div class="row m-2">
@@ -134,7 +168,7 @@
       <div class="col-xl-6 col-md-6 box-col-6">
         <div class="card">
           <div class="card-header sales-chart card-no-border">
-            <h4>% Realisasi Biaya</h4>
+            <h5 class="f-w-700">% Realisasi Biaya</h5>
           </div>
           <div class="card-body pt-0">
               <div class="row m-2">
@@ -153,7 +187,7 @@
       <div class="col-xl-12 col-md-12 box-col-12">
         <div class="card">
           <div class="card-header sales-chart card-no-border">
-            <h4>Pendapatan & Pembayaran Proyek</h4>
+            <h5 class="f-w-700">Pendapatan & Pembayaran Proyek</h5>
           </div>
           <div class="card-body pt-0">
               <div class="row m-10">
@@ -172,7 +206,7 @@
       <div class="col-xl-12 col-md-12 box-col-12">
         <div class="card">
           <div class="card-header sales-chart card-no-border">
-            <h4>Anggaran & Biaya Proyek</h4>
+            <h5 class="f-w-700">Anggaran & Biaya Proyek</h5>
           </div>
           <div class="card-body pt-0">
               <div class="row m-10">

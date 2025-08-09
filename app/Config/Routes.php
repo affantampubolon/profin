@@ -33,15 +33,10 @@ $routes->get('/', 'Auth\Auth::index');
 $routes->get('/master/pminspector/datapminspector', 'Master\Master::dataPmInspector');
 $routes->get('/master/pminspector/filterpminspector', 'Master\Master::dataFilterPmInspector');
 $routes->get('/master/coa/datafilter', 'Master\Master::dataCoaFilter');
+$routes->get('/master/katproyek/datafilter', 'Master\Master::dataKatProyek');
 $routes->post('/master/coa/datanilai', 'Master\Master::dataCoaVal');
 $routes->get('/master/pelanggan/datafiltermstpelanggan', 'Master\Master::dataFilterPelanggan');
-$routes->post('/master/barang/subgrup', 'Master\Master::getSubGrupBarang');
-$routes->post('/master/barang/kelas', 'Master\Master::getKelasBarang');
-$routes->post('/master/filter/subgrup', 'Master\Master::getFilterSubgrp');
-$routes->post('/master/filter/kelas', 'Master\Master::getFilterClass');
 $routes->get('/master/cabang', 'Master\Master::getMstCabang');
-$routes->get('/master/pelanggan/datapelanggancab', 'Master\Master::getMstPelanggan');
-$routes->get('/master/kategoripelanggan', 'Master\Master::getMstKategoriPelanggan');
 //KARYAWAN & USER
 $routes->get('/master/karyawan/index', 'Master\Master::indexMstKaryawan');
 $routes->post('/master/karyawan/datakaryawan', 'Master\Master::dataKaryawan');
@@ -58,22 +53,8 @@ $routes->post('/master/user/insertdatauser', 'Master\Master::insertUser');
 //PELANGGAN
 $routes->get('/master/pelanggan/index', 'Master\Master::indexMstPelanggan');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
-$routes->get('/master/pelanggan/getdataregis', 'Master\Master::dataRegisPelanggan');
-$routes->post('/master/pelanggan/updateregispelanggan', 'Master\Master::updateVerifRegisPelanggan');
-//USER PELANGGAN
-$routes->get('/master/userpelanggan/index', 'Master\Master::indexUserPelanggan');
-$routes->post('/master/userpelanggan/getdatamstuserpelanggan', 'Master\Master::dataMstUserPelanggan');
-$routes->get('/master/userpelanggan/getdatamstposuserpelanggan', 'Master\Master::dataMstPosUserPelanggan');
-$routes->post('/master/userpelanggan/updateuserpelanggan', 'Master\Master::updateUserPelanggan');
-//KELAS PRODUK
-$routes->get('/master/kelasproduk/index', 'Master\Master::indexMstKlsProduk');
-$routes->post('/master/kelasproduk/getdatamstklsproduk', 'Master\Master::dataMstKlsProduk');
-// Master Wilayah
-$routes->get('/master/area/provinsi', 'Master\Master::getMstAreaProvinsi');
-$routes->post('/master/area/kotakab', 'Master\Master::getMstAreaKotaKab');
-$routes->post('/master/area/kecamatan', 'Master\Master::getMstAreaKecamatan');
-$routes->post('/master/area/kelurahandesa', 'Master\Master::getMstAreaKelurahan');
-$routes->post('/master/area/kodepos', 'Master\Master::getMstAreaKodePos');
+$routes->post('/master/pelanggan/getdatamstpelanggan', 'Master\Master::dataMstPelanggan');
+$routes->post('/master/pelanggan/insertpelanggan', 'Master\Master::insertPelanggan');
 // General
 $routes->post('/login', 'Auth\Auth::login');
 $routes->get('/logout', 'Auth\Auth::logout');
@@ -114,6 +95,7 @@ $routes->post('/keuangan/dropping/insertdatadropping', 'Keuangan\Keuangan::inser
 
 //keuanganpembayaran
 $routes->get('/keuangan/pembayaran/index', 'Keuangan\Keuangan::pembayaranindex');
+$routes->post('/keuangan/pembayaran/unggahinvoice', 'Keuangan\Keuangan::unggahInvoicePembayaran');
 $routes->post('/keuangan/pembayaran/insertdatapembayaran', 'Keuangan\Keuangan::insertPembayaran');
 
 //Monitoring

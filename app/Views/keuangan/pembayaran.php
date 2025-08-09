@@ -69,6 +69,42 @@
     </div>
 </div>
 <!-- Container-fluid Ends-->
-
+<!-- Modal Unggah Invoice -->
+<div class="modal fade" id="unggahInvoiceModal" data-bs-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="unggahInvoiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Unggah Dokumen Invoice</h5>
+                <button class="btn-close py-0" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="col-xl-12 col-md-12">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12">
+                            <form id="uploadForm" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <p class="form-label" for="">Unggah File Invoice <span class="txt-danger f-w-600">*</span></p>
+                                    <input
+                                        class="form-control"
+                                        name="fileInvoice" id="fileInvoice"
+                                        type="file"
+                                        aria-describedby="inputGroupFileAddon03"
+                                        aria-label="Upload"
+                                    />
+                                    <p class="mb-2">
+                                        <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="uploadButton">Unggah</button>
+            </div>
+        </div>
+    </div>
+</div>
 <?= $this->endSection(); ?>
 <!-- END : End Main Content-->
