@@ -26,8 +26,8 @@ use App\Models\MonitoringModel\MonitoringModel;
 //master
 use App\Models\MasterModel\PmInspectorModel;
 use App\Models\MasterModel\CoaModel;
+use App\Models\MasterModel\KategoriProyekModel;
 // 
-use App\Models\MasterModel\KelasProdModel;
 use App\Models\MasterModel\CabangModel;
 use App\Models\MasterModel\PosisiModel;
 use App\Models\MasterModel\HakAksesModel;
@@ -80,7 +80,6 @@ abstract class BaseController extends Controller
 
     // Deklarasi model di BaseController
     // master
-    protected $kelasProdModel;
     protected $cabangModel;
     protected $pelangganModel;
     protected $wilayahModel;
@@ -104,6 +103,7 @@ abstract class BaseController extends Controller
     //master
     protected $pmInspectorModel;
     protected $coaModel;
+    protected $kategoriProyekModel;
     // department
     protected $DeptModel;
 
@@ -134,7 +134,6 @@ abstract class BaseController extends Controller
         $this->view = \Config\Services::renderer();
         // Deklarasi models
         //Master Models
-        $this->kelasProdModel      = new KelasProdModel();
         $this->cabangModel         = new CabangModel();
         $this->pelangganModel      = new PelangganModel();
         $this->wilayahModel        = new WilayahDetModel();
@@ -156,6 +155,7 @@ abstract class BaseController extends Controller
         //master
         $this->pmInspectorModel = new PmInspectorModel();
         $this->coaModel = new CoaModel();
+        $this->kategoriProyekModel = new KategoriProyekModel();
         
         $this->DeptModel         = new DepartmentModel();
 

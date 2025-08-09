@@ -267,6 +267,40 @@ class Keuangan extends BaseController
     return view('keuangan/pembayaran', $data);
   }
 
+  public function unggahInvoicePembayaran()
+  {
+      $file = $this->request->getFile('fileInvoice');
+      if ($file && $file->isValid() && !$file->hasMoved()) {
+          $fileType = $file->getClientMimeType();
+          $fileSize = $file->getSize();
+
+          // Validasi format dan ukuran
+          if ($fileType !== 'application/pdf') {
+              return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+          }
+
+          if ($fileSize > 2.5 * 1024 * 1024) { // 2,5 MB
+              return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+          }
+
+          // Tentukan lokasi penyimpanan
+          $uploadPath = WRITEPATH . 'uploads/invoice';
+          if (!is_dir($uploadPath)) {
+              mkdir($uploadPath, 0775, true); // Buat folder jika belum ada
+          }
+
+          // Simpan file dengan nama acak
+          $fileName = $file->getRandomName();
+          if ($file->move($uploadPath, $fileName)) {
+              return $this->response->setJSON(['status' => 'success', 'fileName' => $fileName]);
+          } else {
+              return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $file->getErrorString()]);
+          }
+      } else {
+          return $this->response->setJSON(['status' => 'error', 'message' => 'File tidak valid atau tidak ditemukan']);
+      }
+  }
+
   public function insertPembayaran()
   {
       try {
@@ -296,12 +330,29 @@ class Keuangan extends BaseController
           // Siapkan data untuk insert ke trn_payment
           $insertData = [];
           foreach ($data as $row) {
+              // Konversi string tanggal ke objek DateTime untuk perhitungan
+              $invoiceDate = new \DateTime($row['invoice_date']);
+              $paymentDate = new \DateTime($row['payment_date']);
+
+              // Hitung selisih hari
+              $timeDiff = $paymentDate->diff($invoiceDate);
+              $dayDiff = $timeDiff->days;
+              if ($dayDiff === 0) {
+                  $dayDiff = 0; // Jika sama, set ke 0 hari
+              } else {
+                  $dayDiff += 1; // Tambah 1 hari untuk hari terakhir
+              }
+
               $insertData[] = [
                   'id_ref' => $row['id_ref'],
-                  'no_doc' => $no_doc, // Gunakan no_doc yang sama untuk semua baris
+                  'no_doc' => $no_doc,
+                  'invoice_date' => $row['invoice_date'],
                   'payment_date' => $row['payment_date'],
-                  'payment_amt' => str_replace([',', '.'], ['', ''], $row['payment_amt']), // Hilangkan format uang
-                  'description' => $row['description'],
+                  'period_payment' => $dayDiff,
+                  'payment_amt' => str_replace([',', '.'], ['', ''], $row['payment_amt']),
+                  'description' => $row['description'] ?? null,
+                  'reason' => $row['reason'] ?? null,
+                  'file_invoice' => $row['file_invoice'] ?? null, // Tambahkan nama file
                   'user_create' => $username,
                   'create_date' => date('Y-m-d H:i:s'),
               ];
@@ -315,26 +366,20 @@ class Keuangan extends BaseController
               'message' => 'Data pembayaran berhasil disimpan.',
           ]);
       } catch (\Throwable $e) {
-        // Log error di server
-        log_message('error', $e->getMessage());
+          log_message('error', $e->getMessage());
+          $fullMsg = $e->getMessage();
+          $lines = explode("\n", $fullMsg);
+          $firstLine = $lines[0] ?? 'Terjadi kesalahan saat menyimpan.';
+          if (preg_match('/ERROR:\s*(.*)/', $firstLine, $m)) {
+              $firstLine = trim($m[1]);
+          }
 
-        // Ambil pesan kesalahan pertama saja
-        $fullMsg   = $e->getMessage();
-        $lines     = explode("\n", $fullMsg);
-        $firstLine = $lines[0] ?? 'Terjadi kesalahan saat menyimpan.';
-        
-        // Jika pesan mengandung 'ERROR:' dari PostgreSQL, ekstrak setelahnya
-        if (preg_match('/ERROR:\s*(.*)/', $firstLine, $m)) {
-            $firstLine = trim($m[1]);
-        }
-
-        // Kembalikan respons JSON error dengan status 400
-        return $this->response
-                    ->setStatusCode(400)
-                    ->setJSON([
-                        'status'  => 'error',
-                        'message' => $firstLine,
-                    ]);
-    } 
+          return $this->response
+              ->setStatusCode(400)
+              ->setJSON([
+                  'status' => 'error',
+                  'message' => $firstLine,
+              ]);
+      }
   }
 }

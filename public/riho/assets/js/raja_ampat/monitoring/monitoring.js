@@ -245,6 +245,8 @@ $(document).ready(function () {
               $("#email").text(data.email || "N/A");
               $("#joblocation").text(data.job_location || "N/A");
               $("#projectmanager").text(data.pm_name || "N/A");
+              // Debug data insp_name
+              console.log("insp_name data:", data.insp_name);
               $("#inspector").text(data.insp_name || "N/A");
               $("#jobstartdate").text(formatDate(data.job_start_date));
               $("#jobenddate").text(formatDate(data.job_finish_date));
@@ -898,22 +900,44 @@ $(document).ready(function () {
             // Inisialisasi tabel Tabulator pertama kali
             paymentTable = new Tabulator("#tabel_detail_pembayaran_piutang", {
               data: data,
-              layout: "fitColumns",
+              // layout: "fitColumns",
               height: "350px",
-              responsiveLayout: "collapse",
+              // responsiveLayout: "collapse",
+              frozenColumns: true,
               pagination: "local",
               paginationSize: 50,
               paginationSizeSelector: [25, 50, 75],
               columns: [
                 {
-                  title: "Tgl Pembuatan",
-                  field: "create_date",
+                  title: "Tgl Terbit Invoice",
+                  field: "invoice_date",
                   headerHozAlign: "center",
                   hozAlign: "center",
+                  frozen: true,
+                },
+                {
+                  title: "Tgl Pembayaran",
+                  field: "payment_date",
+                  headerHozAlign: "center",
+                  hozAlign: "center",
+                  frozen: true,
+                },
+                {
+                  title: "Collecting Periode (hari)",
+                  field: "period_payment",
+                  headerHozAlign: "center",
+                  hozAlign: "center",
+                  frozen: true,
                 },
                 {
                   title: "Uraian",
                   field: "description",
+                  headerHozAlign: "center",
+                  minWidth: 200,
+                },
+                {
+                  title: "Kendala",
+                  field: "reason",
                   headerHozAlign: "center",
                   minWidth: 200,
                 },
