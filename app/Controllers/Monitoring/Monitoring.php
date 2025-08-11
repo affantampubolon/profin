@@ -94,6 +94,24 @@ class Monitoring extends BaseController
       }
   }
 
+  public function getSpkFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/spk/' . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
+      }
+  }
+
   // Data tabel detail proyek
   public function dataDetProyek()
   {
@@ -260,6 +278,24 @@ class Monitoring extends BaseController
               'status' => 'error',
               'message' => 'Gagal menghasilkan file Excel: ' . $e->getMessage()
           ]);
+      }
+  }
+
+  public function getInvoiceFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/invoice/' . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
       }
   }
 

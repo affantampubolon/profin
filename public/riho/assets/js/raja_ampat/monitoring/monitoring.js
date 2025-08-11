@@ -1,17 +1,12 @@
 $(document).ready(function () {
   if (window.location.pathname === "/monitoring/detproyek/index") {
-    // Deklarasi elemen filter
     const $tahun = $("#tahunfilter");
 
-    // Fungsi untuk mendapatkan semua nilai filter saat ini
     function getFilterValues() {
       var tahun = $tahun.val();
-      return {
-        tahun,
-      };
+      return { tahun };
     }
 
-    // Event handler untuk tahun
     $tahun.on("change", function () {
       var filters = getFilterValues();
       data_detail_proyek(filters.tahun);
@@ -20,26 +15,21 @@ $(document).ready(function () {
     var filters = getFilterValues();
     data_detail_proyek(filters.tahun);
 
-    // Fungsi untuk unduh data proyek
     function unduh_data_proyek(tahun) {
-      // Tampilkan progress bar
-      var progressBar = $("#progressBar"); // Pastikan elemen ini ada di HTML
+      var progressBar = $("#progressBar");
       var progressContainer = progressBar.parent();
-      progressContainer.show(); // Tampilkan container progress bar
+      progressContainer.show();
       progressBar.css("width", "0%");
 
-      // Buat URL dengan parameter tahun
       var url = "/monitoring/detproyek/getunduhdata";
       if (tahun) {
         url += "?tahun=" + encodeURIComponent(tahun);
       }
 
-      // Buat permintaan AJAX untuk mendapatkan file Excel
       var xhr = new XMLHttpRequest();
       xhr.open("GET", url, true);
-      xhr.responseType = "blob"; // Set respons sebagai blob untuk file
+      xhr.responseType = "blob";
 
-      // Event saat proses download berlangsung (progress)
       xhr.onprogress = function (event) {
         if (event.lengthComputable) {
           var percentComplete = (event.loaded / event.total) * 100;
@@ -47,10 +37,8 @@ $(document).ready(function () {
         }
       };
 
-      // Event saat respons diterima
       xhr.onload = function () {
         if (this.status === 200) {
-          // Buat blob dari respons dan trigger download
           var blob = new Blob([this.response], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           });
@@ -58,52 +46,41 @@ $(document).ready(function () {
           var a = document.createElement("a");
           a.href = url;
           a.download =
-            "data_proyek_" + (tahun || new Date().getFullYear()) + ".xlsx"; // Gunakan tahun dari JS
+            "data_proyek_" + (tahun || new Date().getFullYear()) + ".xlsx";
           document.body.appendChild(a);
           a.click();
           window.URL.revokeObjectURL(url);
           document.body.removeChild(a);
         }
-        // Sembunyikan progress bar setelah download selesai
         setTimeout(function () {
-          progressContainer.hide(); // Sembunyikan container progress bar
-        }, 1000); // Tunggu 1 detik untuk memastikan download dimulai
+          progressContainer.hide();
+        }, 1000);
       };
 
-      // Event saat error
       xhr.onerror = function () {
         alert("Terjadi kesalahan saat mengunduh file.");
-        progressContainer.hide(); // Sembunyikan progress bar jika error
+        progressContainer.hide();
       };
 
-      // Kirim permintaan
       xhr.send();
     }
 
-    // Event listener untuk tombol unduh data Excel
     $("#unduhdataexcel").on("click", function () {
       var filters = getFilterValues();
       unduh_data_proyek(filters.tahun);
     });
 
-    // Fungsi untuk menampilkan tabel detail proyek
     function data_detail_proyek(tahun) {
-      // Tambahkan kelas CSS ke elemen #tabel_detail_proyek
       $("#tabel_detail_proyek").addClass("table-bordered table-sm");
       $.ajax({
         type: "POST",
         url: url + "monitoring/detproyek/getdetdata",
         async: true,
-        data: {
-          tahun: tahun,
-        },
+        data: { tahun: tahun },
         dataType: "json",
         success: function (data) {
-          // Inisialisasi Tabulator
           var table = new Tabulator("#tabel_detail_proyek", {
             data: data,
-            // movableColumns: true,
-            // layout: "fitColumns",
             height: "500px",
             frozenColumns: true,
             pagination: "local",
@@ -131,6 +108,39 @@ $(document).ready(function () {
 
                   if (target.classList.contains("detail-btn")) {
                     showDetailModal(rowData.id, rowData.nik);
+                  }
+                },
+              },
+              {
+                title: "SPK",
+                field: "file_spk",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                frozen: true,
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return rowData.file_spk
+                    ? `<a class="badge rounded-circle p-2 badge-danger spk-btn" href="#" data-file="${rowData.file_spk}">
+                                          <i class="fa fa-file-pdf-o" style="cursor: pointer;"></i>
+                                       </a>`
+                    : "<span>Tidak ada</span>";
+                },
+                cellClick: function (e, cell) {
+                  var target = e.target.closest("a");
+                  if (!target) return;
+
+                  var rowData = cell.getRow().getData();
+                  if (
+                    target.classList.contains("spk-btn") &&
+                    rowData.file_spk
+                  ) {
+                    // Buat URL untuk mengakses file
+                    var fileUrl =
+                      url +
+                      "/monitoring/detproyek/filespk/" +
+                      encodeURIComponent(rowData.file_spk);
+                    // Buka file di tab baru
+                    window.open(fileUrl, "_blank");
                   }
                 },
               },
@@ -194,14 +204,11 @@ $(document).ready(function () {
       });
     }
 
-    // Fungsi untuk menampilkan modal detail
     function showDetailModal(id) {
-      // Fetch data proyek berdasarkan id
       $.getJSON(url + `monitoring/detproyek/getdetdata/${id}`, function (data) {
         if (data) {
-          console.log("Data received:", data); // Debugging
+          console.log("Data received:", data);
 
-          // Fungsi untuk memformat tanggal ke DD-MM-YYYY
           function formatDate(dateStr) {
             if (!dateStr || dateStr === "N/A") return "N/A";
             const date = new Date(dateStr);
@@ -212,7 +219,6 @@ $(document).ready(function () {
             return `${day}-${month}-${year}`;
           }
 
-          // Fungsi untuk memformat angka dengan separator ribuan (titik) dan desimal (koma)
           function formatNumber(num) {
             if (!num && num !== 0) return "N/A";
             num = Number(num);
@@ -224,16 +230,12 @@ $(document).ready(function () {
             return decimalPart ? `${integerPart},${decimalPart}` : integerPart;
           }
 
-          // Fungsi untuk mengisi data dan label per tab
           function updateTabContent(tabId) {
-            // Kosongkan semua elemen dan sembunyikan semua label
             $(".modal-body p").text("");
             $(".modal-body label").hide();
 
             if (tabId === "#proyek1") {
-              // Tampilkan label untuk tab Proyek
               $(".proyek-label").show();
-              // Isi data untuk tab Proyek
               $("#nowbsheader").text(data.wbs_no || "N/A");
               $("#noso").text(data.so_no || "N/A");
               $("#reportno").text(data.report_no || "N/A");
@@ -245,25 +247,20 @@ $(document).ready(function () {
               $("#email").text(data.email || "N/A");
               $("#joblocation").text(data.job_location || "N/A");
               $("#projectmanager").text(data.pm_name || "N/A");
-              // Debug data insp_name
               console.log("insp_name data:", data.insp_name);
               $("#inspector").text(data.insp_name || "N/A");
               $("#jobstartdate").text(formatDate(data.job_start_date));
               $("#jobenddate").text(formatDate(data.job_finish_date));
               $("#jobtotaltime").text(data.job_tot_time || "N/A");
             } else if (tabId === "#invoice1") {
-              // Tampilkan label untuk tab Invoice
               $(".invoice-label").show();
-              // Isi data untuk tab Invoice
               $("#invoicesenddate").text(formatDate(data.invoice_send_date));
               $("#invoicereceivedate").text(
                 formatDate(data.invoice_receive_date)
               );
               $("#invoicereceivename").text(data.invoice_receive_name || "N/A");
             } else if (tabId === "#anggaranbiaya1") {
-              // Tampilkan label untuk tab Anggaran & Biaya
               $(".anggaranbiaya-label").show();
-              // Isi data untuk tab Anggaran & Biaya
               $("#arbalance").text(formatNumber(data.ar_balance));
               $("#contractamt").text(formatNumber(data.contract_amt));
               $("#revenueamt").text(formatNumber(data.revenue_amt));
@@ -275,15 +272,11 @@ $(document).ready(function () {
             }
           }
 
-          // Inisialisasi data untuk tab default (Proyek) saat modal dibuka
           updateTabContent("#proyek1");
-
-          // Tampilkan modal
           $("#dataDetProyekModal").modal("show");
 
-          // Tambahkan event listener untuk perubahan tab
           $('a[data-bs-toggle="pill"]').on("shown.bs.tab", function (e) {
-            const tabId = $(e.target).attr("href"); // Ambil ID tab yang aktif
+            const tabId = $(e.target).attr("href");
             updateTabContent(tabId);
           });
         }
@@ -806,6 +799,39 @@ $(document).ready(function () {
                   }
                 },
                 minWidth: 100, // Added for action column
+              },
+              {
+                title: "Invoice",
+                field: "file_invoice",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                frozen: true,
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return rowData.file_invoice
+                    ? `<a class="badge rounded-circle p-2 badge-danger invoice-btn" href="#" data-file="${rowData.file_invoice}">
+                                          <i class="fa fa-file-pdf-o" style="cursor: pointer;"></i>
+                                       </a>`
+                    : "<span>Tidak ada</span>";
+                },
+                cellClick: function (e, cell) {
+                  var target = e.target.closest("a");
+                  if (!target) return;
+
+                  var rowData = cell.getRow().getData();
+                  if (
+                    target.classList.contains("invoice-btn") &&
+                    rowData.file_invoice
+                  ) {
+                    // Buat URL untuk mengakses file
+                    var fileUrl =
+                      url +
+                      "/monitoring/pembayaranpiutang/fileinvoice/" +
+                      encodeURIComponent(rowData.file_invoice);
+                    // Buka file di tab baru
+                    window.open(fileUrl, "_blank");
+                  }
+                },
               },
               {
                 title: "Bulan",
