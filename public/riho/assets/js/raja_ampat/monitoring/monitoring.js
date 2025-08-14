@@ -193,7 +193,6 @@ $(document).ready(function () {
                 field: "wbs_no",
                 headerHozAlign: "center",
                 headerFilter: "input",
-                frozen: true,
               },
               {
                 title: "Nama Pekerjaan",
