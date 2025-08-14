@@ -145,6 +145,39 @@ $(document).ready(function () {
                 },
               },
               {
+                title: "Laporan",
+                field: "file_laporan",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                frozen: true,
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return rowData.file_laporan
+                    ? `<a class="badge rounded-circle p-2 badge-danger laporan-btn" href="#" data-file="${rowData.file_laporan}">
+                                          <i class="fa fa-file-pdf-o" style="cursor: pointer;"></i>
+                                       </a>`
+                    : "<span>Tidak ada</span>";
+                },
+                cellClick: function (e, cell) {
+                  var target = e.target.closest("a");
+                  if (!target) return;
+
+                  var rowData = cell.getRow().getData();
+                  if (
+                    target.classList.contains("laporan-btn") &&
+                    rowData.file_laporan
+                  ) {
+                    // Buat URL untuk mengakses file
+                    var fileUrl =
+                      url +
+                      "/monitoring/detproyek/filelaporan/" +
+                      encodeURIComponent(rowData.file_laporan);
+                    // Buka file di tab baru
+                    window.open(fileUrl, "_blank");
+                  }
+                },
+              },
+              {
                 title: "Tgl Registrasi",
                 field: "create_date_project",
                 headerHozAlign: "center",
@@ -154,7 +187,6 @@ $(document).ready(function () {
                   inputFormat: "yyyy-MM-dd HH:mm:ss",
                   outputFormat: "dd-MMM-yyyy",
                 },
-                frozen: true,
               },
               {
                 title: "No. WBS",

@@ -188,6 +188,21 @@
                                 </p>
                             </div>
                         </div>
+                        <div class="row p-2">
+                            <div class="col-xl-6 col-md-12">
+                                <p class="form-label" for="">Unggah File Laporan <span class="txt-danger f-w-600">*</span></p>
+                                <input
+                                    class="form-control"
+                                    name="fileLaporan" id="fileLaporan"
+                                    type="file"
+                                    aria-describedby="inputGroupFileAddon03"
+                                    aria-label="Upload"
+                                />
+                                <p class="mb-2">
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                             <button class="btn btn-primary" type="submit">

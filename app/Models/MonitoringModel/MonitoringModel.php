@@ -15,7 +15,7 @@ class MonitoringModel extends Model
         $builder = $this->db->table('vw_det_project')
             ->select('id, year, month, no_spi, wbs_no, so_no, job_name, company_id, company_name, 
                       company_address, company_pic, hp_no, email, job_location, project_manager, pm_name, 
-                      inspector, insp_name, report_no, file_spk, ar_balance, invoice_send_date, invoice_receive_date, 
+                      inspector, insp_name, report_no, file_spk, file_laporan, ar_balance, invoice_send_date, invoice_receive_date, 
                       invoice_receive_name, job_start_date, job_finish_date, job_tot_time, contract_amt, revenue_amt, 
                       cost_plan_amt, cost_real_amt, payment_amt, last_payment_amt, last_payment_date, prs_payment, status_payment, reason, progress, progress_name, user_create_project, create_date_project, 
                       user_update_project, update_date_project,
