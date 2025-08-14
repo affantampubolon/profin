@@ -2857,10 +2857,8 @@ table tbody .border-bottom-warning td {
 
 /*======= Table tabulator styling css start  ======= */
 /* Mengatur warna latar belakang untuk sel kolom dengan kelas highlight-column */
-.tabulator
-  .tabulator-col.highlight-column
-  .tabulator-col-content {
-  background-color: #5EABD6 !important;
+.tabulator .tabulator-col.highlight-column .tabulator-col-content {
+  background-color: #5eabd6 !important;
 }
 
 /*======= Svg stroke css start  ======= */

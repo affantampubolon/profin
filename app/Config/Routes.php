@@ -48,6 +48,10 @@ $routes->get('/master/user/index', 'Master\Master::indexMstUser');
 $routes->post('/master/user/datauser', 'Master\Master::dataUser');
 $routes->post('/master/user/updatedatauser', 'Master\Master::updateDataUser');
 $routes->get('/master/user/formulir', 'Master\Master::indexMstUserForm');
+//Ganti Password
+$routes->get('/master/user/indexubahpassword', 'Master\Master::indexGantiPasswordForm');
+$routes->post('/master/user/ubahdatapassword', 'Master\Master::updateUserPassword');
+//
 $routes->get('/master/user/filterkaryawan', 'Master\Master::getFilterKaryawan');
 $routes->post('/master/user/insertdatauser', 'Master\Master::insertUser');
 //PELANGGAN

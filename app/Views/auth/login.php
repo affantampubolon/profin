@@ -43,7 +43,7 @@
                 </div>
               </div>
               <div class="form-group mb-1">
-                <a class="checkbox p-0" href="<?= base_url(); ?>forget-password.html">Lupa Kata Sandi?</a>
+                
               </div>
               <?php if (session()->getFlashdata('msg')) : ?>
                 <div class="form-group mb-1">

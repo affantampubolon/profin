@@ -362,4 +362,47 @@ class Master extends BaseController
             return redirect()->back()->with('error', 'Gagal menyimpan data user');
         }
     }
+
+    
+    public function indexGantiPasswordForm()
+    {
+        
+        $data = [
+            'title' => "Perbarui Password",
+            'validation' => $this->validation,
+            'breadcrumb' => $this->breadcrumb,
+            'session' => $this->session
+        ];
+        return view('auth/ganti_password', $data);
+    }
+
+    public function updateUserPassword()
+    {
+        $password = $this->request->getPost('updatePassword');
+
+        // Konversi password ke hash untuk password_web (cost 12)
+        $hashedPasswordWeb = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+
+        // Konversi password ke hash untuk password_mob (cost 10)
+        $hashedPasswordMob = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
+
+        $username = $this->session->get('username');
+
+        $data = [
+            'password_web' => $hashedPasswordWeb,
+            'password_mob' => $hashedPasswordMob,
+            'user_update' => $username,
+            'update_date' => date('Y-m-d H:i:s')
+        ];
+
+        $result = $this->karyawanModel->updatePassword($username, $data);
+
+        if ($result) {
+            return redirect()->to('/beranda')->with('success', 'Password berhasil diperbarui');
+        } else {
+            return redirect()->back()->with('error', 'Gagal memperbarui password');
+        }
+    }
+
+  
 }
