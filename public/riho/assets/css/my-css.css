@@ -1,3 +1,17 @@
+/* Style default gambar (untuk resolusi ≤ 1366px) */
+.responsive-img {
+  width: auto; /* Ukuran default, sesuai gambar asli */
+  height: auto;
+}
+
+/* Media query untuk resolusi di atas 1366px */
+@media (min-width: 1367px) {
+  .responsive-img {
+    width: 32px !important; /* Kunci ukuran menjadi 32x32 */
+    height: 32px !important;
+  }
+}
+
 .btn-1-ra {
   background: linear-gradient(115.77deg, #fbeeac -35.98%, #75c2f6 107.82%);
   border-radius: 50px;

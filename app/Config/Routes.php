@@ -48,6 +48,10 @@ $routes->get('/master/user/index', 'Master\Master::indexMstUser');
 $routes->post('/master/user/datauser', 'Master\Master::dataUser');
 $routes->post('/master/user/updatedatauser', 'Master\Master::updateDataUser');
 $routes->get('/master/user/formulir', 'Master\Master::indexMstUserForm');
+//Ganti Password
+$routes->get('/master/user/indexubahpassword', 'Master\Master::indexGantiPasswordForm');
+$routes->post('/master/user/ubahdatapassword', 'Master\Master::updateUserPassword');
+//
 $routes->get('/master/user/filterkaryawan', 'Master\Master::getFilterKaryawan');
 $routes->post('/master/user/insertdatauser', 'Master\Master::insertUser');
 //PELANGGAN
@@ -102,6 +106,8 @@ $routes->post('/keuangan/pembayaran/insertdatapembayaran', 'Keuangan\Keuangan::i
 //Detail Proyek
 $routes->get('/monitoring/detproyek/index', 'Monitoring\Monitoring::detproyekindex');
 $routes->get('/monitoring/detproyek/getunduhdata', 'Monitoring\Monitoring::dataUnduhDetProyek');
+$routes->get('/monitoring/detproyek/filespk/(:segment)', 'Monitoring\Monitoring::getSpkFile/$1');
+$routes->get('/monitoring/detproyek/filelaporan/(:segment)', 'Monitoring\Monitoring::getLaporanFile/$1');
 $routes->post('/monitoring/detproyek/getdetdata', 'Monitoring\Monitoring::dataDetProyek');
 $routes->get('/monitoring/detproyek/getdetdata/(:num)', 'Monitoring\Monitoring::dataDetProyekId/$1');
 
@@ -115,6 +121,7 @@ $routes->post('/monitoring/anggaranbiaya/getdatadetdropping', 'Monitoring\Monito
 //Pembayaran Piutang
 $routes->get('/monitoring/pembayaranpiutang/index', 'Monitoring\Monitoring::pembayaranpiutangindex');
 $routes->get('/monitoring/pembayaranpiutang/getunduhdata', 'Monitoring\Monitoring::dataUnduhPembayaranPiutang');
+$routes->get('/monitoring/pembayaranpiutang/fileinvoice/(:segment)', 'Monitoring\Monitoring::getInvoiceFile/$1');
 $routes->post('/monitoring/pembayaranpiutang/getdetdata', 'Monitoring\Monitoring::dataPembayaranPiutang');
 $routes->post('/monitoring/pembayaranpiutang/getdetpembayaranpiutang', 'Monitoring\Monitoring::dataDetPembayaranPiutang');
 

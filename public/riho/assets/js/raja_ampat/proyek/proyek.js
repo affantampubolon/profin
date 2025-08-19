@@ -48,9 +48,7 @@ $(document).ready(function () {
       method: "GET",
       dataType: "json",
       success: function (data) {
-        $("#inspector")
-          .empty()
-          .append('<option value="" selected>Pilih Inspector</option>');
+        $("#inspector").empty();
         data.forEach((pminspector) => {
           $("#inspector").append(
             `<option value="${pminspector.nik}">${pminspector.emp_name}</option>`
