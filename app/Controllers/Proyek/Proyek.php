@@ -229,6 +229,7 @@ class Proyek extends BaseController
     ];
 
     // Penanganan unggahan file PDF
+    //File SPK
     $fileSpk = $this->request->getFile('fileSpk');
     log_message('debug', 'File detected: ' . ($fileSpk ? 'Yes' : 'No') . ', Is Valid: ' . ($fileSpk ? ($fileSpk->isValid() ? 'Yes' : 'No') : 'N/A'));
     if ($fileSpk && $fileSpk->isValid() && !$fileSpk->hasMoved()) {
@@ -264,6 +265,45 @@ class Proyek extends BaseController
     } elseif (isset($oldData->file_spk)) {
         $data['file_spk'] = $oldData->file_spk; // Pertahankan file lama jika tidak ada unggahan baru
     }
+
+    //File Laporan
+    // Penanganan unggahan file PDF
+    $fileLaporan = $this->request->getFile('fileLaporan');
+    log_message('debug', 'File detected: ' . ($fileLaporan ? 'Yes' : 'No') . ', Is Valid: ' . ($fileLaporan ? ($fileLaporan->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileLaporan && $fileLaporan->isValid() && !$fileLaporan->hasMoved()) {
+        // Validasi format dan ukuran file
+        $fileType = $fileLaporan->getClientMimeType();
+        $fileSize = $fileLaporan->getSize();
+
+        log_message('debug', 'File Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+        }
+
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        }
+
+        // Pastikan direktori ada
+        $uploadPath = WRITEPATH . 'uploads/laporan';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+
+        // Simpan file
+        $fileName = $fileLaporan->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileLaporan->move($uploadPath, $fileName)) {
+            $data['file_spk'] = $fileName; // Simpan nama file ke database
+            log_message('debug', 'File saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move file: ' . $fileLaporan->getErrorString());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $fileLaporan->getErrorString()]);
+        }
+    } elseif (isset($oldData->file_laporan)) {
+        $data['file_laporan'] = $oldData->file_laporan; // Pertahankan file lama jika tidak ada unggahan baru
+    }
+
 
     // Validasi data sebelum update
     if (!$id) {

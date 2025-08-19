@@ -1157,5 +1157,24 @@ $(document).ready(function () {
           }
         });
       });
+  } else if (window.location.pathname == "/master/user/indexubahpassword") {
+    document
+      .getElementById("formGantiPassword")
+      .addEventListener("submit", function (e) {
+        e.preventDefault(); // Mencegah submit langsung
+        Swal.fire({
+          title: "Anda yakin?",
+          text: "Password Diperbarui!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya, simpan!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.submit(); // Submit form jika dikonfirmasi
+          }
+        });
+      });
   }
 });

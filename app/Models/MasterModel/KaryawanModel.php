@@ -84,4 +84,11 @@ class KaryawanModel extends Model
 
             return $builder->get()->getResult();
     }
+
+    public function updatePassword($username, $data)
+    {
+        return $this->db->table('mst_user')
+            ->where('username', $username)
+            ->update($data);
+    }
 }

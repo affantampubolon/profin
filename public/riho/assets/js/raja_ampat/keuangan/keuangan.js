@@ -176,8 +176,7 @@ $(document).ready(function () {
     $("#tabel_realisasi_biaya").addClass("table-bordered table-sm");
     var table = new Tabulator("#tabel_realisasi_biaya", {
       height: "500px",
-      layout: "fitColumns",
-      responsiveLayout: "collapse",
+      frozenColumns: true,
       pagination: "local",
       paginationSize: 20,
       paginationSizeSelector: [10, 20, 30],
@@ -186,6 +185,7 @@ $(document).ready(function () {
         {
           title: "Aksi",
           hozAlign: "center",
+          frozen: true,
           width: 75,
           headerHozAlign: "center",
           formatter: "buttonCross",
@@ -197,6 +197,7 @@ $(document).ready(function () {
           title: "COA",
           field: "coa",
           headerHozAlign: "center",
+          minWidth: 150,
           hozAlign: "center",
           formatter: function (cell) {
             var coaValue = cell.getValue();
@@ -218,6 +219,7 @@ $(document).ready(function () {
         {
           title: "No. WBS",
           field: "id_ref",
+          minWidth: 250,
           headerHozAlign: "center",
           formatter: function (cell) {
             var docValue = cell.getValue();
@@ -239,6 +241,7 @@ $(document).ready(function () {
         {
           title: "Nilai Sisa",
           field: "diff_amt", // Gunakan field valid agar bisa dirender
+          minWidth: 150,
           headerHozAlign: "center",
           hozAlign: "right",
           formatter: "money",
@@ -247,13 +250,15 @@ $(document).ready(function () {
         {
           title: "Uraian",
           field: "description",
+          minWidth: 250,
           headerHozAlign: "center",
           editor: "input",
           cssClass: "highlight-column",
         },
         {
-          title: "Realisasi Biaya",
+          title: "Nilai Realisasi",
           field: "real_amt",
+          minWidth: 150,
           headerHozAlign: "center",
           hozAlign: "right",
           formatter: "money",
@@ -711,7 +716,6 @@ $(document).ready(function () {
           field: "invoice_date",
           headerHozAlign: "center",
           hozAlign: "center",
-          frozen: true,
           editor: "date",
           editorParams: { format: "dd-MM-yyyy" },
         },
@@ -720,7 +724,6 @@ $(document).ready(function () {
           field: "payment_date",
           headerHozAlign: "center",
           hozAlign: "center",
-          frozen: true,
           editor: "date",
           editorParams: { format: "dd-MM-yyyy" },
         },
