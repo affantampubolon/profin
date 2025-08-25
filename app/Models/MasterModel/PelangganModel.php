@@ -32,6 +32,8 @@ class PelangganModel extends Model
                 cust_name_tax,
                 address_tax,
                 pic_name,
+                file_npwp,
+                file_nib
             ")
             ->where('branch_id', $cabang)
             ->orderBy('id');

@@ -94,8 +94,6 @@ class Proyek extends BaseController
 
         // Aturan validasi
         $validationRules = [
-            'nowbs' => 'required',
-            'noso' => 'required',
             'jobcategory' => 'required',
             'jobname' => 'required',
             'companyname' => 'required',
@@ -123,8 +121,8 @@ class Proyek extends BaseController
 
         // Data untuk tabel trn_job_project
         $dataProyek = [
-            'wbs_no' => $nowbs,
-            'so_no' => $noso,
+            'wbs_no' => $nowbs ?: '0', // Jika $nowbs kosong (null atau ''), ganti dengan '0'
+            'so_no' => $noso ?: '0',   // Jika $noso kosong (null atau ''), ganti dengan '0'
             'job_category' => $jobcategory,
             'job_name' => $jobname,
             'company_id' => $companyname,

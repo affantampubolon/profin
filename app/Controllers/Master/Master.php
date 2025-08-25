@@ -87,6 +87,42 @@ class Master extends BaseController
         echo json_encode($data);
     }
 
+    public function getNpwpCustFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/pelanggan/npwp' . DIRECTORY_SEPARATOR . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
+      }
+  }
+
+  public function getNibCustFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/pelanggan/nib' . DIRECTORY_SEPARATOR . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
+      }
+  }
+
     // Function Index -> halaman Registrasi Pelanggan
     public function indexRegisPelanggan()
     {
@@ -100,38 +136,95 @@ class Master extends BaseController
 
     public function insertPelanggan()
     {
-        // Log request untuk debugging
-        log_message('debug', 'Request Data: ' . json_encode($this->request->getPost()));
+    // Log request untuk debugging
+    log_message('debug', 'Request Data: ' . json_encode($this->request->getPost()));
 
-        // Ambil data dari POST
-        $data = $this->request->getPost();
+    // Ambil username dari session
+    $username = $this->session->get('username');
+    if (!$username) {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Session username tidak ditemukan'
+        ]);
+    }
 
-        // Ambil username dari session
-        $username = $this->session->get('username');
-        if (!$username) {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Session username tidak ditemukan'
-            ]);
+    // Inisialisasi array data
+    $data = $this->request->getPost(); // Ambil data teks
+    $data['user_create'] = $username;
+    $data['create_date'] = date('Y-m-d H:i:s');
+
+    // Penanganan unggahan file NPWP
+    $fileNpwp = $this->request->getFile('fileNpwp');
+    log_message('debug', 'File NPWP detected: ' . ($fileNpwp ? 'Yes' : 'No') . ', Is Valid: ' . ($fileNpwp ? ($fileNpwp->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileNpwp && $fileNpwp->isValid() && !$fileNpwp->hasMoved()) {
+        $fileType = $fileNpwp->getClientMimeType();
+        $fileSize = $fileNpwp->getSize();
+        log_message('debug', 'File NPWP Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['success' => false, 'message' => 'File NPWP harus dalam format .pdf']);
         }
-
-
-        // Tambahkan user_update dan update_date
-        $data['user_create'] = $username;
-        $data['create_date'] = date('Y-m-d H:i:s');
-
-        // masukkan data di database
-        $result = $this->pelangganModel->insertPelanggan($data);
-
-        // Response JSON
-        if ($result) {
-            return $this->response->setJSON(['success' => true]);
+        if ($fileSize > 1 * 1024 * 1024) {
+            return $this->response->setJSON(['success' => false, 'message' => 'File NPWP melebihi kapasitas 1 MB']);
+        }
+        $uploadPath = WRITEPATH . 'uploads/pelanggan/npwp';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+        $fileName = $fileNpwp->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileNpwp->move($uploadPath, $fileName)) {
+            $data['file_npwp'] = $fileName; // Simpan hanya nama file
+            log_message('debug', 'File NPWP saved successfully: ' . $fullPath);
         } else {
-            return $this->response->setJSON([
-                'success' => false,
-                'message' => 'Gagal mengupdate data'
-            ]);
+            log_message('error', 'Failed to move NPWP file: ' . $fileNpwp->getErrorString());
+            return $this->response->setJSON(['success' => false, 'message' => 'Gagal menyimpan file NPWP: ' . $fileNpwp->getErrorString()]);
         }
+    } else {
+        $data['file_npwp'] = null; // Jika tidak ada file, set NULL
+    }
+
+    // Penanganan unggahan file NIB
+    $fileNib = $this->request->getFile('fileNib');
+    log_message('debug', 'File NIB detected: ' . ($fileNib ? 'Yes' : 'No') . ', Is Valid: ' . ($fileNib ? ($fileNib->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileNib && $fileNib->isValid() && !$fileNib->hasMoved()) {
+        $fileType = $fileNib->getClientMimeType();
+        $fileSize = $fileNib->getSize();
+        log_message('debug', 'File NIB Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['success' => false, 'message' => 'File NIB harus dalam format .pdf']);
+        }
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['success' => false, 'message' => 'File NIB melebihi kapasitas 2.5 MB']);
+        }
+        $uploadPath = WRITEPATH . 'uploads/pelanggan/nib';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+        $fileName = $fileNib->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileNib->move($uploadPath, $fileName)) {
+            $data['file_nib'] = $fileName; // Simpan hanya nama file
+            log_message('debug', 'File NIB saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move NIB file: ' . $fileNib->getErrorString());
+            return $this->response->setJSON(['success' => false, 'message' => 'Gagal menyimpan file NIB: ' . $fileNib->getErrorString()]);
+        }
+    } else {
+        $data['file_nib'] = null; // Jika tidak ada file, set NULL
+    }
+
+    // Masukkan data ke database
+    $result = $this->pelangganModel->insertPelanggan($data);
+
+    // Response JSON
+    if ($result) {
+        return $this->response->setJSON(['success' => true]);
+    } else {
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Gagal mengupdate data'
+        ]);
+    }
     }
 
     //MASTER KARYAWAN

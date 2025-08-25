@@ -74,22 +74,22 @@
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Registrasi Proyek</b></p>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">No. WBS <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">No. WBS </label>
                                 <input class="form-control" id="nowbs" name="nowbs" type="text" />
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">No. SO <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">No. SO </label>
                                 <input class="form-control" id="noso" name="noso" type="text" />
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">No. Laporan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">No. Laporan </label>
                                 <input class="form-control" id="reportno" name="reportno" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Waktu Proyek</b></p>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Mulai Pekerjaan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Tanggal Mulai Pekerjaan </label>
                                 <div class="input-group flatpicker-calender">
                                     <input
                                         class="form-control"
@@ -101,7 +101,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Selesai Pekerjaan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Tanggal Selesai Pekerjaan </label>
                                 <div class="input-group flatpicker-calender">
                                     <input
                                         class="form-control"
@@ -113,14 +113,14 @@
                                 </div>
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Total Waktu Pekerjaan (hari) <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Total Waktu Pekerjaan (hari) </label>
                                 <input class="form-control" id="jobtotaltime" name="jobtotaltime" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Invoice</b></p>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Kirim Invoice <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Tanggal Kirim Invoice </label>
                                 <div class="input-group flatpicker-calender">
                                     <input
                                         class="form-control"
@@ -132,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Terima Invoice <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Tanggal Terima Invoice </label>
                                 <div class="input-group flatpicker-calender">
                                     <input
                                         class="form-control"
@@ -144,14 +144,14 @@
                                 </div>
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Nama Penerima <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Nama Penerima </label>
                                 <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Detail Proyek</b></p>
                             <div class="col-xl-12 col-md-12">
-                                <label class="form-label" for="">Progres Pekerjaan % <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Progres Pekerjaan % </label>
                                 <select id="progressjob" name="progressjob" class="select2 form-control">
                                     <option value="0">0 %</option>
                                     <option value="10">10 %</option>
@@ -169,13 +169,13 @@
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-12 col-md-12">
-                                <label class="form-label" for="">Nilai Pendapatan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Nilai Pendapatan </label>
                                 <input class="form-control" id="revenueamt" name="revenueamt" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-6 col-md-12">
-                                <p class="form-label" for="">Unggah File SPK <span class="txt-danger f-w-600">*</span></p>
+                                <p class="form-label" for="">Unggah File SPK </p>
                                 <input
                                     class="form-control"
                                     name="fileSpk" id="fileSpk"
@@ -190,7 +190,7 @@
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-6 col-md-12">
-                                <p class="form-label" for="">Unggah File Laporan <span class="txt-danger f-w-600">*</span></p>
+                                <p class="form-label" for="">Unggah File Laporan </p>
                                 <input
                                     class="form-control"
                                     name="fileLaporan" id="fileLaporan"

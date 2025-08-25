@@ -56,6 +56,8 @@ $routes->get('/master/user/filterkaryawan', 'Master\Master::getFilterKaryawan');
 $routes->post('/master/user/insertdatauser', 'Master\Master::insertUser');
 //PELANGGAN
 $routes->get('/master/pelanggan/index', 'Master\Master::indexMstPelanggan');
+$routes->get('/master/pelanggan/filenpwp/(:segment)', 'Master\Master::getNpwpCustFile/$1');
+$routes->get('/master/pelanggan/filenib/(:segment)', 'Master\Master::getNibCustFile/$1');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
 $routes->post('/master/pelanggan/getdatamstpelanggan', 'Master\Master::dataMstPelanggan');
 $routes->post('/master/pelanggan/insertpelanggan', 'Master\Master::insertPelanggan');

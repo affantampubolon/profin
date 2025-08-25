@@ -137,7 +137,7 @@ $(document).ready(function () {
                     // Buat URL untuk mengakses file
                     var fileUrl =
                       url +
-                      "/monitoring/detproyek/filespk/" +
+                      "monitoring/detproyek/filespk/" +
                       encodeURIComponent(rowData.file_spk);
                     // Buka file di tab baru
                     window.open(fileUrl, "_blank");
@@ -170,7 +170,7 @@ $(document).ready(function () {
                     // Buat URL untuk mengakses file
                     var fileUrl =
                       url +
-                      "/monitoring/detproyek/filelaporan/" +
+                      "monitoring/detproyek/filelaporan/" +
                       encodeURIComponent(rowData.file_laporan);
                     // Buka file di tab baru
                     window.open(fileUrl, "_blank");

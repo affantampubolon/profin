@@ -47,14 +47,14 @@
                         <p class="text-uppercase"><b>.Detail Perusahaan dan Pekerjaan</b></p>
                             <div class="row p-2">
                                 <div class="col-xl-4 col-md-4">
-                                    <label class="form-label" for="">No. WBS <span class="txt-danger f-w-600">*</span></label>
+                                    <label class="form-label" for="">No. WBS </label>
                                     <input class="form-control" id="nowbs" name="nowbs" type="text" />
-                                    <p class="txt-danger" for="">isi angka 0 jika No.WBS belum ada</p>
+                                    <p class="txt-danger" for="">kosongkan saja jika No.WBS belum ada</p>
                                 </div>
                                 <div class="col-xl-4 col-md-4">
-                                    <label class="form-label" for="">No. SO <span class="txt-danger f-w-600">*</span></label>
+                                    <label class="form-label" for="">No. SO </label>
                                     <input class="form-control" id="noso" name="noso" type="text" />
-                                    <p class="txt-danger" for="">isi angka 0 jika No.SO belum ada</p>
+                                    <p class="txt-danger" for="">kosongkan saja jika No.SO belum ada</p>
                                 </div>
                                 <div class="col-xl-4 col-md-4">
                                     <label class="form-label" for="">Jenis Pekerjaan <span class="txt-danger f-w-600">*</span></label>
@@ -97,7 +97,7 @@
                                     <input class="form-control" id="telpno" name="telpno" type="text" />
                                 </div>
                                 <div class="col-xl-4 col-md-4">
-                                    <label class="form-label" for="">Email <span class="txt-danger f-w-600">*</span></label>
+                                    <label class="form-label" for="">Email </label>
                                     <input class="form-control" id="email" name="email" type="text" />
                                 </div>
                             </div>
