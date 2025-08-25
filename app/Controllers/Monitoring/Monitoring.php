@@ -96,7 +96,7 @@ class Monitoring extends BaseController
 
   public function getSpkFile($fileName)
   {
-      $filePath = WRITEPATH . 'uploads/spk/' . $fileName;
+      $filePath = WRITEPATH . 'uploads/spk/' . DIRECTORY_SEPARATOR . $fileName;
 
       if (file_exists($filePath) && is_file($filePath)) {
           // Set header untuk file PDF
@@ -114,7 +114,7 @@ class Monitoring extends BaseController
 
   public function getLaporanFile($fileName)
   {
-      $filePath = WRITEPATH . 'uploads/laporan/' . $fileName;
+      $filePath = WRITEPATH . 'uploads/laporan/' . DIRECTORY_SEPARATOR . $fileName;
 
       if (file_exists($filePath) && is_file($filePath)) {
           // Set header untuk file PDF
