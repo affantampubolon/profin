@@ -96,7 +96,7 @@
                             <?php if ($role_id == 5): ?>
                                 <div class="row p-2">
                                     <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for="">Termin </label>
+                                        <label class="form-label" for="">Termin (Periode) </label>
                                         <input class="form-control" id="termintime" name="termintime" type="text" />
                                     </div>
                                     <div class="col-xl-6 col-md-6">
@@ -107,7 +107,7 @@
                             <?php else: ?>
                                 <div class="row p-2">
                                     <div class="col-xl-6 col-md-6">
-                                        <label class="form-label" for="">Termin (hari) </label>
+                                        <label class="form-label" for="">Termin (Periode) </label>
                                         <input class="form-control" id="termintime" name="termintime" type="text" disabled/>
                                     </div>
                                     <div class="col-xl-6 col-md-6">
@@ -271,6 +271,22 @@
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-6 col-md-12">
+                                <p class="form-label" for="">Unggah File Surat Tugas </p>
+                                <input
+                                    class="form-control"
+                                    name="fileSuratTugas" id="fileSuratTugas"
+                                    type="file"
+                                    aria-describedby="inputGroupFileAddon03"
+                                    aria-label="Upload"
+                                />
+                                <div id="fileSuratTugasContainer"></div>
+                                <p class="mb-2">
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-xl-6 col-md-12">
                                 <p class="form-label" for="">Unggah File SPK </p>
                                 <input
                                     class="form-control"
@@ -279,6 +295,23 @@
                                     aria-describedby="inputGroupFileAddon03"
                                     aria-label="Upload"
                                 />
+                                <div id="fileSpkContainer"></div>
+                                <p class="mb-2">
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-xl-6 col-md-12">
+                                <p class="form-label" for="">Unggah File Addendum SPK </p>
+                                <input
+                                    class="form-control"
+                                    name="fileAddendumSpk" id="fileAddendumSpk"
+                                    type="file"
+                                    aria-describedby="inputGroupFileAddon03"
+                                    aria-label="Upload"
+                                />
+                                <div id="fileAddendumSpkContainer"></div>
                                 <p class="mb-2">
                                     <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
                                 </p>
@@ -288,14 +321,15 @@
                             <div class="col-xl-6 col-md-12">
                                 <p class="form-label" for="">Unggah File Laporan </p>
                                 <input
-                                    class="form-control"
-                                    name="fileLaporan" id="fileLaporan"
-                                    type="file"
-                                    aria-describedby="inputGroupFileAddon03"
-                                    aria-label="Upload"
+                                class="form-control"
+                                name="fileLaporan" id="fileLaporan"
+                                type="file"
+                                aria-describedby="inputGroupFileAddon03"
+                                aria-label="Upload"
                                 />
+                                <div id="fileLaporanContainer"></div>
                                 <p class="mb-2">
-                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>50 MB</strong></em>
                                 </p>
                             </div>
                         </div>

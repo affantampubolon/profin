@@ -75,7 +75,8 @@ class ProyekModel extends Model
     {
         $builder = $this->db->table('trn_job_project')
             ->select('id, no_doc, wbs_no, so_no, job_name, company_id, f_tv_customer_name(company_id) AS company_name,
-                     company_address, company_pic, hp_no, email, job_location, project_manager, f_tv_employee_name(project_manager) AS pm_name, inspector, f_tv_employee_name(inspector) AS inspector_name, report_no, ar_balance, invoice_send_date, invoice_receive_date, invoice_receive_name, job_start_date, job_finish_date, job_tot_time, contract_amt, revenue_amt,cost_plan_amt, cost_real_amt, payment_amt, progress, file_spk, file_laporan, file_invoice, file_faktur_pajak, termin_time, contract_tot_time, flg_used, user_create, create_date, user_update, update_date')
+                     company_address, company_pic, hp_no, email, job_location, project_manager, f_tv_employee_name(project_manager) AS pm_name, inspector, f_tv_employee_name(inspector) AS inspector_name, report_no, ar_balance, invoice_send_date, invoice_receive_date, invoice_receive_name, job_start_date, job_finish_date, job_tot_time, contract_amt, revenue_amt,cost_plan_amt, cost_real_amt, payment_amt, progress, file_spk, file_laporan, file_invoice, file_faktur_pajak, termin_time, contract_tot_time, 
+                     file_addendum_spk, file_surat_tugas, flg_used, user_create, create_date, user_update, update_date')
             ->where('id', $id);
 
             return $builder->get()->getRow();

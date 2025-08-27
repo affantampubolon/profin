@@ -305,6 +305,43 @@ class Proyek extends BaseController
         $data['file_faktur_pajak'] = $oldData->file_faktur_pajak; // Pertahankan file lama jika tidak ada unggahan baru
     }
 
+    //File Surat Tugas
+    $fileSuratTugas = $this->request->getFile('fileSuratTugas');
+    log_message('debug', 'File detected: ' . ($fileSuratTugas ? 'Yes' : 'No') . ', Is Valid: ' . ($fileSuratTugas ? ($fileSuratTugas->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileSuratTugas && $fileSuratTugas->isValid() && !$fileSuratTugas->hasMoved()) {
+        // Validasi format dan ukuran file
+        $fileType = $fileSuratTugas->getClientMimeType();
+        $fileSize = $fileSuratTugas->getSize();
+
+        log_message('debug', 'File Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+        }
+
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        }
+
+        // Pastikan direktori ada
+        $uploadPath = WRITEPATH . 'uploads/surat_tugas';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+
+        // Simpan file
+        $fileName = $fileSuratTugas->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileSuratTugas->move($uploadPath, $fileName)) {
+            $data['file_surat_tugas'] = $fileName; // Simpan nama file ke database
+            log_message('debug', 'File saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move file: ' . $fileSuratTugas->getErrorString());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $fileSpk->getErrorString()]);
+        }
+    } elseif (isset($oldData->file_surat_tugas)) {
+        $data['file_surat_tugas'] = $oldData->file_surat_tugas; // Pertahankan file lama jika tidak ada unggahan baru
+    }
+
     //File SPK
     $fileSpk = $this->request->getFile('fileSpk');
     log_message('debug', 'File detected: ' . ($fileSpk ? 'Yes' : 'No') . ', Is Valid: ' . ($fileSpk ? ($fileSpk->isValid() ? 'Yes' : 'No') : 'N/A'));
@@ -342,6 +379,43 @@ class Proyek extends BaseController
         $data['file_spk'] = $oldData->file_spk; // Pertahankan file lama jika tidak ada unggahan baru
     }
 
+    //File Addendum SPK
+    $fileAddendumSpk = $this->request->getFile('fileAddendumSpk');
+    log_message('debug', 'File detected: ' . ($fileAddendumSpk ? 'Yes' : 'No') . ', Is Valid: ' . ($fileAddendumSpk ? ($fileAddendumSpk->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileAddendumSpk && $fileAddendumSpk->isValid() && !$fileAddendumSpk->hasMoved()) {
+        // Validasi format dan ukuran file
+        $fileType = $fileAddendumSpk->getClientMimeType();
+        $fileSize = $fileAddendumSpk->getSize();
+
+        log_message('debug', 'File Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+        }
+
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        }
+
+        // Pastikan direktori ada
+        $uploadPath = WRITEPATH . 'uploads/addendum_spk';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+
+        // Simpan file
+        $fileName = $fileAddendumSpk->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileAddendumSpk->move($uploadPath, $fileName)) {
+            $data['file_addendum_spk'] = $fileName; // Simpan nama file ke database
+            log_message('debug', 'File saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move file: ' . $fileAddendumSpk->getErrorString());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $fileSpk->getErrorString()]);
+        }
+    } elseif (isset($oldData->file_addendum_spk)) {
+        $data['file_addendum_spk'] = $oldData->file_addendum_spk; // Pertahankan file lama jika tidak ada unggahan baru
+    }
+
     //File Laporan
     // Penanganan unggahan file PDF
     $fileLaporan = $this->request->getFile('fileLaporan');
@@ -356,8 +430,8 @@ class Proyek extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
         }
 
-        if ($fileSize > 2.5 * 1024 * 1024) {
-            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        if ($fileSize > 50 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 50 MB']);
         }
 
         // Pastikan direktori ada
