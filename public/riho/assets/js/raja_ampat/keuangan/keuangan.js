@@ -750,6 +750,14 @@ $(document).ready(function () {
           },
         },
         {
+          title: "Uraian",
+          field: "description",
+          headerHozAlign: "center",
+          minWidth: 150,
+          editor: "input",
+          cssClass: "highlight-column",
+        },
+        {
           title: "Kendala",
           field: "reason",
           headerHozAlign: "center",

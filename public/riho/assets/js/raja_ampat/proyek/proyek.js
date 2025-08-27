@@ -286,6 +286,12 @@ $(document).ready(function () {
           $("#revenueamt")
             .val(data.revenue_amt || "")
             .trigger("change");
+          $("#termintime")
+            .val(data.termin_time || "")
+            .trigger("change");
+          $("#contracttottime")
+            .val(data.contract_tot_time || "")
+            .trigger("change");
 
           function calculateTotalDays() {
             const startDate = document.getElementById("jobstartdate").value;

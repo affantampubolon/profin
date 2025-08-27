@@ -199,6 +199,8 @@ class Proyek extends BaseController
     $invoicereceivename = $this->request->getPost('invoicereceivename');
     $progressjob = $this->request->getPost('progressjob');
     $revenueamt = $this->request->getPost('revenueamt');
+    $termintime = $this->request->getPost('termintime');
+    $contracttottime = $this->request->getPost('contracttottime');
 
     $username = $this->session->get('username');
 
@@ -222,11 +224,87 @@ class Proyek extends BaseController
         'progress' => $progressjob ?: ($oldData->progress ?? 0),
         'ar_balance' => $revenueamt ?: $oldData->ar_balance,
         'revenue_amt' => $revenueamt ?: $oldData->revenue_amt,
+        'termin_time' => $termintime ?: $oldData->termin_time,
+        'contract_tot_time' => $contracttottime ?: $oldData->contract_tot_time,
         'user_update' => $username ?: $oldData->user_update,
         'update_date' => date('Y-m-d H:i:s')
     ];
 
     // Penanganan unggahan file PDF
+    //File INVOICE
+    $fileInvoice = $this->request->getFile('fileInvoice');
+    log_message('debug', 'File detected: ' . ($fileInvoice ? 'Yes' : 'No') . ', Is Valid: ' . ($fileInvoice ? ($fileInvoice->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileInvoice && $fileInvoice->isValid() && !$fileInvoice->hasMoved()) {
+        // Validasi format dan ukuran file
+        $fileType = $fileInvoice->getClientMimeType();
+        $fileSize = $fileInvoice->getSize();
+
+        log_message('debug', 'File Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+        }
+
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        }
+
+        // Pastikan direktori ada
+        $uploadPath = WRITEPATH . 'uploads/inv';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+
+        // Simpan file
+        $fileName = $fileInvoice->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileInvoice->move($uploadPath, $fileName)) {
+            $data['file_invoice'] = $fileName; // Simpan nama file ke database
+            log_message('debug', 'File saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move file: ' . $fileInvoice->getErrorString());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $fileInvoice->getErrorString()]);
+        }
+    } elseif (isset($oldData->file_invoice)) {
+        $data['file_invoice'] = $oldData->file_invoice; // Pertahankan file lama jika tidak ada unggahan baru
+    }
+
+    //File FAKTUR PAJAK
+    $fileFakturPajak = $this->request->getFile('fileFakturPajak');
+    log_message('debug', 'File detected: ' . ($fileFakturPajak ? 'Yes' : 'No') . ', Is Valid: ' . ($fileFakturPajak ? ($fileFakturPajak->isValid() ? 'Yes' : 'No') : 'N/A'));
+    if ($fileFakturPajak && $fileFakturPajak->isValid() && !$fileFakturPajak->hasMoved()) {
+        // Validasi format dan ukuran file
+        $fileType = $fileFakturPajak->getClientMimeType();
+        $fileSize = $fileFakturPajak->getSize();
+
+        log_message('debug', 'File Type: ' . $fileType . ', File Size: ' . $fileSize . ' bytes');
+        if ($fileType !== 'application/pdf') {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File yang diunggah bukan dalam format .pdf']);
+        }
+
+        if ($fileSize > 2.5 * 1024 * 1024) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'File melebihi kapasitas 2,5 MB']);
+        }
+
+        // Pastikan direktori ada
+        $uploadPath = WRITEPATH . 'uploads/faktur';
+        if (!is_dir($uploadPath)) {
+            mkdir($uploadPath, 0775, true);
+        }
+
+        // Simpan file
+        $fileName = $fileFakturPajak->getRandomName();
+        $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
+        if ($fileFakturPajak->move($uploadPath, $fileName)) {
+            $data['file_faktur_pajak'] = $fileName; // Simpan nama file ke database
+            log_message('debug', 'File saved successfully: ' . $fullPath);
+        } else {
+            log_message('error', 'Failed to move file: ' . $fileFakturPajak->getErrorString());
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Gagal menyimpan file: ' . $fileFakturPajak->getErrorString()]);
+        }
+    } elseif (isset($oldData->file_faktur_pajak)) {
+        $data['file_faktur_pajak'] = $oldData->file_faktur_pajak; // Pertahankan file lama jika tidak ada unggahan baru
+    }
+
     //File SPK
     $fileSpk = $this->request->getFile('fileSpk');
     log_message('debug', 'File detected: ' . ($fileSpk ? 'Yes' : 'No') . ', Is Valid: ' . ($fileSpk ? ($fileSpk->isValid() ? 'Yes' : 'No') : 'N/A'));
@@ -292,7 +370,7 @@ class Proyek extends BaseController
         $fileName = $fileLaporan->getRandomName();
         $fullPath = $uploadPath . DIRECTORY_SEPARATOR . $fileName;
         if ($fileLaporan->move($uploadPath, $fileName)) {
-            $data['file_spk'] = $fileName; // Simpan nama file ke database
+            $data['file_laporan'] = $fileName; // Simpan nama file ke database
             log_message('debug', 'File saved successfully: ' . $fullPath);
         } else {
             log_message('error', 'Failed to move file: ' . $fileLaporan->getErrorString());

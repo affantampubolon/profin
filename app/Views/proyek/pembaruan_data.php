@@ -87,7 +87,35 @@
                             </div>
                         </div>
                         <div class="row p-2">
-                        <p class="text-uppercase"><b>.Waktu Proyek</b></p>
+                        <p class="text-uppercase"><b>.Periode Kontrak atau Proyek</b></p>
+                            <?php
+                            // Gunakan $session yang diteruskan dari controller
+                            $role_id = $session->get('role_id');
+                            ?>
+                            <!-- Logika berdasarkan role -->
+                            <?php if ($role_id == 5): ?>
+                                <div class="row p-2">
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Termin </label>
+                                        <input class="form-control" id="termintime" name="termintime" type="text" />
+                                    </div>
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Durasi Kontrak (hari) </label>
+                                        <input class="form-control" id="contracttottime" name="contracttottime" type="text" />
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="row p-2">
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Termin (hari) </label>
+                                        <input class="form-control" id="termintime" name="termintime" type="text" disabled/>
+                                    </div>
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Durasi Kontrak (hari) </label>
+                                        <input class="form-control" id="contracttottime" name="contracttottime" type="text" disabled/>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                             <div class="col-xl-4 col-md-4">
                                 <label class="form-label" for="">Tanggal Mulai Pekerjaan </label>
                                 <div class="input-group flatpicker-calender">
@@ -119,34 +147,102 @@
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Invoice</b></p>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Kirim Invoice </label>
-                                <div class="input-group flatpicker-calender">
-                                    <input
-                                        class="form-control"
-                                        id="invoicesenddate"
-                                        name="invoicesenddate"
-                                        type="date"
-                                        value=""
-                                    />
+
+                            <?php
+                            // Gunakan $session yang diteruskan dari controller
+                            $role_id = $session->get('role_id');
+                            ?>
+
+                            <!-- Logika berdasarkan role -->
+                            <?php if ($role_id == 5): ?>
+                                <div class="row p-2">
+                                    <div class="col-xl-6 col-md-12">
+                                        <p class="form-label" for="">Unggah File Invoice </p>
+                                        <input
+                                            class="form-control"
+                                            name="fileInvoice" id="fileInvoice"
+                                            type="file"
+                                            aria-describedby="inputGroupFileAddon03"
+                                            aria-label="Upload"
+                                        />
+                                        <p class="mb-2">
+                                            <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                        </p>
+                                    </div>
+                                    <div class="col-xl-6 col-md-12">
+                                        <p class="form-label" for="">Unggah File Faktur Pajak </p>
+                                        <input
+                                            class="form-control"
+                                            name="fileFakturPajak" id="fileFakturPajak"
+                                            type="file"
+                                            aria-describedby="inputGroupFileAddon03"
+                                            aria-label="Upload"
+                                        />
+                                        <p class="mb-2">
+                                            <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Terima Invoice </label>
-                                <div class="input-group flatpicker-calender">
-                                    <input
-                                        class="form-control"
-                                        id="invoicereceivedate"
-                                        name="invoicereceivedate"
-                                        type="date"
-                                        value=""
-                                    />
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicesenddate">Tanggal Kirim Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicesenddate"
+                                            name="invoicesenddate"
+                                            type="date"
+                                            value=""
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Nama Penerima </label>
-                                <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" />
-                            </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivedate">Tanggal Terima Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicereceivedate"
+                                            name="invoicereceivedate"
+                                            type="date"
+                                            value=""
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivename">Nama Penerima</label>
+                                    <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" />
+                                </div>
+                            <?php else: ?>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicesenddate">Tanggal Kirim Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicesenddate"
+                                            name="invoicesenddate"
+                                            type="date"
+                                            value=""
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivedate">Tanggal Terima Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicereceivedate"
+                                            name="invoicereceivedate"
+                                            type="date"
+                                            value=""
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivename">Nama Penerima</label>
+                                    <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" disabled/>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Detail Proyek</b></p>

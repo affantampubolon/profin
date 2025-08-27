@@ -96,7 +96,7 @@ class Monitoring extends BaseController
 
   public function getSpkFile($fileName)
   {
-      $filePath = WRITEPATH . 'uploads/spk/' . DIRECTORY_SEPARATOR . $fileName;
+      $filePath = WRITEPATH . 'uploads/spk/' . $fileName;
 
       if (file_exists($filePath) && is_file($filePath)) {
           // Set header untuk file PDF
