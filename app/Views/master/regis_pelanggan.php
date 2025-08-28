@@ -150,6 +150,37 @@
                             </div>
                         </div>
                         <div class="col-xl-12 col-md-12 box-col-12">
+                            <p class="text-uppercase"><b>Unggah Dokumen</b></p>
+                            <div class="row p-2">
+                                <div class="col-xl-6 col-md-6">
+                                        <p class="form-label" for="">Unggah NPWP </p>
+                                    <input
+                                    class="form-control"
+                                        name="fileNpwp" id="fileNpwp"
+                                        type="file"
+                                        aria-describedby="inputGroupFileAddon03"
+                                        aria-label="Upload"
+                                    />
+                                    <p class="mb-2">
+                                        <em>format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>1 MB</strong></em>
+                                    </p>
+                                </div>
+                                <div class="col-xl-6 col-md-6">
+                                        <p class="form-label" for="">Unggah NIB </p>
+                                    <input
+                                    class="form-control"
+                                        name="fileNib" id="fileNib"
+                                        type="file"
+                                        aria-describedby="inputGroupFileAddon03"
+                                        aria-label="Upload"
+                                    />
+                                    <p class="mb-2">
+                                        <em>format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-12 col-md-12 box-col-12">
                             <button class="btn btn-primary" type="submit">
                                 <i class="fa fa-save"></i> Simpan
                             </button>

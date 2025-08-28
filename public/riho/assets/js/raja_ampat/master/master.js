@@ -62,22 +62,11 @@ $(document).ready(function () {
             layout: "fitColumns",
             columns: [
               {
-                title: "Kode Pelanggan",
-                field: "cust_id",
-                headerHozAlign: "center",
-                hozAlign: "center",
-              },
-              {
-                title: "Nama Pelanggan",
-                field: "cust_name",
-                headerHozAlign: "center",
-                headerFilter: "input",
-              },
-              {
                 title: "Aksi",
                 field: "",
                 headerHozAlign: "center",
                 hozAlign: "center",
+                minWidth: 75,
                 formatter: function (cell, formatterParams, onRendered) {
                   return `
                 <a class="badge rounded-circle p-2 badge-light text-dark" href="#">
@@ -88,6 +77,83 @@ $(document).ready(function () {
                   var rowData = cell.getRow().getData();
                   showDetailModal(rowData);
                 },
+              },
+              {
+                title: "NPWP",
+                field: "file_npwp",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                minWidth: 75,
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return rowData.file_npwp
+                    ? `<a class="badge rounded-circle p-2 badge-danger npwp-btn" href="#" data-file="${rowData.file_npwp}">
+                                          <i class="fa fa-file-pdf-o" style="cursor: pointer;"></i>
+                                       </a>`
+                    : "<span>Tidak ada</span>";
+                },
+                cellClick: function (e, cell) {
+                  var target = e.target.closest("a");
+                  if (!target) return;
+
+                  var rowData = cell.getRow().getData();
+                  if (
+                    target.classList.contains("npwp-btn") &&
+                    rowData.file_npwp
+                  ) {
+                    // Buat URL untuk mengakses file
+                    var fileUrl =
+                      url +
+                      "master/pelanggan/filenpwp/" +
+                      encodeURIComponent(rowData.file_npwp);
+                    // Buka file di tab baru
+                    window.open(fileUrl, "_blank");
+                  }
+                },
+              },
+              {
+                title: "NIB",
+                field: "file_nib",
+                headerHozAlign: "center",
+                hozAlign: "center",
+                formatter: function (cell, formatterParams, onRendered) {
+                  var rowData = cell.getRow().getData();
+                  return rowData.file_nib
+                    ? `<a class="badge rounded-circle p-2 badge-danger nib-btn" href="#" data-file="${rowData.file_nib}">
+                                          <i class="fa fa-file-pdf-o" style="cursor: pointer;"></i>
+                                       </a>`
+                    : "<span>Tidak ada</span>";
+                },
+                cellClick: function (e, cell) {
+                  var target = e.target.closest("a");
+                  if (!target) return;
+
+                  var rowData = cell.getRow().getData();
+                  if (
+                    target.classList.contains("nib-btn") &&
+                    rowData.file_nib
+                  ) {
+                    // Buat URL untuk mengakses file
+                    var fileUrl =
+                      url +
+                      "master/pelanggan/filenib/" +
+                      encodeURIComponent(rowData.file_nib);
+                    // Buka file di tab baru
+                    window.open(fileUrl, "_blank");
+                  }
+                },
+              },
+              {
+                title: "Kode Pelanggan",
+                field: "cust_id",
+                headerHozAlign: "center",
+                hozAlign: "center",
+              },
+              {
+                title: "Nama Pelanggan",
+                field: "cust_name",
+                headerHozAlign: "center",
+                headerFilter: "input",
               },
             ],
           });
@@ -123,9 +189,58 @@ $(document).ready(function () {
         "#namaPic",
         "#notelpPelanggan",
         "#alamatPelanggan",
-        "#namaPemilik",
+        "#fileNpwp", // Tambahkan field file NPWP
+        "#fileNib", // Tambahkan field file NIB
       ];
       let isValid = true;
+
+      // Validasi field wajib
+      requiredFields.forEach((field) => {
+        const $field = $(field);
+        if ($field.is("input[type='file']")) {
+          // Validasi file
+          const fileInput = $field[0];
+          if (!fileInput.files || !fileInput.files.length) {
+            isValid = false;
+            return;
+          }
+          const file = fileInput.files[0];
+          const maxSizeNPWP = 1 * 1024 * 1024; // 1MB
+          const maxSizeNIB = 2.5 * 1024 * 1024; // 2.5MB
+          if (field === "#fileNpwp" && file.size > maxSizeNPWP) {
+            isValid = false;
+            Swal.fire({
+              title: "Peringatan",
+              text: "Ukuran file NPWP melebihi 1MB.",
+              icon: "warning",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+          if (field === "#fileNib" && file.size > maxSizeNIB) {
+            isValid = false;
+            Swal.fire({
+              title: "Peringatan",
+              text: "Ukuran file NIB melebihi 2.5MB.",
+              icon: "warning",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+          if (!file.type.match("application/pdf")) {
+            isValid = false;
+            Swal.fire({
+              title: "Peringatan",
+              text: "File harus dalam format PDF.",
+              icon: "warning",
+              confirmButtonText: "OK",
+            });
+            return;
+          }
+        } else if (!$field.val()) {
+          isValid = false;
+        }
+      });
 
       if (!isValid) {
         Swal.fire({
@@ -149,36 +264,46 @@ $(document).ready(function () {
         cancelButtonText: "Batal",
       }).then((result) => {
         if (result.isConfirmed) {
-          // Membuat objek formData
-          const formData = {
-            cust_name: $("#namaPelanggan").val()
-              ? $("#namaPelanggan").val().toUpperCase()
-              : null,
-            address: $("#alamatPelanggan").val()
-              ? $("#alamatPelanggan").val().toUpperCase()
-              : null,
-            email: $("#emailPelanggan").val() || null,
-            phone_no: $("#notelpPelanggan").val() || null,
-            npwp: $("#npwpPelanggan").val() || null,
-            cust_name_tax: $("#namanpwpPelanggan").val()
-              ? $("#namanpwpPelanggan").val().toUpperCase()
-              : null,
-            address_tax: $("#alamatnpwpPelanggan").val()
-              ? $("#alamatnpwpPelanggan").val().toUpperCase()
-              : null,
-            pic_name: $("#namaPic").val()
-              ? $("#namaPic").val().toUpperCase()
-              : null,
-          };
+          // Membuat objek FormData untuk mengirim file
+          const formData = new FormData();
+          formData.append(
+            "cust_name",
+            $("#namaPelanggan").val().toUpperCase() || null
+          );
+          formData.append(
+            "address",
+            $("#alamatPelanggan").val().toUpperCase() || null
+          );
+          formData.append("email", $("#emailPelanggan").val() || null);
+          formData.append("phone_no", $("#notelpPelanggan").val() || null);
+          formData.append("npwp", $("#npwpPelanggan").val() || null);
+          formData.append(
+            "cust_name_tax",
+            $("#namanpwpPelanggan").val().toUpperCase() || null
+          );
+          formData.append(
+            "address_tax",
+            $("#alamatnpwpPelanggan").val().toUpperCase() || null
+          );
+          formData.append(
+            "pic_name",
+            $("#namaPic").val().toUpperCase() || null
+          );
+          formData.append("fileNpwp", $("#fileNpwp")[0].files[0] || null); // Sesuaikan nama dengan input
+          formData.append("fileNib", $("#fileNib")[0].files[0] || null); // Sesuaikan nama dengan input
 
           // Debugging: Log formData untuk memeriksa nilai
-          console.log("formData:", formData);
+          for (let pair of formData.entries()) {
+            console.log(pair[0] + ": " + pair[1]);
+          }
 
           $.ajax({
             url: url + "/master/pelanggan/insertpelanggan",
             method: "POST",
             data: formData,
             dataType: "json",
+            processData: false, // Jangan proses data
+            contentType: false, // Gunakan multipart/form-data
             success: function (response) {
               if (response.success) {
                 Swal.fire({
