@@ -108,6 +108,7 @@ $routes->post('/keuangan/pembayaran/insertdatapembayaran', 'Keuangan\Keuangan::i
 //Detail Proyek
 $routes->get('/monitoring/detproyek/index', 'Monitoring\Monitoring::detproyekindex');
 $routes->get('/monitoring/detproyek/getunduhdata', 'Monitoring\Monitoring::dataUnduhDetProyek');
+$routes->get('/monitoring/detproyek/fileinvoice/(:segment)', 'Monitoring\Monitoring::getInvFile/$1');
 $routes->get('/monitoring/detproyek/filesurattugas/(:segment)', 'Monitoring\Monitoring::getSuratTugasFile/$1');
 $routes->get('/monitoring/detproyek/filespk/(:segment)', 'Monitoring\Monitoring::getSpkFile/$1');
 $routes->get('/monitoring/detproyek/fileaddendumspk/(:segment)', 'Monitoring\Monitoring::getAddendumSpkFile/$1');
