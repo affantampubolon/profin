@@ -300,6 +300,16 @@ class Keuangan extends BaseController
       } 
   }
 
+  public function verifdroppingindex()
+  {
+    $data = [
+      'title' => "Verifikasi Biaya Dropping",
+      'breadcrumb' => $this->breadcrumb,
+      'session' => $this->session
+    ];
+    return view('keuangan/verifdropping', $data);
+  }
+
   public function pembayaranindex()
   {
     $data = [
