@@ -704,10 +704,56 @@ $(document).ready(function () {
           },
           cellClick: function (e, cell) {
             if (!cell.getRow().getData().file_invoice) {
-              // Hanya buka modal jika belum ada file
               var row = cell.getRow();
               $("#uploadButton").data("row", row); // Simpan referensi baris
               $("#unggahInvoiceModal").modal("show");
+            }
+          },
+        },
+        {
+          title: "Invoice",
+          field: "file_invoice",
+          headerHozAlign: "center",
+          hozAlign: "center",
+          frozen: true,
+          formatter: function (cell) {
+            var rowData = cell.getRow().getData();
+            if (rowData.file_invoice) {
+              return `<a href="#" class="badge rounded-circle p-2 badge-danger download-btn" data-id-ref="${rowData.id_ref}" data-file="${rowData.file_invoice}"><i class="fa fa-file-pdf-o" style="cursor: pointer;"></i> </a>`;
+            } else {
+              return `<span>Tidak ada file</span>`;
+            }
+          },
+          cellClick: function (e, cell) {
+            var target = e.target.closest("a.download-btn");
+            if (target) {
+              var rowData = cell.getRow().getData();
+              var idRef = rowData.id_ref;
+              if (idRef && rowData.file_invoice) {
+                // Ambil data file dari API berdasarkan id_ref
+                $.getJSON(
+                  url + `proyek/pembaruandata/getproyek/${idRef}`,
+                  function (data) {
+                    console.log("API Response:", data); // Debugging
+                    if (data && data.file_invoice) {
+                      var fileName = encodeURIComponent(data.file_invoice);
+                      window.open(
+                        url + `monitoring/detproyek/fileinvoice/${fileName}`,
+                        "_blank"
+                      );
+                    } else {
+                      Swal.fire(
+                        "Peringatan",
+                        "File invoice tidak ditemukan.",
+                        "warning"
+                      );
+                    }
+                  }
+                ).fail(function (xhr) {
+                  console.error("API Error:", xhr.responseText); // Debugging
+                  Swal.fire("Error", "Gagal mengambil data file.", "error");
+                });
+              }
             }
           },
         },
@@ -748,6 +794,37 @@ $(document).ready(function () {
             autocomplete: true,
             filterRemote: true,
           },
+          cellEdited: function (cell) {
+            var row = cell.getRow();
+            var idRef = cell.getValue();
+            if (idRef) {
+              // Panggil API untuk mengambil data file_invoice berdasarkan id_ref
+              $.getJSON(
+                url + `proyek/pembaruandata/getproyek/${idRef}`,
+                function (data) {
+                  console.log("Data from API:", data); // Debugging
+                  if (data && data.file_invoice) {
+                    row.update({ file_invoice: data.file_invoice });
+                  } else {
+                    row.update({ file_invoice: null }); // Reset jika tidak ada file
+                  }
+                  table.redraw(); // Perbarui tampilan tabel
+                }
+              ).fail(function (xhr) {
+                console.error("API Error:", xhr.responseText); // Debugging
+                row.update({ file_invoice: null }); // Reset jika gagal
+                table.redraw();
+              });
+            }
+          },
+        },
+        {
+          title: "Uraian",
+          field: "description",
+          headerHozAlign: "center",
+          minWidth: 150,
+          editor: "input",
+          cssClass: "highlight-column",
         },
         {
           title: "Kendala",

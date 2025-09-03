@@ -170,7 +170,7 @@ $(document).ready(function () {
                     // Buat URL untuk mengakses file
                     var fileUrl =
                       url +
-                      "/monitoring/detproyek/filelaporan/" +
+                      "monitoring/detproyek/filelaporan/" +
                       encodeURIComponent(rowData.file_laporan);
                     // Buka file di tab baru
                     window.open(fileUrl, "_blank");
@@ -832,11 +832,12 @@ $(document).ready(function () {
                 minWidth: 100, // Added for action column
               },
               {
-                title: "Invoice",
+                title: "Bukti Bayar",
                 field: "file_invoice",
                 headerHozAlign: "center",
                 hozAlign: "center",
                 frozen: true,
+                minWidth: 100,
                 formatter: function (cell, formatterParams, onRendered) {
                   var rowData = cell.getRow().getData();
                   return rowData.file_invoice

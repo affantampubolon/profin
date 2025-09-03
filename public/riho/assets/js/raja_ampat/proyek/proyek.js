@@ -286,7 +286,14 @@ $(document).ready(function () {
           $("#revenueamt")
             .val(data.revenue_amt || "")
             .trigger("change");
+          $("#termintime")
+            .val(data.termin_time || "")
+            .trigger("change");
+          $("#contracttottime")
+            .val(data.contract_tot_time || "")
+            .trigger("change");
 
+          // Fungsi untuk menghitung total hari
           function calculateTotalDays() {
             const startDate = document.getElementById("jobstartdate").value;
             const endDate = document.getElementById("jobenddate").value;
@@ -310,9 +317,65 @@ $(document).ready(function () {
           $("#jobstartdate").on("change", calculateTotalDays);
           $("#jobenddate").on("change", calculateTotalDays);
 
+          // Tambahkan input hidden untuk ID
           $("#formUpdateProyek").append(
             `<input type="hidden" name="id" value="${id}">`
           );
+
+          // Dinamisasi tautan unduh file
+          $("#fileSuratTugasLink").remove(); // Hapus tautan lama jika ada
+          $("#fileSpkLink").remove();
+          $("#fileAddendumSpkLink").remove();
+          $("#fileLaporanLink").remove();
+
+          if (data.file_surat_tugas) {
+            $("#fileSuratTugasContainer").append(
+              `<a id="fileSuratTugasLink" href="${url}monitoring/detproyek/filesurattugas/${encodeURIComponent(
+                data.file_surat_tugas
+              )}" target="_blank" class="btn btn-sm btn-info mt-2"><i class="fa fa-eye"></i> Lihat | <i class="fa fa-download"></i> Unduh</a>`
+            );
+          } else {
+            $("#fileSuratTugasContainer").append(
+              '<p class="text-muted mt-2">Tidak ada file</p>'
+            );
+          }
+
+          if (data.file_spk) {
+            $("#fileSpkContainer").append(
+              `<a id="fileSpkLink" href="${url}monitoring/detproyek/filespk/${encodeURIComponent(
+                data.file_spk
+              )}" target="_blank" class="btn btn-sm btn-info mt-2"><i class="fa fa-eye"></i> Lihat | <i class="fa fa-download"></i> Unduh</a>`
+            );
+          } else {
+            $("#fileSpkContainer").append(
+              '<p class="text-muted mt-2">Tidak ada file</p>'
+            );
+          }
+
+          if (data.file_addendum_spk) {
+            $("#fileAddendumSpkContainer").append(
+              `<a id="fileAddendumSpkLink" href="${url}monitoring/detproyek/fileaddendumspk/${encodeURIComponent(
+                data.file_addendum_spk
+              )}" target="_blank" class="btn btn-sm btn-info mt-2"><i class="fa fa-eye"></i> Lihat | <i class="fa fa-download"></i> Unduh</a>`
+            );
+          } else {
+            $("#fileAddendumSpkContainer").append(
+              '<p class="text-muted mt-2">Tidak ada file</p>'
+            );
+          }
+
+          if (data.file_laporan) {
+            $("#fileLaporanContainer").append(
+              `<a id="fileLaporanLink" href="${url}monitoring/detproyek/filelaporan/${encodeURIComponent(
+                data.file_laporan
+              )}" target="_blank" class="btn btn-sm btn-info mt-2"><i class="fa fa-eye"></i> Lihat | <i class="fa fa-download"></i> Unduh</a>`
+            );
+          } else {
+            $("#fileLaporanContainer").append(
+              '<p class="text-muted mt-2">Tidak ada file</p>'
+            );
+          }
+
           $("#updateProyekModal").modal("show");
 
           $("#formUpdateProyek")
@@ -325,7 +388,6 @@ $(document).ready(function () {
               } else {
                 console.log("File selected: ", fileInput.files[0].name);
               }
-
               Swal.fire({
                 title: "Anda yakin?",
                 text: "Data Proyek akan diperbarui!",
@@ -337,11 +399,9 @@ $(document).ready(function () {
               }).then((result) => {
                 if (result.isConfirmed) {
                   const formData = new FormData(this);
-                  // Log FormData untuk debugging (hanya untuk browser console)
                   for (var pair of formData.entries()) {
                     console.log(pair[0] + ": " + pair[1]);
                   }
-
                   $.ajax({
                     type: "POST",
                     url: url + "proyek/pembaruandata/updatedataproyek",

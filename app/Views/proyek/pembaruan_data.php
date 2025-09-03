@@ -74,22 +74,50 @@
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Registrasi Proyek</b></p>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">No. WBS <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">No. WBS </label>
                                 <input class="form-control" id="nowbs" name="nowbs" type="text" />
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">No. SO <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">No. SO </label>
                                 <input class="form-control" id="noso" name="noso" type="text" />
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">No. Laporan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">No. Laporan </label>
                                 <input class="form-control" id="reportno" name="reportno" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
-                        <p class="text-uppercase"><b>.Waktu Proyek</b></p>
+                        <p class="text-uppercase"><b>.Periode Kontrak atau Proyek</b></p>
+                            <?php
+                            // Gunakan $session yang diteruskan dari controller
+                            $role_id = $session->get('role_id');
+                            ?>
+                            <!-- Logika berdasarkan role -->
+                            <?php if ($role_id == 5): ?>
+                                <div class="row p-2">
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Termin (Periode) </label>
+                                        <input class="form-control" id="termintime" name="termintime" type="text" />
+                                    </div>
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Durasi Kontrak (hari) </label>
+                                        <input class="form-control" id="contracttottime" name="contracttottime" type="text" />
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="row p-2">
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Termin (Periode) </label>
+                                        <input class="form-control" id="termintime" name="termintime" type="text" disabled/>
+                                    </div>
+                                    <div class="col-xl-6 col-md-6">
+                                        <label class="form-label" for="">Durasi Kontrak (hari) </label>
+                                        <input class="form-control" id="contracttottime" name="contracttottime" type="text" disabled/>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Mulai Pekerjaan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Tanggal Mulai Pekerjaan </label>
                                 <div class="input-group flatpicker-calender">
                                     <input
                                         class="form-control"
@@ -101,7 +129,7 @@
                                 </div>
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Selesai Pekerjaan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Tanggal Selesai Pekerjaan </label>
                                 <div class="input-group flatpicker-calender">
                                     <input
                                         class="form-control"
@@ -113,45 +141,113 @@
                                 </div>
                             </div>
                             <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Total Waktu Pekerjaan (hari) <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Total Waktu Pekerjaan (hari) </label>
                                 <input class="form-control" id="jobtotaltime" name="jobtotaltime" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Invoice</b></p>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Kirim Invoice <span class="txt-danger f-w-600">*</span></label>
-                                <div class="input-group flatpicker-calender">
-                                    <input
-                                        class="form-control"
-                                        id="invoicesenddate"
-                                        name="invoicesenddate"
-                                        type="date"
-                                        value=""
-                                    />
+
+                            <?php
+                            // Gunakan $session yang diteruskan dari controller
+                            $role_id = $session->get('role_id');
+                            ?>
+
+                            <!-- Logika berdasarkan role -->
+                            <?php if ($role_id == 5): ?>
+                                <div class="row p-2">
+                                    <div class="col-xl-6 col-md-12">
+                                        <p class="form-label" for="">Unggah File Invoice </p>
+                                        <input
+                                            class="form-control"
+                                            name="fileInvoice" id="fileInvoice"
+                                            type="file"
+                                            aria-describedby="inputGroupFileAddon03"
+                                            aria-label="Upload"
+                                        />
+                                        <p class="mb-2">
+                                            <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                        </p>
+                                    </div>
+                                    <div class="col-xl-6 col-md-12">
+                                        <p class="form-label" for="">Unggah File Faktur Pajak </p>
+                                        <input
+                                            class="form-control"
+                                            name="fileFakturPajak" id="fileFakturPajak"
+                                            type="file"
+                                            aria-describedby="inputGroupFileAddon03"
+                                            aria-label="Upload"
+                                        />
+                                        <p class="mb-2">
+                                            <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Tanggal Terima Invoice <span class="txt-danger f-w-600">*</span></label>
-                                <div class="input-group flatpicker-calender">
-                                    <input
-                                        class="form-control"
-                                        id="invoicereceivedate"
-                                        name="invoicereceivedate"
-                                        type="date"
-                                        value=""
-                                    />
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicesenddate">Tanggal Kirim Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicesenddate"
+                                            name="invoicesenddate"
+                                            type="date"
+                                            value=""
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-4 col-md-4">
-                                <label class="form-label" for="">Nama Penerima <span class="txt-danger f-w-600">*</span></label>
-                                <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" />
-                            </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivedate">Tanggal Terima Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicereceivedate"
+                                            name="invoicereceivedate"
+                                            type="date"
+                                            value=""
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivename">Nama Penerima</label>
+                                    <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" />
+                                </div>
+                            <?php else: ?>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicesenddate">Tanggal Kirim Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicesenddate"
+                                            name="invoicesenddate"
+                                            type="date"
+                                            value=""
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivedate">Tanggal Terima Invoice</label>
+                                    <div class="input-group flatpicker-calender">
+                                        <input
+                                            class="form-control"
+                                            id="invoicereceivedate"
+                                            name="invoicereceivedate"
+                                            type="date"
+                                            value=""
+                                            disabled
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-4">
+                                    <label class="form-label" for="invoicereceivename">Nama Penerima</label>
+                                    <input class="form-control" id="invoicereceivename" name="invoicereceivename" type="text" disabled/>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div class="row p-2">
                         <p class="text-uppercase"><b>.Detail Proyek</b></p>
                             <div class="col-xl-12 col-md-12">
-                                <label class="form-label" for="">Progres Pekerjaan % <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Progres Pekerjaan % </label>
                                 <select id="progressjob" name="progressjob" class="select2 form-control">
                                     <option value="0">0 %</option>
                                     <option value="10">10 %</option>
@@ -169,20 +265,21 @@
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-12 col-md-12">
-                                <label class="form-label" for="">Nilai Pendapatan <span class="txt-danger f-w-600">*</span></label>
+                                <label class="form-label" for="">Nilai Pendapatan </label>
                                 <input class="form-control" id="revenueamt" name="revenueamt" type="text" />
                             </div>
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-6 col-md-12">
-                                <p class="form-label" for="">Unggah File SPK <span class="txt-danger f-w-600">*</span></p>
+                                <p class="form-label" for="">Unggah File Surat Tugas </p>
                                 <input
                                     class="form-control"
-                                    name="fileSpk" id="fileSpk"
+                                    name="fileSuratTugas" id="fileSuratTugas"
                                     type="file"
                                     aria-describedby="inputGroupFileAddon03"
                                     aria-label="Upload"
                                 />
+                                <div id="fileSuratTugasContainer"></div>
                                 <p class="mb-2">
                                     <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
                                 </p>
@@ -190,16 +287,49 @@
                         </div>
                         <div class="row p-2">
                             <div class="col-xl-6 col-md-12">
-                                <p class="form-label" for="">Unggah File Laporan <span class="txt-danger f-w-600">*</span></p>
+                                <p class="form-label" for="">Unggah File SPK </p>
                                 <input
                                     class="form-control"
-                                    name="fileLaporan" id="fileLaporan"
+                                    name="fileSpk" id="fileSpk"
                                     type="file"
                                     aria-describedby="inputGroupFileAddon03"
                                     aria-label="Upload"
                                 />
+                                <div id="fileSpkContainer"></div>
                                 <p class="mb-2">
                                     <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-xl-6 col-md-12">
+                                <p class="form-label" for="">Unggah File Addendum SPK </p>
+                                <input
+                                    class="form-control"
+                                    name="fileAddendumSpk" id="fileAddendumSpk"
+                                    type="file"
+                                    aria-describedby="inputGroupFileAddon03"
+                                    aria-label="Upload"
+                                />
+                                <div id="fileAddendumSpkContainer"></div>
+                                <p class="mb-2">
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>2,5 MB</strong></em>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row p-2">
+                            <div class="col-xl-6 col-md-12">
+                                <p class="form-label" for="">Unggah File Laporan </p>
+                                <input
+                                class="form-control"
+                                name="fileLaporan" id="fileLaporan"
+                                type="file"
+                                aria-describedby="inputGroupFileAddon03"
+                                aria-label="Upload"
+                                />
+                                <div id="fileLaporanContainer"></div>
+                                <p class="mb-2">
+                                    <em>Silahkan unggah file dalam format <strong>.pdf</strong>, dengan kapasitas file maks. <strong>50 MB</strong></em>
                                 </p>
                             </div>
                         </div>

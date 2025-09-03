@@ -56,6 +56,8 @@ $routes->get('/master/user/filterkaryawan', 'Master\Master::getFilterKaryawan');
 $routes->post('/master/user/insertdatauser', 'Master\Master::insertUser');
 //PELANGGAN
 $routes->get('/master/pelanggan/index', 'Master\Master::indexMstPelanggan');
+$routes->get('/master/pelanggan/filenpwp/(:segment)', 'Master\Master::getNpwpCustFile/$1');
+$routes->get('/master/pelanggan/filenib/(:segment)', 'Master\Master::getNibCustFile/$1');
 $routes->get('/master/pelanggan/registrasi', 'Master\Master::indexRegisPelanggan');
 $routes->post('/master/pelanggan/getdatamstpelanggan', 'Master\Master::dataMstPelanggan');
 $routes->post('/master/pelanggan/insertpelanggan', 'Master\Master::insertPelanggan');
@@ -96,6 +98,7 @@ $routes->post('/keuangan/realisasi/insertdatarealisasi', 'Keuangan\Keuangan::ins
 //keuangandropping
 $routes->get('/keuangan/dropping/index', 'Keuangan\Keuangan::droppingindex');
 $routes->post('/keuangan/dropping/insertdatadropping', 'Keuangan\Keuangan::insertDropping');
+$routes->get('/keuangan/dropping/verifikasi', 'Keuangan\Keuangan::verifdroppingindex');
 
 //keuanganpembayaran
 $routes->get('/keuangan/pembayaran/index', 'Keuangan\Keuangan::pembayaranindex');
@@ -106,7 +109,10 @@ $routes->post('/keuangan/pembayaran/insertdatapembayaran', 'Keuangan\Keuangan::i
 //Detail Proyek
 $routes->get('/monitoring/detproyek/index', 'Monitoring\Monitoring::detproyekindex');
 $routes->get('/monitoring/detproyek/getunduhdata', 'Monitoring\Monitoring::dataUnduhDetProyek');
+$routes->get('/monitoring/detproyek/fileinvoice/(:segment)', 'Monitoring\Monitoring::getInvFile/$1');
+$routes->get('/monitoring/detproyek/filesurattugas/(:segment)', 'Monitoring\Monitoring::getSuratTugasFile/$1');
 $routes->get('/monitoring/detproyek/filespk/(:segment)', 'Monitoring\Monitoring::getSpkFile/$1');
+$routes->get('/monitoring/detproyek/fileaddendumspk/(:segment)', 'Monitoring\Monitoring::getAddendumSpkFile/$1');
 $routes->get('/monitoring/detproyek/filelaporan/(:segment)', 'Monitoring\Monitoring::getLaporanFile/$1');
 $routes->post('/monitoring/detproyek/getdetdata', 'Monitoring\Monitoring::dataDetProyek');
 $routes->get('/monitoring/detproyek/getdetdata/(:num)', 'Monitoring\Monitoring::dataDetProyekId/$1');

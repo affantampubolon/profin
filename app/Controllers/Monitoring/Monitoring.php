@@ -94,6 +94,42 @@ class Monitoring extends BaseController
       }
   }
 
+  public function getInvFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/inv/' . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
+      }
+  }
+
+  public function getSuratTugasFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/surat_tugas/' . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
+      }
+  }
+
   public function getSpkFile($fileName)
   {
       $filePath = WRITEPATH . 'uploads/spk/' . $fileName;
@@ -112,9 +148,27 @@ class Monitoring extends BaseController
       }
   }
 
+  public function getAddendumSpkFile($fileName)
+  {
+      $filePath = WRITEPATH . 'uploads/addendum_spk/' . $fileName;
+
+      if (file_exists($filePath) && is_file($filePath)) {
+          // Set header untuk file PDF
+          return $this->response
+              ->setHeader('Content-Type', 'application/pdf')
+              ->setHeader('Content-Disposition', 'inline; filename="' . $fileName . '"')
+              ->setHeader('Content-Length', filesize($filePath))
+              ->setBody(file_get_contents($filePath));
+      } else {
+          return $this->response
+              ->setStatusCode(404)
+              ->setJSON(['status' => 'error', 'message' => 'File tidak ditemukan']);
+      }
+  }
+
   public function getLaporanFile($fileName)
   {
-      $filePath = WRITEPATH . 'uploads/laporan/' . $fileName;
+      $filePath = WRITEPATH . 'uploads/laporan/' . DIRECTORY_SEPARATOR . $fileName;
 
       if (file_exists($filePath) && is_file($filePath)) {
           // Set header untuk file PDF
