@@ -98,6 +98,7 @@ $routes->post('/keuangan/realisasi/insertdatarealisasi', 'Keuangan\Keuangan::ins
 //keuangandropping
 $routes->get('/keuangan/dropping/index', 'Keuangan\Keuangan::droppingindex');
 $routes->post('/keuangan/dropping/insertdatadropping', 'Keuangan\Keuangan::insertDropping');
+$routes->get('/keuangan/dropping/verifikasi', 'Keuangan\Keuangan::verifdroppingindex');
 
 //keuanganpembayaran
 $routes->get('/keuangan/pembayaran/index', 'Keuangan\Keuangan::pembayaranindex');
